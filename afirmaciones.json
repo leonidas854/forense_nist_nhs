@@ -1,0 +1,82 @@
+[
+  {
+    "id": "fecha_incidente",
+    "texto": "El incidente comenzó el 12 de mayo de 2017.",
+    "fuente": "NAO-WannaCry-NHS",
+    "cita": "12 May 2017",
+    "localizador": "página PDF 6",
+    "usado_en": "docs/caso-nhs.md; fuentes/README.md"
+  },
+  {
+    "id": "edicion_nao",
+    "texto": "La portada del PDF revisado indica 25 de abril de 2018.",
+    "fuente": "NAO-WannaCry-NHS",
+    "cita": "25 APRIL 2018",
+    "localizador": "página PDF 1",
+    "usado_en": "docs/caso-nhs.md; fuentes/README.md"
+  },
+  {
+    "id": "trusts",
+    "texto": "Al menos 80 de 236 trusts fueron afectados, según el PDF revisado.",
+    "fuente": "NAO-WannaCry-NHS",
+    "cita": "at least 80 out of 236",
+    "localizador": "página PDF 8",
+    "usado_en": "docs/caso-nhs.md; fuentes/README.md"
+  },
+  {
+    "id": "citas_identificadas",
+    "texto": "La NAO identifica 6912 citas canceladas.",
+    "fuente": "NAO-WannaCry-NHS",
+    "cita": "6,912 appointments had been cancelled",
+    "localizador": "página PDF 10",
+    "usado_en": "docs/caso-nhs.md; fuentes/README.md"
+  },
+  {
+    "id": "estimacion",
+    "texto": "La NAO estima más de 19000 citas canceladas.",
+    "fuente": "NAO-WannaCry-NHS",
+    "cita": "more than 19,000 appointments",
+    "localizador": "página PDF 10",
+    "usado_en": "docs/caso-nhs.md; fuentes/README.md"
+  },
+  {
+    "id": "revision",
+    "texto": "La revisión de lecciones aprendidas explica el cambio de 81 a 80 trusts.",
+    "fuente": "NHS-lessons-learned-2018",
+    "cita": "change the number of impacted trusts from 81 to 80",
+    "localizador": "página PDF 5",
+    "usado_en": "docs/caso-nhs.md; fuentes/README.md"
+  },
+  {
+    "id": "csf_fecha",
+    "texto": "CSF 2.0 se publicó el 26 de febrero de 2024.",
+    "fuente": "NIST.CSWP.29",
+    "cita": "February 26, 2024",
+    "localizador": "página PDF 1",
+    "usado_en": "docs/caso-nhs.md; fuentes/README.md"
+  },
+  {
+    "id": "ir_autora",
+    "texto": "La portada de IR 8374r1 incluye a Karen Kent.",
+    "fuente": "NIST.IR.8374r1",
+    "cita": "Karen Kent",
+    "localizador": "página PDF 1",
+    "usado_en": "docs/caso-nhs.md; fuentes/README.md"
+  },
+  {
+    "id": "ir_fecha",
+    "texto": "IR 8374r1 final corresponde a junio de 2026.",
+    "fuente": "NIST.IR.8374r1",
+    "cita": "June 2026",
+    "localizador": "página PDF 2",
+    "usado_en": "docs/caso-nhs.md; fuentes/README.md"
+  },
+  {
+    "id": "sp_fecha",
+    "texto": "SP 800-61r3 corresponde a abril de 2025.",
+    "fuente": "NIST.SP.800-61r3",
+    "cita": "April 2025",
+    "localizador": "página PDF 2",
+    "usado_en": "docs/caso-nhs.md; fuentes/README.md"
+  }
+]

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")"
+# Vagrant 2.4.9 incluye este comunicador detrás de una bandera experimental.
+# Debe activarse antes de cargar plugins, no dentro del Vagrantfile.
+export VAGRANT_EXPERIMENTAL=none_communicator
+exec vagrant "$@"

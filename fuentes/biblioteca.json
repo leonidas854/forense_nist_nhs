@@ -1,0 +1,137 @@
+[
+  {
+    "id": "NIST.CSWP.29",
+    "type": "report",
+    "title": "The NIST Cybersecurity Framework (CSF) 2.0",
+    "author": [
+      {
+        "literal": "National Institute of Standards and Technology"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "URL": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+    "archivo": "fuentes/NIST.CSWP.29.pdf",
+    "sha256": "3c31f46fee98cac0c4323453e5109291a213b4de7fef8c058af9bf67f717433c",
+    "verificacion": "Archivo institucional descargado y edición revisada; véase fuentes/README.md",
+    "DOI": "10.6028/NIST.CSWP.29"
+  },
+  {
+    "id": "NIST.IR.8374r1",
+    "type": "report",
+    "title": "Ransomware Risk Management: A CSF 2.0 Community Profile",
+    "author": [
+      {
+        "family": "Souppaya",
+        "given": "Murugiah"
+      },
+      {
+        "family": "Barker",
+        "given": "William C."
+      },
+      {
+        "family": "Fisher",
+        "given": "William"
+      },
+      {
+        "family": "Kent",
+        "given": "Karen"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "URL": "https://nvlpubs.nist.gov/nistpubs/ir/2026/NIST.IR.8374r1.pdf",
+    "archivo": "fuentes/NIST.IR.8374r1.pdf",
+    "sha256": "f32db66cfa000a8986b9c0f0b58b6e0f6bf825ce252b3b0c5757d75c0131fddf",
+    "verificacion": "Archivo institucional descargado y edición revisada; véase fuentes/README.md",
+    "DOI": "10.6028/NIST.IR.8374r1"
+  },
+  {
+    "id": "NIST.SP.800-61r3",
+    "type": "report",
+    "title": "Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+    "author": [
+      {
+        "family": "Nelson",
+        "given": "Alexander"
+      },
+      {
+        "family": "Rekhi",
+        "given": "Sanjay"
+      },
+      {
+        "family": "Souppaya",
+        "given": "Murugiah"
+      },
+      {
+        "family": "Scarfone",
+        "given": "Karen"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "URL": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r3.pdf",
+    "archivo": "fuentes/NIST.SP.800-61r3.pdf",
+    "sha256": "e5593d6bb85daecec7e8d9549400c7b3473bcc3f06e469c82218073afa7fba2d",
+    "verificacion": "Archivo institucional descargado y edición revisada; véase fuentes/README.md",
+    "DOI": "10.6028/NIST.SP.800-61r3"
+  },
+  {
+    "id": "NAO-WannaCry-NHS",
+    "type": "report",
+    "title": "Investigation: WannaCry cyber attack and the NHS",
+    "author": [
+      {
+        "literal": "National Audit Office"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "URL": "https://www.nao.org.uk/wp-content/uploads/2017/10/Investigation-WannaCry-cyber-attack-and-the-NHS.pdf",
+    "archivo": "fuentes/NAO-WannaCry-NHS.pdf",
+    "sha256": "34e516b2e22d456f3adf8ed303eb9929161dee3ce6bf1958b10d9633da2c24e4",
+    "verificacion": "Archivo institucional descargado y edición revisada; véase fuentes/README.md"
+  },
+  {
+    "id": "NHS-lessons-learned-2018",
+    "type": "report",
+    "title": "Lessons learned review of the WannaCry Ransomware Cyber Attack",
+    "author": [
+      {
+        "family": "Smart",
+        "given": "William"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "URL": "https://www.england.nhs.uk/aac/wp-content/uploads/2018/02/lessons-learned-review-wannacry-ransomware-cyber-attack-cio-review.pdf",
+    "archivo": "fuentes/NHS-lessons-learned-2018.pdf",
+    "sha256": "47087f5d192c74d9785b653ba74ce6926bff049a23984725dbdfb5f8aac62f3c",
+    "verificacion": "Archivo institucional descargado y edición revisada; véase fuentes/README.md"
+  }
+]

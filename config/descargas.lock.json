@@ -1,0 +1,132 @@
+[
+  {
+    "id": "NIST.CSWP.29",
+    "archivo": "fuentes/NIST.CSWP.29.pdf",
+    "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+    "titulo": "The NIST Cybersecurity Framework (CSF) 2.0",
+    "url_final": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+    "sha256": "3c31f46fee98cac0c4323453e5109291a213b4de7fef8c058af9bf67f717433c",
+    "bytes": 1518858,
+    "descargado_utc": "2026-11-11T13:29:28.621771+00:00",
+    "acceso": "Descarga pública del organismo o fabricante",
+    "paginas": 32
+  },
+  {
+    "id": "NIST.IR.8374r1",
+    "archivo": "fuentes/NIST.IR.8374r1.pdf",
+    "url": "https://nvlpubs.nist.gov/nistpubs/ir/2026/NIST.IR.8374r1.pdf",
+    "titulo": "Ransomware Risk Management: A CSF 2.0 Community Profile",
+    "url_final": "https://nvlpubs.nist.gov/nistpubs/ir/2026/NIST.IR.8374r1.pdf",
+    "sha256": "f32db66cfa000a8986b9c0f0b58b6e0f6bf825ce252b3b0c5757d75c0131fddf",
+    "bytes": 643659,
+    "descargado_utc": "2026-11-11T13:29:28.523533+00:00",
+    "acceso": "Descarga pública del organismo o fabricante",
+    "paginas": 23
+  },
+  {
+    "id": "NIST.SP.800-61r3",
+    "archivo": "fuentes/NIST.SP.800-61r3.pdf",
+    "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r3.pdf",
+    "titulo": "Incident Response Recommendations and Considerations for Cybersecurity Risk Management",
+    "url_final": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r3.pdf",
+    "sha256": "e5593d6bb85daecec7e8d9549400c7b3473bcc3f06e469c82218073afa7fba2d",
+    "bytes": 1040566,
+    "descargado_utc": "2026-11-11T13:29:28.413890+00:00",
+    "acceso": "Descarga pública del organismo o fabricante",
+    "paginas": 48
+  },
+  {
+    "id": "NAO-NHS",
+    "archivo": "fuentes/NAO-WannaCry-NHS.pdf",
+    "url": "https://www.nao.org.uk/wp-content/uploads/2017/10/Investigation-WannaCry-cyber-attack-and-the-NHS.pdf",
+    "titulo": "Investigation: WannaCry cyber attack and the NHS",
+    "url_final": "https://www.nao.org.uk/wp-content/uploads/2017/10/Investigation-WannaCry-cyber-attack-and-the-NHS.pdf",
+    "sha256": "34e516b2e22d456f3adf8ed303eb9929161dee3ce6bf1958b10d9633da2c24e4",
+    "bytes": 2511591,
+    "descargado_utc": "2026-11-11T13:29:28.321452+00:00",
+    "acceso": "Descarga pública del organismo o fabricante",
+    "paginas": 35
+  },
+  {
+    "id": "NHS-review",
+    "archivo": "fuentes/NHS-lessons-learned-2018.pdf",
+    "url": "https://www.england.nhs.uk/aac/wp-content/uploads/2018/02/lessons-learned-review-wannacry-ransomware-cyber-attack-cio-review.pdf",
+    "titulo": "Lessons learned review of the WannaCry Ransomware Cyber Attack",
+    "url_final": "https://www.england.nhs.uk/aac/wp-content/uploads/2018/02/lessons-learned-review-wannacry-ransomware-cyber-attack-cio-review.pdf",
+    "sha256": "47087f5d192c74d9785b653ba74ce6926bff049a23984725dbdfb5f8aac62f3c",
+    "bytes": 639574,
+    "descargado_utc": "2026-11-11T13:29:29.497215+00:00",
+    "acceso": "Descarga pública del organismo o fabricante",
+    "paginas": 42
+  },
+  {
+    "id": "sysinternals",
+    "archivo": "descargas/SysinternalsSuite.zip",
+    "url": "https://download.sysinternals.com/files/SysinternalsSuite.zip",
+    "titulo": "Sysinternals Suite",
+    "url_final": "https://download.sysinternals.com/files/SysinternalsSuite.zip",
+    "sha256": "e7f49d1f4477e416b3051636dc44929b20ae025b46a1ee4cd8c1f1e869af6ae6",
+    "bytes": 374682911,
+    "descargado_utc": "2026-11-11T13:30:13.062134+00:00",
+    "acceso": "Descarga pública del organismo o fabricante"
+  },
+  {
+    "id": "ghidra",
+    "archivo": "descargas/ghidra_12.2_PUBLIC_20261016.zip",
+    "url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.2_build/ghidra_12.2_PUBLIC_20261016.zip",
+    "titulo": "Ghidra 12.2",
+    "url_final": "https://release-assets.githubusercontent.com/github-production-release-asset/173228436/2dd2f5aa-1953-403d-b5d1-1636eaf103f1",
+    "sha256": "2c2cd776db3c1f6a097ba418922378ac3649cadd5e844a6f5f088ae628a7be67",
+    "bytes": 569712708,
+    "descargado_utc": "2026-11-11T13:31:03.558802+00:00",
+    "acceso": "Descarga pública del organismo o fabricante",
+    "nota_url_final": "Se omiten parámetros temporales firmados de la redirección; usar URL inicial para descargar."
+  },
+  {
+    "id": "wireshark",
+    "archivo": "descargas/Wireshark-4.6.9-x64.exe",
+    "url": "https://2.na.dl.wireshark.org/win64/Wireshark-4.6.9-x64.exe",
+    "titulo": "Wireshark 4.6.9 Windows x64",
+    "url_final": "https://2.na.dl.wireshark.org/win64/Wireshark-4.6.9-x64.exe",
+    "sha256": "bf9b5ce8a89f244c376a9b1a946276eaa06463dde3e33069a34d7f102f5878cf",
+    "bytes": 97931232,
+    "descargado_utc": "2026-11-11T13:30:34.536392+00:00",
+    "acceso": "Descarga pública del organismo o fabricante"
+  },
+  {
+    "id": "floss",
+    "archivo": "descargas/floss-v3.2.0-windows.zip",
+    "url": "https://github.com/mandiant/flare-floss/releases/download/v3.2.0/floss-v3.2.0-windows.zip",
+    "titulo": "FLOSS 3.2.0 Windows",
+    "url_final": "https://release-assets.githubusercontent.com/github-production-release-asset/52993349/ba99c057-b0e1-4f82-8cd5-0a615d88d6a4",
+    "sha256": "c0c73bb99d043fedd8e913038b65d1591fd6308cd938d8a91df87b733b369af5",
+    "bytes": 33134130,
+    "descargado_utc": "2026-11-11T13:30:07.183647+00:00",
+    "acceso": "Descarga pública del organismo o fabricante",
+    "nota_url_final": "Se omiten parámetros temporales firmados de la redirección; usar URL inicial para descargar."
+  },
+  {
+    "id": "jdk25",
+    "archivo": "descargas/OpenJDK25U-jdk_x64_windows_hotspot_25.0.5_8.zip",
+    "url": "https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.5%2B8/OpenJDK25U-jdk_x64_windows_hotspot_25.0.5_8.zip",
+    "titulo": "Eclipse Temurin JDK 25 Windows x64",
+    "url_final": "https://release-assets.githubusercontent.com/github-production-release-asset/901810329/75d60590-4ba6-43c9-85a2-24bfdedcc115",
+    "sha256": "636bdc13dc649ddc7d5921c5c7d23cca6e44fd19d662b45cc9c02135a6c96c42",
+    "bytes": 141285173,
+    "descargado_utc": "2026-11-11T13:32:32.546964+00:00",
+    "acceso": "Binario público oficial; SHA-256 cotejado con API Adoptium",
+    "nota_url_final": "Se omiten parámetros temporales firmados de la redirección; usar URL inicial para descargar."
+  },
+  {
+    "id": "winpmem",
+    "archivo": "descargas/winpmem_mini_x64_rc2.exe",
+    "url": "https://github.com/Velocidex/WinPmem/releases/download/v4.0.rc1/winpmem_mini_x64_rc2.exe",
+    "titulo": "WinPmem mini x64 RC2 (prerelease)",
+    "url_final": "https://release-assets.githubusercontent.com/github-production-release-asset/187150358/e0fe4780-0db3-11eb-908e-a96b070392b3",
+    "sha256": "a4d516b6fcaf3b5b1d4ee709ce86f8eabf1d8028b3a83101479b7568b933d21b",
+    "bytes": 527640,
+    "descargado_utc": "2026-11-11T13:35:39.588023+00:00",
+    "acceso": "Release pública del fabricante",
+    "nota_url_final": "Se omiten parámetros temporales firmados de la redirección; usar URL inicial para descargar."
+  }
+]
