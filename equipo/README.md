@@ -21,6 +21,9 @@ define las diez sesiones propuestas. Nadie queda encargado únicamente de instal
 
 ## Cómo verlo todo
 
+Empieza por [diagramas y análisis general](DIAGRAMAS-Y-ANALISIS.md): mapa de
+contenido, contexto NHS, método forense y flujos de P1–P4 con condiciones y límites.
+
 1. Lee [cómo estudiar y usar las herramientas](COMO-ESTUDIAR.md).
 2. Abre tu guía individual y después su `codigo.md`. En GitHub usa la vista
    **Preview**; en VS Code abre la vista previa de Markdown con `Ctrl+Shift+V`.

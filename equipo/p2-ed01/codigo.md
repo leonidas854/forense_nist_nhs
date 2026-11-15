@@ -1,5 +1,7 @@
 # P2 — Código seleccionado para lectura
 
+**Lectura visual:** [diagramas de flujo de este componente](diagramas.md).
+
 **Alcance inicial:** 4 funciones transcritas de 244 reconocidas por Ghidra.
 Consulta [qué falta y cómo ampliar P2](../ALCANCE-Y-AMPLIACION.md#p2);
 la selección no equivale al análisis completo del componente.

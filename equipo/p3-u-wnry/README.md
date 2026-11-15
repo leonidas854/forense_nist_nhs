@@ -1,5 +1,7 @@
 # P3 — u.wnry: referencias, privilegios y recuperación
 
+**Lectura visual:** [diagramas de flujo de este componente](diagramas.md).
+
 **Alcance inicial:** 3 funciones transcritas de 1.070 reconocidas por Ghidra.
 Consulta [qué falta y cómo ampliar P3](../ALCANCE-Y-AMPLIACION.md#p3);
 la selección no equivale al análisis completo del componente.

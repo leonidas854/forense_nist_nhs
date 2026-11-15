@@ -1,5 +1,24 @@
 # Estado Comprobado · 15 de noviembre de 2026
 
+## Diagramas y análisis general
+
+- Añadidos [15 diagramas Mermaid](../equipo/DIAGRAMAS-Y-ANALISIS.md): cuatro
+  generales y once distribuidos entre P1–P4. Separan contenido de los archivos,
+  decisiones del código, secuencia histórica, método forense y consulta de ANY.RUN.
+- Los flujos se contrastaron con las transcripciones y con el Listing conservado;
+  las agrupaciones de condiciones y limitaciones se explican junto a cada diagrama.
+  No se afirma cobertura de todas las funciones ni observación de una ejecución.
+- El usuario aclaró que el HTTP 500 apareció en la página de ANY.RUN. Se documenta
+  como información comunicada, sin informe dinámico aportado ni relación causal
+  demostrada con la muestra o con el kill switch.
+- Renderizado local correcto de los 15 diagramas, con Mermaid 11.12.0 y Chromium;
+  salidas y registro de validación en `local/preparacion/diagramas/`.
+  Esa dependencia local de comprobación no altera los manifiestos de herramientas
+  del laboratorio. GitHub puede usar otra versión de Mermaid.
+- Verificador editorial: 20 archivos y 16 transcripciones coherentes. Comprobados
+  199 enlaces locales; cuerpos de pseudocódigo sin cambios respecto del commit anterior.
+- No se modificó la VM, no se regeneró el DVD y no se ejecutaron muestras.
+
 ## Alcance de funciones y trabajo pendiente
 
 - Consulta MCP a las 14:50:45 de America/La_Paz (18:50:45 UTC): 176 funciones en

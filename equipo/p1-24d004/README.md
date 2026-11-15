@@ -1,5 +1,7 @@
 # P1 — 24d004…: decisión, servicio y recurso R/1831
 
+**Lectura visual:** [diagramas de flujo de este componente](diagramas.md).
+
 **Alcance inicial:** 6 funciones transcritas de 176 reconocidas por Ghidra.
 Consulta [qué falta y cómo ampliar P1](../ALCANCE-Y-AMPLIACION.md#p1);
 la selección no equivale al análisis completo del componente.

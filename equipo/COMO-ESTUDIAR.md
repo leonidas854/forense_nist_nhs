@@ -49,6 +49,10 @@ para Windows están documentadas por separado en [Ghidra MCP](../docs/ghidra-mcp
 
 ## 3. Leer una función sin perderse
 
+Usa primero [los diagramas de flujo](DIAGRAMAS-Y-ANALISIS.md) para identificar
+la condición y sus salidas; después contrasta cada nodo con el código enlazado.
+Los diagramas son resúmenes de rutas seleccionadas, no registros de ejecución.
+
 Antes de empezar, consulta [alcance y ampliación](ALCANCE-Y-AMPLIACION.md):
 explica por qué hay 16 transcripciones, qué otras funciones reconoce Ghidra
 y cómo priorizar el inventario, la clasificación y el análisis profundo.

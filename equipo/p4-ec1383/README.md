@@ -1,5 +1,7 @@
 # P4 — ec1383…: W/101, PlayGame y laboratorio
 
+**Lectura visual:** [diagramas de flujo de este componente](diagramas.md).
+
 **Alcance inicial:** 3 funciones transcritas de 265 reconocidas por Ghidra.
 Consulta [qué falta y cómo ampliar P4](../ALCANCE-Y-AMPLIACION.md#p4);
 la selección no equivale al análisis completo del componente.

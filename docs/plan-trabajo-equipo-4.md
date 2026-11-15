@@ -1,5 +1,9 @@
 # Plan de elaboración y análisis: WannaCry, NHS y NIST CSF 2.0
 
+**Apoyo visual para las sesiones:** [diagramas y análisis general](../equipo/DIAGRAMAS-Y-ANALISIS.md),
+con recorridos individuales de P1–P4. Cada persona contrasta las decisiones de
+su diagrama con el código; la representación visual no amplía el alcance comprobado.
+
 **Paquetes individuales publicados:** [P1–P4: código, recorrido, herramientas y
 entregables](../equipo/README.md). El plan define la secuencia; esas carpetas
 contienen las 16 transcripciones seleccionadas que cada persona debe estudiar.

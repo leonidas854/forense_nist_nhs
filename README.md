@@ -1,5 +1,8 @@
 # WannaCry en el NHS · Laboratorio y Peritaje Forense con NIST CSF 2.0
 
+**Vista general y flujos:** [15 diagramas con análisis de los componentes, el caso
+NHS y los límites de evidencia](equipo/DIAGRAMAS-Y-ANALISIS.md).
+
 **Material para cada participante:** empieza en [equipo/README.md](equipo/README.md).
 Incluye el reparto, **16 funciones decompiladas para lectura**, notas, fragmentos
 de desensamblado, herramientas, ejercicios y entregables por persona. Se puede

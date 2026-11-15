@@ -1,5 +1,7 @@
 # P2 — ed01…: paquete XIA/2058 y frontera de t.wnry
 
+**Lectura visual:** [diagramas de flujo de este componente](diagramas.md).
+
 **Alcance inicial:** 4 funciones transcritas de 244 reconocidas por Ghidra.
 Consulta [qué falta y cómo ampliar P2](../ALCANCE-Y-AMPLIACION.md#p2);
 la selección no equivale al análisis completo del componente.
