@@ -1,3 +1,5 @@
+> **Pendiente de actualización (15/11/2026):** este material anterior contiene afirmaciones aún no reconciliadas. Para la defensa usar [el informe corregido](informe-forense.md) y [la guía de comprobación NIST](guia-comprobacion-nist.md).
+
 # Guion de Exposición y Defensa Oral (2 Expositores)
 ## Caso de Estudio: WannaCry en el NHS · Mapeo a NIST CSF 2.0
 **Materia:** Informática Forense  

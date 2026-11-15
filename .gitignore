@@ -2,11 +2,16 @@
 /local/
 /descargas/
 /evidencias/
+/docs/capturas/
 /fuentes/contexto/
 /fuentes/texto/
 /fuentes/textos/
 /trabajo/
 /salida/
+/wannacry/
+*.gpr
+*.rep/
+*.gar
 __pycache__/
 *.pyc
 .env

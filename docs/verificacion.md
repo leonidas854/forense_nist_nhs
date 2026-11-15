@@ -1,4 +1,100 @@
 # Estado Comprobado · 15 de noviembre de 2026
+
+## Estado vigente: materiales y VM preparados, instalación aplazada
+
+Esta sección sustituye los estados de VM ausente y descargas pendientes de las
+revisiones anteriores conservadas abajo. No acredita Windows instalado.
+
+- Descargados los seis paquetes Windows del manifiesto original; sus hashes y
+  los cinco PDFs originales coinciden: **11/11**. SP 800-86 conserva su manifiesto
+  complementario. No se modificaron los locks originales ni los PDFs anteriores.
+- Volatility 3 descargado con el commit fijado; no validado dentro del invitado.
+- DVD `local/herramientas.iso`: 57 archivos de herramientas, seis PDFs, guías,
+  configuración y lecturas de Ghidra, más `INVENTARIO.json`. Sin muestras ejecutables.
+  Manifiesto local y hash del DVD conservados en `local/preparacion/` y junto a la ISO.
+- Exportación nueva por MCP de **16 funciones**, identificando cuatro programas por
+  SHA-256, en `local/exportaciones-ghidra/20261115T175358527847Z/`.
+  Incluye respuestas originales, pseudocódigo y hashes; no es código fuente original.
+- Base vacía y box `nhs/windows10-installer` creadas. VM `forense-nhs-win10` creada
+  mediante `./lab up --no-provision`, sin ISO Windows; se comprobó el arranque del
+  hardware vacío y se apagó. El mensaje de Vagrant «ready» no implica Windows instalado.
+- VM final **apagada**, 2 CPU, 4096 MiB, disco vacío de 64 GiB, DVD de herramientas
+  en SATA 2; SATA 1 sin medio. La ISO Windows permanece sin configurar a petición
+  del usuario. No se inició el instalador.
+- Registro VirtualBox propio en `local/virtualbox/`, IPC exclusivo y discos bajo
+  `local/vms/`. Las comparticiones globales del perfil habitual impedían el primer
+  control; se solucionó separando el registro y el servidor IPC. Las otras tres VMs
+  y sus comparticiones se conservaron. Usar `./scripts/vbox-lab.sh --gui`.
+- **18/18 pruebas correctas**, `./lab validate` correcto y comprobación real del
+  aislamiento aprobada: ocho NIC none, sin comparticiones, clipboard, drag/drop,
+  USB ni VRDE. El comunicador none sigue siendo experimental.
+- Verificador NIST: **49 archivos y 20 filas**, sin equivalencia a certificación.
+- Logs y configuración real conservados localmente en `local/preparacion/`.
+  Las evidencias, muestras, discos y claves quedan fuera de Git; la captura anterior
+  se retiró del árbol versionado y se preservó localmente, sin reescribir el historial.
+
+Pendiente: instalación de Windows, comprobación de herramientas en el invitado,
+capturas forenses y prácticas del equipo. No se ejecutó WannaCry.
+Guía de uso: [materiales preparados](materiales-preparados.md).
+
+
+## Revisión NIST para la tarea
+
+- Informe corregido, [guía de comprobación](guia-comprobacion-nist.md) y matriz
+  de 20 filas con fuente, criterio, estado histórico, estado local y limitación.
+- SP 800-86 añadida como guía del método forense; manifiesto complementario
+  `config/fuentes-forense.lock.json`. Se preservó `config/descargas.lock.json`.
+- `python3 scripts/verificar_caso_nist.py`: 49 archivos cotejados y códigos de
+  las 20 filas encontrados en CSF 2.0. Son comprobaciones técnicas, no certificación.
+- Se repitió por MCP la decompilación de `00408140`; respuesta conservada en
+  `local/revision-nist/prueba-A-killswitch.json`.
+- Las cinco plantillas CSV quedaron vacías de resultados. Los registros previos
+  no acreditados se preservaron en `local/revision-nist/antecedentes/`.
+- La suite actual tiene **16 pruebas correctas**. Se eliminaron requisitos de
+  cantidades mínimas de supuestas evidencias; ahora se comprueba que las plantillas
+  versionadas estén vacías y que el verificador rechace alteraciones y ausencias.
+- El script heredado de HTML ahora informa que **no genera ni sincroniza** el
+  dashboard. Su mensaje anterior de sincronización no estaba respaldado por código.
+- Informe y matriz están reconciliados; presentación, guion, preguntas y dashboard
+  siguen pendientes de adaptación. No se agregó una práctica de ejecución de malware.
+
+Esta revisión documental precedió la preparación del laboratorio descrita al
+inicio. En ese momento la VM estaba ausente; no hubo adquisición forense.
+
+## Rectificación: comprobación en este anfitrión mediante Ghidra MCP
+
+Esta sección prevalece sobre el inventario previo conservado más abajo.
+La comprobación actual no respalda sus afirmaciones de instalación de Windows,
+capturas, snapshots, integridad de descargas ausentes o aislamiento de una VM
+activa. No se deben presentar esos registros anteriores como evidencia actual.
+
+- Proyecto nuevo `local/ghidra/proyectos/WannaCry_NHS.gpr`, abierto por
+  PyGhidra-MCP con siete programas importados y autoanalizados.
+- Nueve funciones anotadas en español; consultas, decompilaciones, navegación
+  y guardado comprobados mediante MCP local en `127.0.0.1:8765`.
+- Tres hashes originales verificados; 40 derivados estáticos trazados en
+  `local/ghidra/extraidos/manifiesto.json`. Sin ejecución de las muestras.
+- Corrección: **24d004… contiene el kill switch y R/1831; ed01… es ese recurso
+  y contiene XIA/2058**. El análisis anterior intercambiaba ambos papeles.
+- Ghidra anfitrión **12.2 DEV**, Java 27 preexistente; versiones y procedencia
+  del puente documentadas en `config/ghidra-mcp-host.lock.json`.
+  No se modificaron el manifiesto anterior ni los PDFs originales.
+- `python3 -m unittest discover -s tests -v`: **15/15 correctas**.
+- `./lab validate`: **correcto**, con aviso experimental de none_communicator.
+- `python3 scripts/check_isolation.py`: **no aprobado**; VirtualBox informa
+  que no está registrada la VM `forense-nhs-win10` en este anfitrión.
+- Muestras, derivados y proyecto excluidos de Git. Sin cambios de redes ni
+  comparticiones de VirtualBox.
+
+Guía vigente: [ghidra-mcp.md](ghidra-mcp.md).
+Conclusiones vigentes: [analisis-ghidra-codigo.md](analisis-ghidra-codigo.md).
+Informe, diapositivas, guion, dashboard y CSV anteriores quedan pendientes
+de reconciliación; su mera existencia o validación sintáctica no acredita los
+hechos que describen. La criptografía completa de t.wnry y el análisis dinámico
+no se declaran completados.
+
+## Inventario previo (conservar como antecedente, no como comprobación actual)
+
 ## Caso WannaCry en el NHS con NIST CSF 2.0 · Paquete de Defensa Oral, Datos Forenses y Dashboard HTML
 
 ## 1. Preparación y Entregables Completados

@@ -69,7 +69,7 @@ class TestAnalisisPE(unittest.TestCase):
         res = subprocess.run([sys.executable, script_path], capture_output=True, text=True)
         self.assertEqual(res.returncode, 0, f"Error ejecutando generar-reporte-html.py: {res.stderr}")
         self.assertIn("Datos cargados", res.stdout)
-        self.assertIn("Sincronización entre datos CSV y documentación completada con éxito", res.stdout)
+        self.assertIn("No se ha generado ni sincronizado el HTML", res.stdout)
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,8 +2,10 @@
 # Crea únicamente hardware vacío. No contiene ni distribuye Windows.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+source scripts/lab-env.sh
 base='forense-nhs-win10-base'
 mkdir -p local/vms
+VBoxManage setproperty machinefolder "$PWD/local/vms"
 if VBoxManage showvminfo "$base" >/dev/null 2>&1; then
   echo "Ya existe $base; no se modifica. Consulta docs/laboratorio.md." >&2
   exit 1
@@ -14,6 +16,6 @@ for i in {1..8}; do VBoxManage modifyvm "$base" "--nic$i" none; done
 VBoxManage createmedium disk --filename "$PWD/local/vms/$base/windows10.vdi" --size 65536 --format VDI
 VBoxManage storagectl "$base" --name SATA --add sata --controller IntelAhci --portcount 3 --bootable on
 VBoxManage storageattach "$base" --storagectl SATA --port 0 --device 0 --type hdd --medium "$PWD/local/vms/$base/windows10.vdi"
+python3 scripts/check_isolation.py "$base"
 ./lab package --base "$base" --output "$PWD/local/windows10-installer.box"
 ./lab box add --name nhs/windows10-installer "$PWD/local/windows10-installer.box"
-python3 scripts/check_isolation.py "$base"

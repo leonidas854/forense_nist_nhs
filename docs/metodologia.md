@@ -1,5 +1,19 @@
 # Método de trabajo forense
 
+Este procedimiento sigue las cuatro fases de **NIST SP 800-86, sección 3**:
+recolección, examen, análisis e informe. La preservación acompaña todas las
+fases. CSF 2.0 se usa para relacionar resultados de riesgo, no para sustituir
+el procedimiento. La secuencia ejecutable y los criterios de aceptación están
+en [guia-comprobacion-nist.md](guia-comprobacion-nist.md); el resultado actual,
+en [informe-forense.md](informe-forense.md).
+
+| Fase SP 800-86 | Aplicación aquí | Estado |
+|---|---|---|
+| Recolección (§3.1) | Identificar y comprobar archivos presentes y fuentes oficiales | Procedencia previa de muestras pendiente; no adquisición de equipos NHS |
+| Examen (§3.2) | Recursos PE, referencias, ensamblado y decompilación | Realizado con alcance estático |
+| Análisis (§3.3) | Contrastar hipótesis y fuentes; separar historia y observación | Documentado con límites |
+| Informe (§3.4) | Conclusiones, método, fuentes y lo no demostrado | Informe académico actualizado |
+
 ## 1. Preparación y alcance
 
 Lee el BRIEF y registra objetivo, responsable, fecha UTC, zona horaria de Windows,
@@ -26,8 +40,10 @@ por sí solo no demuestra quién creó el archivo ni su vínculo con el NHS.
 
 ## 3. Análisis estático en Ghidra
 
-1. En la VM, crea un proyecto local e importa una **copia** de la muestra obtenida
-   legítimamente. Registra SHA-256, formato, arquitectura y versión de Ghidra.
+1. La sesión comprobada usa Ghidra en el anfitrión Linux y un proyecto bajo
+   `local/ghidra/`; no en una VM Windows instalada. Para futuras adquisiciones,
+   preserva originales y trabaja con copias identificadas. Registra SHA-256,
+   formato, arquitectura y versión de Ghidra; no ejecutes las muestras.
 2. Ejecuta el análisis automático. Revisa imports, strings, secciones y recursos.
 3. Sigue referencias cruzadas a las APIs relevantes. Documenta dirección de
    función, llamadas, condiciones y limitaciones del decompilador.

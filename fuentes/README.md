@@ -10,6 +10,7 @@ no respuestas HTML; la extracción de texto queda local en `fuentes/texto/`.
 | [NIST.CSWP.29.pdf](NIST.CSWP.29.pdf) | CSF 2.0, 26-02-2024; resultados y categorías |
 | [NIST.IR.8374r1.pdf](NIST.IR.8374r1.pdf) | Revisión 1 final, junio de 2026; perfil de ransomware |
 | [NIST.SP.800-61r3.pdf](NIST.SP.800-61r3.pdf) | Revisión 3 final, abril de 2025; respuesta a incidentes |
+| [NIST.SP.800-86.pdf](NIST.SP.800-86.pdf) | Agosto de 2006; sección 3: recolección, examen, análisis e informe |
 | [NAO-WannaCry-NHS.pdf](NAO-WannaCry-NHS.pdf) | HC 414, PDF revisado con portada del 25-04-2018, 35 páginas |
 | [NHS-lessons-learned-2018.pdf](NHS-lessons-learned-2018.pdf) | William Smart / DHSC / NHS, febrero de 2018; 42 páginas |
 
@@ -22,6 +23,14 @@ La conversación de Gemini se conserva solo localmente en
 ni evidencia del ataque. Las herramientas y PDFs mantienen sus condiciones de uso.
 
 ## Referencias de partida
+
+La fuente SP 800-86 se añadió el 15/11/2026. Su URL, tamaño y SHA-256 están en
+[`config/fuentes-forense.lock.json`](../config/fuentes-forense.lock.json),
+sin modificar el manifiesto anterior ni reemplazar PDFs originales.
+
+- Kent, K., Chevalier, S., Grance, T., & Dang, H. (2006). *Guide to integrating
+  forensic techniques into incident response* (NIST SP 800-86).
+  https://doi.org/10.6028/NIST.SP.800-86
 
 - National Institute of Standards and Technology. (2024). *The NIST Cybersecurity
   Framework (CSF) 2.0* (NIST CSWP 29). https://doi.org/10.6028/NIST.CSWP.29

@@ -1,0 +1,36 @@
+{
+  "fecha_utc": "2026-11-15T16:10:22.034636+00:00",
+  "alcance": "Complemento del anfitrión; no sustituye descargas.lock.json ni sus versiones para Windows",
+  "ghidra": {
+    "ruta": "/opt/ghidra",
+    "version": "12.2 DEV",
+    "build": "2026-Nov-10 2135 GMT",
+    "procedencia": "instalación preexistente; no cotejada con ZIP PUBLIC del manifiesto antiguo",
+    "application_properties_sha256": "372aeb037110d8f28b4cd702528b9bf71c09b62cf7d6bd7a1f304d1d1434e465"
+  },
+  "java": {
+    "ruta": "/usr/lib/jvm/java-27-openjdk",
+    "procedencia": "instalación preexistente"
+  },
+  "mcp": {
+    "url": "https://github.com/clearbluejar/pyghidra-mcp",
+    "commit": "f367da41568e6ef5d967c63b56bf640b1a46c3c2",
+    "version": "0.3.0",
+    "uv_lock_sha256": "0c86fa87ef986dd61f9b2ec2df1fc8b776d84894b2995d9c2a4b5bc4fc779883",
+    "transporte": "streamable-http",
+    "endpoint": "http://127.0.0.1:8765/mcp"
+  },
+  "ajustes_dependencias": [
+    {
+      "archivo": "/opt/ghidra/Ghidra/Features/PyGhidra/pypkg/dist/pyghidra-3.2.0-py3-none-any.whl",
+      "sha256": "aba779190eb2ee68e171ba9c9730c683d3d8d205632844141adab65fe56e067c",
+      "motivo": "Usar PyGhidra 3.2.0 incluido en Ghidra 12.2 DEV en lugar de 3.0.2 del uv.lock"
+    },
+    {
+      "paquete": "pefile",
+      "version": "2024.8.26",
+      "url": "https://pypi.org/project/pefile/2024.8.26/",
+      "motivo": "Extraer recursos con límites de la tabla PE"
+    }
+  ]
+}

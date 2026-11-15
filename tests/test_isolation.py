@@ -1,6 +1,8 @@
 import importlib.util
 from pathlib import Path
 import unittest
+import os
+import subprocess
 
 
 class IsolationTest(unittest.TestCase):
@@ -37,6 +39,19 @@ class IsolationTest(unittest.TestCase):
 
     def test_rejects_shared_folder(self):
         self.assertTrue(self.audit(self.safe()+'\nSharedFolderNameMachineMapping1="vagrant"'))
+
+    def test_rejects_global_shared_folder(self):
+        self.assertTrue(self.audit(self.safe()+'\nSharedFolderNameGlobalMapping1="Downloads"'))
+
+    def test_lab_uses_own_registry_and_ipc(self):
+        root = Path(__file__).resolve().parents[1]
+        env = dict(os.environ, VBOX_USER_HOME='/tmp/other-registry', VBOX_IPC_SOCKETID='other-ipc')
+        result = subprocess.check_output(
+            ['bash', '-c', 'source scripts/lab-env.sh; printf "%s\\n%s\\n" "$VBOX_USER_HOME" "$VBOX_IPC_SOCKETID"'],
+            cwd=root, env=env, text=True).splitlines()
+        self.assertEqual(result[0], str(root / 'local/virtualbox'))
+        self.assertIn('-nhs-', result[1])
+        self.assertNotEqual(result[1], 'other-ipc')
 
 
 if __name__ == '__main__':

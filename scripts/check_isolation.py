@@ -4,6 +4,7 @@ import argparse
 import re
 import subprocess
 import sys
+from pathlib import Path
 
 
 def audit(text):
@@ -26,7 +27,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('vm', nargs='?', default='forense-nhs-win10')
     args = parser.parse_args()
-    result = subprocess.run(['VBoxManage', 'showvminfo', args.vm, '--machinereadable'],
+    wrapper = Path(__file__).resolve().parent / 'vbox-lab.sh'
+    result = subprocess.run(['bash', str(wrapper), 'showvminfo', args.vm, '--machinereadable'],
                             capture_output=True, text=True)
     if result.returncode:
         sys.exit(result.stderr.strip() or 'No se pudo consultar la VM')

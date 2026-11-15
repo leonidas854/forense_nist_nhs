@@ -1,3 +1,5 @@
+> **Pendiente de actualización (15/11/2026):** este material anterior contiene afirmaciones aún no reconciliadas. Para la defensa usar [el informe corregido](informe-forense.md) y [la guía de comprobación NIST](guia-comprobacion-nist.md).
+
 # Banco de Preguntas y Respuestas para la Defensa Oral (Tribunal Docente)
 ## Caso WannaCry en el NHS con NIST CSF 2.0 · 20 Preguntas Críticas
 

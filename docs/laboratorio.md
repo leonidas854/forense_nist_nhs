@@ -1,13 +1,22 @@
 # Laboratorio Windows 10 con Vagrant y VirtualBox
 
+**Estado comprobado el 15/11/2026:** base y VM creadas; VM de trabajo apagada,
+box local registrada, paquetes descargados y DVD de herramientas conectado.
+Windows no está instalado y su ISO no está configurada: el usuario aplazó esa fase.
+El aislamiento real pasó la comprobación. Abrir VirtualBox con
+`./scripts/vbox-lab.sh --gui` para usar el registro propio del proyecto.
+Ver [materiales preparados](materiales-preparados.md) y [verificación](verificacion.md).
+Los pasos siguientes son para cuando se retome la instalación.
+
 ## Estado y diseño
 
 Se parte de una box **vacía**, creada localmente: no es una distribución de
 Windows preinstalada. Vagrant controla el ciclo de vida; la consola de VirtualBox
-permite instalar Windows sin WinRM ni SSH. La ISO encontrada se registra solo
+permite instalar Windows sin WinRM ni SSH. Cuando se retome la instalación, la ruta de la ISO se registrará solo
 en `local/settings.json`, excluido de Git. No se necesita compartir la licencia.
 
-La ISO detectada corresponde a Windows 10 x64, versión 1903, español.
+Se identificó una ISO local preexistente y se registró su hash fuera de Git.
+Su edición, licencia y autenticidad no quedan acreditadas por ese hash.
 Esto no reproduce automáticamente los sistemas del NHS ni acredita
 vulnerabilidad a MS17-010. Es una estación inicial para practicar forense.
 
@@ -23,7 +32,9 @@ Anfitrión Linux
 
 ## Primera instalación
 
-1. Ejecuta `./lab up` y abre la consola de `forense-nhs-win10` en VirtualBox.
+1. Cuando se retome esta fase, configura la ruta propia de la ISO en
+   `local/settings.json`, ejecuta `./lab up` y abre la consola de
+   `forense-nhs-win10` usando `./scripts/vbox-lab.sh --gui`.
 2. Completa el instalador: selecciona la edición correspondiente a tu licencia,
    instalación personalizada y el disco vacío de 64 GiB de **esta VM**.
 3. Crea una cuenta local, sin añadir cuentas de trabajo ni datos personales.
@@ -41,7 +52,7 @@ Anfitrión Linux
 
    ```powershell
    # PowerShell como administrador; ajusta la ruta donde descomprimiste la suite.
-   C:\Forense\Herramientas\Sysinternals\Sysmon64.exe -accepteula -i C:\Forense\Herramientas\sysmon-lab.xml
+   C:\Forense\Herramientas\Sysinternals\Sysmon64.exe -accepteula -i C:\Forense\Herramientas\config\sysmon-lab.xml
    ```
 
 9. Apaga Windows desde Inicio. Ejecuta:
@@ -131,7 +142,8 @@ sisifo verificar
 ## Alcance pendiente
 
 - Instalación/activación de Windows y validación de herramientas en el invitado.
-- Selección y adquisición documentada de muestra o dataset; no se descargó malware.
+- Documentar procedencia previa de las muestras locales ya presentes y sus
+  derivados; ver el análisis Ghidra. No equipararlos a adquisiciones del NHS.
 - Para MalwareBazaar, la API exige una Auth-Key, que no se ha proporcionado para
   este trabajo. No guardes claves en Git. [Documentación oficial](https://bazaar.abuse.ch/api/).
 - Un dataset puede exigir cuenta o aceptar condiciones de acceso. No se presenta

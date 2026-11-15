@@ -1,5 +1,10 @@
 # Caso NHS: base documental y precauciones de interpretación
 
+La reconstrucción con identificadores H-01 a H-09 está en el
+[informe corregido](informe-forense.md#4-reconstrucción-de-lo-ocurrido).
+El método para comprobar cada afirmación está en la
+[guía NIST](guia-comprobacion-nist.md).
+
 ## Hechos que sí sustentan las fuentes
 
 El incidente comenzó el **12 de mayo de 2017**. El PDF revisado de la NAO que
@@ -24,12 +29,15 @@ para discutir gobernanza y preparación, no resultados obtenidos en nuestra VM.
 - No se ha establecido aquí la identidad del primer equipo infectado, una ruta
   única de entrada ni la propagación concreta por N3. Las afirmaciones del texto
   pegado sobre esos puntos requieren evidencia específica antes de citarse.
+- NHS §2.3 considera **probable** la entrada inicial por SMB vulnerable expuesto,
+  en vez del phishing supuesto inicialmente. NAO resumen 12 documenta propagación
+  por internet, incluida N3, y no por NHSmail. Esto no revela cada salto entre hosts.
 - La historia del proxy y el dominio de interrupción se mantiene como hipótesis
   a comprobar, no como hallazgo probado en todos los hospitales.
 - Una etiqueta de MalwareBazaar, una fecha reciente o el tamaño del fichero no
   demuestran que una muestra sea idéntica a la que afectó al NHS.
-- Un ejecutable Windows no se vuelve inocuo por abrirlo desde Linux: los
-  analizadores también procesan entradas no confiables. Se trabaja en una VM.
+- La revisión estática comprobada se realizó en Linux con Ghidra; la VM Windows
+  no está registrada en este anfitrión. No se ejecutaron los binarios.
 - Ghidra aporta análisis de comportamiento potencial. Un resultado estático no
   demuestra que ese comportamiento haya ocurrido en un equipo concreto.
 
@@ -53,5 +61,6 @@ laboratorio Windows con los fallos y respuestas documentados en el caso NHS,
 usando las seis funciones de CSF 2.0 sin confundir evidencia histórica con
 evidencia experimental?
 
-La respuesta final necesita el enunciado del docente y resultados reales de
-la práctica. No se rellenan conclusiones con resultados supuestos.
+El informe responde dentro del alcance documental y estático comprobado. La
+rúbrica del docente puede añadir requisitos; cualquier adquisición o práctica
+dinámica adicional debe figurar como pendiente hasta disponer de sus resultados.

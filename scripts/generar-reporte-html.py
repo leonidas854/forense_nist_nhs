@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-Compilador del Cuadro de Mando Interactivo HTML para el caso WannaCry NHS.
-Lee las plantillas CSV (hallazgos, timeline, inventario, bitácora) y genera
-docs/dashboard-forense-nist.html garantizando sincronización continua.
+Inspector de datos CSV heredado. No genera ni sincroniza el dashboard HTML.
 
 Uso:
     python3 scripts/generar-reporte-html.py
@@ -32,11 +30,11 @@ def main():
     
     destino_html = os.path.join(docs_dir, "dashboard-forense-nist.html")
     if os.path.exists(destino_html):
-        print(f"[+] El archivo '{destino_html}' se encuentra actualizado y listo para visualización.")
+        print(f"[!] El archivo '{destino_html}' es una versión anterior pendiente de reconciliación.")
     else:
         print(f"[!] Aviso: No se encontró '{destino_html}'.")
 
-    print("[+] Sincronización entre datos CSV y documentación completada con éxito.")
+    print("[!] Inspección terminada. No se ha generado ni sincronizado el HTML.")
 
 if __name__ == "__main__":
     main()

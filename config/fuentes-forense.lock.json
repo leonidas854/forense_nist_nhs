@@ -1,0 +1,11 @@
+[
+  {
+    "id": "NIST.SP.800-86",
+    "archivo": "fuentes/NIST.SP.800-86.pdf",
+    "url": "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-86.pdf",
+    "sha256": "ea7eb645bcd3feaf3ab9ea7dfc3c8987a08bf260c40682df1e5e8292bf9fe9b4",
+    "bytes": 2818618,
+    "verificado_utc": "2026-11-15T16:35:01.176754+00:00",
+    "nota": "Descarga oficial complementaria mediante curl; no sustituye descargas.lock.json"
+  }
+]

@@ -133,5 +133,41 @@
     "archivo": "fuentes/NHS-lessons-learned-2018.pdf",
     "sha256": "47087f5d192c74d9785b653ba74ce6926bff049a23984725dbdfb5f8aac62f3c",
     "verificacion": "Archivo institucional descargado y edición revisada; véase fuentes/README.md"
+  },
+  {
+    "id": "NIST.SP.800-86",
+    "type": "report",
+    "title": "Guide to Integrating Forensic Techniques into Incident Response",
+    "author": [
+      {
+        "family": "Kent",
+        "given": "Karen"
+      },
+      {
+        "family": "Chevalier",
+        "given": "Suzanne"
+      },
+      {
+        "family": "Grance",
+        "given": "Tim"
+      },
+      {
+        "family": "Dang",
+        "given": "Hung"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006,
+          8
+        ]
+      ]
+    },
+    "URL": "https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-86.pdf",
+    "archivo": "fuentes/NIST.SP.800-86.pdf",
+    "sha256": "ea7eb645bcd3feaf3ab9ea7dfc3c8987a08bf260c40682df1e5e8292bf9fe9b4",
+    "DOI": "10.6028/NIST.SP.800-86",
+    "verificacion": "Fuente complementaria; config/fuentes-forense.lock.json"
   }
 ]
