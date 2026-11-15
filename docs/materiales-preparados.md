@@ -1,5 +1,10 @@
 # Materiales del análisis y preparación local
 
+**Para repartir el trabajo y leer el código desde el repositorio:**
+[paquetes P1–P4](../equipo/README.md). Incluyen 16 funciones transcritas en
+cuadernos Markdown, con guías, fragmentos de Listing y ejercicios. Esta edición
+didáctica es publicable; los archivos originales de evidencia permanecen locales.
+
 Preparación del 15/11/2026. Windows **no se instala todavía**, por indicación
 expresa del usuario. La ISO propia encontrada se identificó localmente; no se
 configura para arranque ni se publica. Configuración y comprobaciones finales
@@ -9,9 +14,9 @@ del entorno se registran en `local/preparacion/`.
 
 | En el repositorio | Fuera de Git, en este equipo |
 |---|---|
-| Plan para cuatro personas y guías de capas | Muestras originales y derivados |
+| Plan, guías y cuadernos de código para cuatro personas | Muestras originales y derivados |
 | Informe, matriz y seis PDFs de fuentes públicas | Proyecto Ghidra y respuestas MCP |
-| Scripts de descarga/extracción/exportación y pruebas | Decompilaciones completas y evidencias |
+| Scripts y edición didáctica de funciones seleccionadas | Exportaciones originales MCP/C y evidencias |
 | Manifiestos con URL, versión y SHA-256 | Paquetes de herramientas en descargas/ |
 | Configuración Vagrant y verificadores | ISO Windows, ISO herramientas, box y discos |
 

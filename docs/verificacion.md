@@ -1,5 +1,25 @@
 # Estado Comprobado · 15 de noviembre de 2026
 
+## Edición de lectura para los cuatro participantes
+
+- Publicadas guías individuales y 16 transcripciones seleccionadas en
+  [equipo/](../equipo/README.md), acompañadas de comentarios, direcciones,
+  fragmentos de Listing, fuentes, preguntas y criterios de entrega/revisión.
+- Los cuerpos proceden de la exportación MCP preservada de las 17:53 UTC;
+  se normalizaron solo espacios finales y líneas vacías exteriores. Las notas
+  editoriales están separadas del código. No se corrigieron tipos para compilarlo.
+- `equipo/indice.json` registra identidades, direcciones y hashes de cada texto.
+  `python3 scripts/verificar_material_equipo.py` comprueba esta edición en un
+  clon sin muestras ni Ghidra. No sustituye la comprobación del binario original.
+- Validación de la edición: 13 archivos y 16 transcripciones correctos; enlaces
+  y anclas resueltos. Comprobador probado en copia sin evidencias: aceptó el
+  material íntegro y rechazó un bloque alterado y un archivo ausente.
+- Originales MCP/C, muestras, proyecto Ghidra y registros de evidencia siguen
+  locales. No se modificó la VM ni se instaló Windows durante esta publicación.
+- El DVD de 57 archivos corresponde a la preparación anterior; las nuevas
+  carpetas del equipo se consultan desde el repositorio y no se declaran incluidas
+  en esa imagen ya generada.
+
 ## Estado vigente: materiales y VM preparados, instalación aplazada
 
 Esta sección sustituye los estados de VM ausente y descargas pendientes de las

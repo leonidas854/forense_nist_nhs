@@ -1,5 +1,9 @@
 # Plan de elaboración y análisis: WannaCry, NHS y NIST CSF 2.0
 
+**Paquetes individuales publicados:** [P1–P4: código, recorrido, herramientas y
+entregables](../equipo/README.md). El plan define la secuencia; esas carpetas
+contienen las 16 transcripciones seleccionadas que cada persona debe estudiar.
+
 **Alcance acordado:** análisis estático de componentes de WannaCry para explicar
 el caso NHS, contrastado con fuentes históricas y mapeado retrospectivamente a
 NIST CSF 2.0. Equipo actual: **cuatro personas**. Fecha de planificación:

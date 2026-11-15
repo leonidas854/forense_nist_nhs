@@ -1,0 +1,3 @@
+# Conservar los hashes de la edición didáctica también al clonar en Windows.
+equipo/** text eol=lf
+scripts/verificar_material_equipo.py text eol=lf

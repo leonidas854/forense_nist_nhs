@@ -1,5 +1,10 @@
 # WannaCry en el NHS · Laboratorio y Peritaje Forense con NIST CSF 2.0
 
+**Material para cada participante:** empieza en [equipo/README.md](equipo/README.md).
+Incluye el reparto, **16 funciones decompiladas para lectura**, notas, fragmentos
+de desensamblado, herramientas, ejercicios y entregables por persona. Se puede
+leer directamente en GitHub o VS Code, sin instalar Windows ni disponer de muestras.
+
 **Plan vigente para cuatro personas:** [elaboración, análisis, glosario, Windows 10 y exposición](docs/plan-trabajo-equipo-4.md).
 Sustituye la organización anterior para esta etapa. Las prácticas previstas son
 análisis estático y simulación benigna. La VM está preparada y apagada, sin Windows instalado.

@@ -1,0 +1,156 @@
+{
+  "edicion": "2026-11-15",
+  "alcance": "Edición didáctica de 16 funciones seleccionadas; no código fuente original ni expediente de evidencia",
+  "herramienta": "Ghidra 12.2 DEV; PyGhidra-MCP 0.3.0",
+  "normalizacion": "Eliminar espacios al final de línea y líneas vacías exteriores; conservar instrucciones, nombres y comentarios",
+  "participantes": [
+    {
+      "participante": "P1",
+      "carpeta": "p1-24d004",
+      "sha256_componente": "24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c",
+      "arquitectura": "x86, PE32",
+      "consulta_utc": "2026-11-15T17:53:59.916705+00:00",
+      "funciones": [
+        {
+          "direccion": "00408140",
+          "nombre": "Comprobar_KillSwitch-00408140",
+          "texto_origen_sha256": "53140fccda8df21768f29fc61dacf30dd0121f19380ab66407f8bd8cfa451c88",
+          "bloque_publicado_sha256": "8d0bf499f6cbc3af112853f89ed9b0175568bdfab22cf6388bed707b5964923c",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/24d004a1/00408140.c"
+        },
+        {
+          "direccion": "00408090",
+          "nombre": "Preparar_Servicio_Y_Carga-00408090",
+          "texto_origen_sha256": "017df95265f515329e6e423332f4b37c26e3cce55d76678890bb9b6d81f9536d",
+          "bloque_publicado_sha256": "83a426907069d4138d4bd5e6651ae17f6af7fce3663ac3c80eef547866d1cf36",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/24d004a1/00408090.c"
+        },
+        {
+          "direccion": "00407f20",
+          "nombre": "FUN_00407f20-00407f20",
+          "texto_origen_sha256": "a4cc01f04fde02a0c94756114e83e512b712653da6e5b6d3204eba13dd097ec5",
+          "bloque_publicado_sha256": "18681d7dcaa3a5fc156aa52ed94286c142ee7a91860c292bc2fe1cfd7cc3624e",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/24d004a1/00407f20.c"
+        },
+        {
+          "direccion": "00407c40",
+          "nombre": "Crear_Servicio_mssecsvc-00407c40",
+          "texto_origen_sha256": "82e1551264c638db71305ea8164416599eaf7b4bc917270bbe484a18dfc4d973",
+          "bloque_publicado_sha256": "98ba32fa4ec88f2c73e099fa67c2815506016966d0355c4fc683d936fae6daed",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/24d004a1/00407c40.c"
+        },
+        {
+          "direccion": "00407ce0",
+          "nombre": "Extraer_Recurso_R_1831-00407ce0",
+          "texto_origen_sha256": "1ccc4ec8935eb406c10fb67dd53dcf1e57377ff1c3eb693a92cc3ad4bfef80d6",
+          "bloque_publicado_sha256": "c9d6d4dedbd69abe828d4aef4b5b8beaca40cf1638251009387aac6dbec60953",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/24d004a1/00407ce0.c"
+        },
+        {
+          "direccion": "00407480",
+          "nombre": "Comprobar_Conexion_445-00407480",
+          "texto_origen_sha256": "b628e64e1ffe9f2bcef29034917b709617e355dd94f0a4eaaa3c1cc7e346306a",
+          "bloque_publicado_sha256": "b45f4987ac8f481d9a835bd6c71658a4d096c85045b338d07ba0352a061ea069",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/24d004a1/00407480.c"
+        }
+      ]
+    },
+    {
+      "participante": "P2",
+      "carpeta": "p2-ed01",
+      "sha256_componente": "ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa",
+      "arquitectura": "x86, PE32",
+      "consulta_utc": "2026-11-15T17:54:00.489884+00:00",
+      "funciones": [
+        {
+          "direccion": "00401dab",
+          "nombre": "Extraer_Paquete_XIA_2058-00401dab",
+          "texto_origen_sha256": "8dbc75d5a22613e4f9e5931d7dfa3997b8dde6b32c4f6507ac64a979b60dbac8",
+          "bloque_publicado_sha256": "522583d38470d6df0bb54a9c12d6486001bf90f1b35fa4494cac7c4671037839",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/ed01ebfb/00401dab.c"
+        },
+        {
+          "direccion": "00401fe7",
+          "nombre": "Preparar_Paquete_Y_Permisos-00401fe7",
+          "texto_origen_sha256": "8695a4ad886e7816c148fe283a57712442a85e790e8b65fb44fb5e7c9fcdbead",
+          "bloque_publicado_sha256": "59f3ddada1899d6524135935dcafe896db631c7c25e3cf477a4bb04297b8962f",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/ed01ebfb/00401fe7.c"
+        },
+        {
+          "direccion": "00401064",
+          "nombre": "FUN_00401064-00401064",
+          "texto_origen_sha256": "f8f2c36d30bb44384d4611ecc1413f06108a1ab149eac99b7e32e8faa5bb5aa7",
+          "bloque_publicado_sha256": "bfc8f1dadf78f3215be9f3ad6a41bedc517fe2ca9eaf55804d4956e8a58fb2e4",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/ed01ebfb/00401064.c"
+        },
+        {
+          "direccion": "004014a6",
+          "nombre": "FUN_004014a6-004014a6",
+          "texto_origen_sha256": "01183a6bfe0395359f2e16b9a10c199622b7856193279468f4dd076f3fdffb70",
+          "bloque_publicado_sha256": "bffa0cee354a21feeb1ed5829e9bb9c57014242947db012aa9295953bdb2bb2c",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/ed01ebfb/004014a6.c"
+        }
+      ]
+    },
+    {
+      "participante": "P3",
+      "carpeta": "p3-u-wnry",
+      "sha256_componente": "b9c5d4339809e0ad9a00d4d3dd26fdf44a32819a54abf846bb9b560d81391c25",
+      "arquitectura": "x86, PE32",
+      "consulta_utc": "2026-11-15T17:54:00.965095+00:00",
+      "funciones": [
+        {
+          "direccion": "00401bb0",
+          "nombre": "FUN_00401bb0-00401bb0",
+          "texto_origen_sha256": "03df8210e211cf4ee423b4a62ac96e6832af7a765bb142eddb4292e19334d5b6",
+          "bloque_publicado_sha256": "2e92c8759380b9f3a68ba9f7c872243e64acd91c209da9218b689efe5e5d334a",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/b9c5d433/00401bb0.c"
+        },
+        {
+          "direccion": "00401b50",
+          "nombre": "FUN_00401b50-00401b50",
+          "texto_origen_sha256": "9413c6810f2fa9ae341b592784f3fbdfff9554864fa83889fceb648065d9ba42",
+          "bloque_publicado_sha256": "3fdb377a5f7ffa6ee26998d5406080fd35bcb8feaeef0870e9aa7db6f493abff",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/b9c5d433/00401b50.c"
+        },
+        {
+          "direccion": "00401a90",
+          "nombre": "FUN_00401a90-00401a90",
+          "texto_origen_sha256": "90b374339931aeba65e3a06b0ca2ee5c0113901eebc2d8e3351e2e9cbb4a6c96",
+          "bloque_publicado_sha256": "98a63f40ce9bf10d35894531da5e521c482d84b2a5a8c1213122e1364724d28b",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/b9c5d433/00401a90.c"
+        }
+      ]
+    },
+    {
+      "participante": "P4",
+      "carpeta": "p4-ec1383",
+      "sha256_componente": "ec138352c4726fa3b6706b30bf4692252f818108c8066e8518920dd9823a34bb",
+      "arquitectura": "x64, PE32+, DLL",
+      "consulta_utc": "2026-11-15T17:54:00.726286+00:00",
+      "funciones": [
+        {
+          "direccion": "1800011a4",
+          "nombre": "PlayGame-1800011a4",
+          "texto_origen_sha256": "ad115174a47a17df45390aca9e5e957ef589ca8a26c93e82769a40b4457790fb",
+          "bloque_publicado_sha256": "e482dc9fdf87d47a80b68d1510e5ae33606b83358f6ce190e80813f24e62a97a",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/ec138352/1800011a4.c"
+        },
+        {
+          "direccion": "180001014",
+          "nombre": "Extraer_Recurso_W_101-180001014",
+          "texto_origen_sha256": "990b4e216a012b123222dbe9ddca9ab5f3294055c2cdea681711c18771cb7aaa",
+          "bloque_publicado_sha256": "1fbd2e361cddc4567dfb726bee7ce9583446d744a4829fcebba1f49cc20d5ec8",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/ec138352/180001014.c"
+        },
+        {
+          "direccion": "1800010f8",
+          "nombre": "Crear_Proceso_Carga-1800010f8",
+          "texto_origen_sha256": "7baf41e7f5891521f4c5efd57acb783c4e9d86826e69f9be43e8af359ec7e6d9",
+          "bloque_publicado_sha256": "8bb41e3e17617a367c46fd0e7a1bd9cd8930f7b71f421777a9298dc2e3c10e06",
+          "origen_local": "local/exportaciones-ghidra/20261115T175358527847Z/ec138352/1800010f8.c"
+        }
+      ]
+    }
+  ]
+}
