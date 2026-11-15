@@ -1,5 +1,9 @@
 # P1 — Código seleccionado para lectura
 
+**Alcance inicial:** 6 funciones transcritas de 176 reconocidas por Ghidra.
+Consulta [qué falta y cómo ampliar P1](../ALCANCE-Y-AMPLIACION.md#p1);
+la selección no equivale al análisis completo del componente.
+
 [Guía de esta persona](README.md) · [Índice del equipo](../README.md)
 
 Componente SHA-256: `24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c`. Arquitectura: **x86, PE32**.

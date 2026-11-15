@@ -5,6 +5,10 @@ Este es el punto de entrada del equipo. Puedes leer **el pseudocódigo de las
 instalar Windows. Cada carpeta reúne el código, las direcciones, las preguntas,
 las fuentes y los entregables de una persona.
 
+**No son todas las funciones:** Ghidra reconoce 1.755 en estos cuatro componentes.
+Lee [alcance, otras rutinas y ampliación del análisis](ALCANCE-Y-AMPLIACION.md)
+para conocer la selección inicial, las limitaciones y el siguiente trabajo de P1–P4.
+
 | Participante | Componente y tarea | Guía individual | Código para leer | Revisor |
 |---|---|---|---|---|
 | P1 | 24d004…: condición de salida, servicio y recurso R/1831 | [Empezar P1](p1-24d004/README.md) | [6 funciones](p1-24d004/codigo.md) | P2 |

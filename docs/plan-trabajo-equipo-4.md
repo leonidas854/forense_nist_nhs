@@ -3,6 +3,9 @@
 **Paquetes individuales publicados:** [P1–P4: código, recorrido, herramientas y
 entregables](../equipo/README.md). El plan define la secuencia; esas carpetas
 contienen las 16 transcripciones seleccionadas que cada persona debe estudiar.
+La [guía de alcance y ampliación](../equipo/ALCANCE-Y-AMPLIACION.md) aclara que
+son el recorrido inicial de 1.755 funciones reconocidas, no una cobertura completa.
+Incluye el siguiente trabajo de cada persona y los criterios para cerrar su alcance.
 
 **Alcance acordado:** análisis estático de componentes de WannaCry para explicar
 el caso NHS, contrastado con fuentes históricas y mapeado retrospectivamente a

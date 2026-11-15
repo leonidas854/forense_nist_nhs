@@ -1,5 +1,9 @@
 # P3 — u.wnry: referencias, privilegios y recuperación
 
+**Alcance inicial:** 3 funciones transcritas de 1.070 reconocidas por Ghidra.
+Consulta [qué falta y cómo ampliar P3](../ALCANCE-Y-AMPLIACION.md#p3);
+la selección no equivale al análisis completo del componente.
+
 [Equipo](../README.md) · [Código de tus tres funciones](codigo.md) · [Cómo estudiar](../COMO-ESTUDIAR.md)
 
 Tu pregunta central: **¿cómo se relaciona una cadena contra mecanismos de

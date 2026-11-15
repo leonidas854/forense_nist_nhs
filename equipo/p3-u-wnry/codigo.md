@@ -1,5 +1,9 @@
 # P3 — Código seleccionado para lectura
 
+**Alcance inicial:** 3 funciones transcritas de 1.070 reconocidas por Ghidra.
+Consulta [qué falta y cómo ampliar P3](../ALCANCE-Y-AMPLIACION.md#p3);
+la selección no equivale al análisis completo del componente.
+
 [Guía de esta persona](README.md) · [Índice del equipo](../README.md)
 
 Componente SHA-256: `b9c5d4339809e0ad9a00d4d3dd26fdf44a32819a54abf846bb9b560d81391c25`. Arquitectura: **x86, PE32**.

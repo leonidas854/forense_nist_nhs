@@ -49,6 +49,10 @@ para Windows están documentadas por separado en [Ghidra MCP](../docs/ghidra-mcp
 
 ## 3. Leer una función sin perderse
 
+Antes de empezar, consulta [alcance y ampliación](ALCANCE-Y-AMPLIACION.md):
+explica por qué hay 16 transcripciones, qué otras funciones reconoce Ghidra
+y cómo priorizar el inventario, la clasificación y el análisis profundo.
+
 1. Anota componente, SHA-256 y dirección de entrada. `00401a90` sin identificar
    el programa no basta: distintas muestras pueden tener esa misma dirección.
 2. Lee la pregunta de la función. Identifica entradas (`param_*`), variables

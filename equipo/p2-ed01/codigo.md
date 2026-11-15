@@ -1,5 +1,9 @@
 # P2 — Código seleccionado para lectura
 
+**Alcance inicial:** 4 funciones transcritas de 244 reconocidas por Ghidra.
+Consulta [qué falta y cómo ampliar P2](../ALCANCE-Y-AMPLIACION.md#p2);
+la selección no equivale al análisis completo del componente.
+
 [Guía de esta persona](README.md) · [Índice del equipo](../README.md)
 
 Componente SHA-256: `ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa`. Arquitectura: **x86, PE32**.

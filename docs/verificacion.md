@@ -1,5 +1,24 @@
 # Estado Comprobado · 15 de noviembre de 2026
 
+## Alcance de funciones y trabajo pendiente
+
+- Consulta MCP a las 14:50:45 de America/La_Paz (18:50:45 UTC): 176 funciones en
+  24d004…, 244 en ed01…, 1.070 en u.wnry y 265 en ec1383…; total 1.755.
+  Son funciones reconocidas por el proyecto, no funciones interpretadas exhaustivamente.
+- Registro original local: `local/preparacion/alcance-funciones-20261115185045.json`.
+- [Guía nueva de alcance y ampliación](../equipo/ALCANCE-Y-AMPLIACION.md): motivos
+  de selección, clases de rutinas, límites de los nombres, tres niveles de trabajo,
+  prioridades P1–P4, criterios de cierre y relación metodológica con NIST.
+- Añadida plantilla vacía de inventario y enlaces desde guías y cuadernos individuales.
+  Se mantienen las 16 transcripciones anteriores, sin cambiar sus cuerpos.
+- Verificación editorial: 15 archivos y 16 transcripciones coherentes; 135 enlaces
+  locales comprobados y plantilla de inventario vacía de 17 columnas. Los cuerpos
+  de pseudocódigo se cotejaron con el commit anterior sin diferencias.
+- No se declara completado el inventario fila por fila, la clasificación de todas
+  las funciones ni el análisis de todos los caminos. La documentación de una tarea
+  pendiente no constituye su ejecución. No se cambió el laboratorio.
+
+
 ## Edición de lectura para los cuatro participantes
 
 - Publicadas guías individuales y 16 transcripciones seleccionadas en
