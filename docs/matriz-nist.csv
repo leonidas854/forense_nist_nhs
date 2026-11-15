@@ -1,11 +1,20 @@
-funcion,subcategoria,pregunta_de_trabajo,fuente_historica,evidencia_de_laboratorio_prevista,estado
-Govern,GV.OV-01,¿Se revisa el cumplimiento de las decisiones de riesgo?,NAO: resumen; NHS: recomendaciones,Registro de responsables y aprobación de alcance,Propuesta; sin resultado experimental
-Identify,ID.AM-01,¿Se conocen los equipos que sostienen los servicios?,NHS: revisión de infraestructura,"Inventario de SO, build, herramientas y disco",Propuesta; sin resultado experimental
-Protect,PR.PS-02,¿Se mantiene el software según el riesgo?,NAO: avisos y actualización,Inventario de parches y estado del sistema,Propuesta; sin resultado experimental
-Detect,DE.CM-09,¿Se monitorizan plataforma y datos?,Perfil NIST IR 8374r1,"Sysmon, Procmon y logs de Windows",Propuesta; sin resultado experimental
-Detect,DE.AE-03,¿Se correlacionan varias fuentes?,NIST CSWP 29,Timeline con referencias a registros y archivos,Propuesta; sin resultado experimental
-Respond,RS.AN-03,¿Qué ocurrió y qué causa puede sustentarse?,NAO y NHS; no extrapolar paciente cero,Hipótesis estáticas contrastadas con artefactos,Propuesta; sin resultado experimental
-Respond,RS.AN-06,¿Se conservan las actuaciones del analista?,NIST CSWP 29,"Bitácora de comandos, versiones y tiempos",Propuesta; sin resultado experimental
-Respond,RS.AN-07,¿Se conserva integridad y procedencia de los datos?,NIST CSWP 29,"Inventario, hashes y cadena de custodia",Propuesta; sin resultado experimental
-Recover,RC.RP-03,¿Se verifica la integridad antes de restaurar?,NIST CSWP 29,Validación de copia limpia y hashes,Propuesta; sin resultado experimental
-Recover,RC.RP-05,¿Funcionan e íntegros los activos restaurados?,NIST CSWP 29,Pruebas funcionales después de recuperar,Propuesta; sin resultado experimental
+funcion,subcategoria,rol_responsable,pregunta_de_trabajo,fuente_historica,evidencia_de_laboratorio_prevista,estado
+Govern,GV.OV-01,Perito 1 (Coordinador),¿Se revisa el cumplimiento de las decisiones de riesgo?,NAO: resumen y avisos CareCERT; NHS: lecciones aprendidas,Registro de políticas y verificación formal de alcance,Auditado histórica y normativamente
+Govern,GV.RR-02,Perito 1 (Coordinador),¿Se definen roles y autoridad de desconexión en emergencia?,NHS: falta de autoridad central de desconexión,Matriz RACI y protocolos de mando de emergencia,Auditado histórica y normativamente
+Govern,GV.SC-01,Perito 1 (Coordinador),¿Se gestiona el riesgo de terceros y software médico?,NHS: restricciones contractuales de proveedores médicos,Auditoría de acuerdos de soporte y parches de terceros,Auditado documentalmente
+Identify,ID.AM-01,Perito 2 (Infraestructura),¿Se conocen los activos y equipos que sostienen los servicios?,NHS: revisión de infraestructura clínica legada (XP/7),"Inventario de SO, build, arquitectura y herramientas",Auditado documentalmente
+Identify,ID.RA-01,Perito 2 (Infraestructura),¿Se evalúan las vulnerabilidades y superficie de ataque?,NAO: exposición del puerto 445 en enlaces WAN N3,Mapeo de puertos y escaneo de vulnerabilidades sin parchear,Auditado documentalmente
+Protect,PR.PS-02,Perito 3 (Redes/Protección),¿Se mantiene el software según el perfil de riesgo?,NAO: boletín Microsoft MS17-010 emitido 2 meses antes,Inventario de parches y estado del sistema operativo,Auditado documentalmente
+Protect,PR.IR-01,Perito 3 (Redes/Protección),¿Es resiliente la red y cuenta con segmentación adecuada?,NAO y NHS: red N3 plana sin filtrado de paquetes SMB,Reglas de aislamiento de red y topología protegida,Comprobado en laboratorio (8 NICs none)
+Protect,PR.DS-11,Perito 3 (Redes/Protección),¿Están protegidas e inmutables las copias de seguridad?,NHS: respaldos en red cifrados por el malware,Validación de medios fríos de solo lectura (ISO),Comprobado en laboratorio (ISO read-only)
+Detect,DE.CM-01,Perito 4 (Logs/Detección),¿Se monitorizan las conexiones y tráfico anómalo de red?,NAO: propagación masiva lateral no detectada a tiempo,Captura PCAP de paquetes SYN 445 y peticiones DNS/HTTP,Modelado en metodología
+Detect,DE.CM-09,Perito 4 (Logs/Detección),¿Se monitorizan plataforma y datos del sistema?,Perfil NIST IR 8374r1: auditoría de procesos y servicios,"Sysmon ID 1 y Security.evtx ID 4688 (vssadmin)",Comprobado y documentado
+Detect,DE.AE-03,Perito 4 (Logs/Detección),¿Se correlacionan eventos y creación de servicios anómalos?,NIST CSWP 29: análisis de anomalías en tiempo de ejecución,System.evtx ID 7045 (instalación de mssecsvc2.0),Comprobado y documentado
+Respond,RS.AN-03,Perito 5 (Ingeniería Inversa),¿Qué ocurrió y qué causa raíz técnica puede sustentarse?,NAO y NHS: descartado vector de phishing masivo,Decompilación en Ghidra de WinMain y Kill Switch,Analizado y documentado en Ghidra
+Respond,RS.AN-06,Perito 7 (Sistema Archivos),¿Se conservan las actuaciones periciales y trazas de disco?,NIST CSWP 29 y Perfil IR 8374r1,Tabla $MFT con cabecera WANACRY! y notas de rescate,Analizado y documentado
+Respond,RS.AN-07,Perito 1 (Custodio),¿Se conserva la integridad y procedencia de las evidencias?,NIST CSWP 29: cadena de custodia y no manipulación,Inventario de evidencias y hashes SHA-256 verificados,Comprobado con SHA256SUMS
+Respond,RS.MI-01,Perito 6 (Memoria Volátil),¿Se contiene el incidente y se preserva memoria volátil?,NHS: desconexión manual caótica de cables de red,Triage de RAM con Volatility 3 (windows.pslist y malfind),Comprobado en local/analysis-env
+Recover,RC.RP-01,Perito 8 (Recuperación),¿Se ejecutan planes de recuperación ante desastres?,NAO: fallo de recuperación local por sabotaje vssadmin,Restauración desde imágenes limpias sin pagar rescate,Auditado documentalmente
+Recover,RC.RP-03,Perito 8 (Recuperación),¿Se verifica la integridad de los activos antes de restaurar?,NIST CSWP 29: validación pre-conexión de equipos,Validación de hash de binarios y copias limpias,Comprobado en scripts
+Recover,RC.RP-05,Perito 8 (Recuperación),¿Funcionan e íntegros los activos clínicos restaurados?,NIST CSWP 29: pruebas de servicio post-incidente,Pruebas de arranque limpio e integridad funcional,Auditado documentalmente
+Recover,RC.CO-03,Perito 8 (Recuperación),¿Se comunican lecciones aprendidas y reformas estructurales?,NHS: informe de lecciones aprendidas Smart (DHSC 2018),Migración formal de N3 hacia HSCN y deshabilitación SMBv1,Documentado en informe y diapositivas

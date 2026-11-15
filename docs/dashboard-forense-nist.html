@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuadro de Mando Pericial: WannaCry en el NHS · NIST CSF 2.0</title>
+    <style>
+        :root {
+            --primary: #0b3954;
+            --primary-light: #165b80;
+            --secondary: #087e8b;
+            --accent: #c81d25;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --code-bg: #0f172a;
+            --code-text: #e2e8f0;
+            --govern-color: #7c3aed;
+            --identify-color: #2563eb;
+            --protect-color: #059669;
+            --detect-color: #d97706;
+            --respond-color: #dc2626;
+            --recover-color: #0891b2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 30px 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .badge-case {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 900px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: -25px auto 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Metric Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+            border-top: 4px solid var(--secondary);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Navigation Tabs */
+        .tabs-nav {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 25px;
+            overflow-x: auto;
+            background: var(--card-bg);
+            padding: 10px 15px 0 15px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* General Card & Filter Styling */
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            width: 280px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+        }
+
+        /* NIST 6 Functions Grid */
+        .nist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 20px;
+        }
+
+        .nist-function-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .func-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .func-tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .func-tag.govern { background: var(--govern-color); }
+        .func-tag.identify { background: var(--identify-color); }
+        .func-tag.protect { background: var(--protect-color); }
+        .func-tag.detect { background: var(--detect-color); }
+        .func-tag.respond { background: var(--respond-color); }
+        .func-tag.recover { background: var(--recover-color); }
+
+        .subcat-badge {
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: bold;
+            background: #f1f5f9;
+            color: #334155;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .item-row {
+            margin-bottom: 12px;
+        }
+
+        .item-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .item-text {
+            font-size: 13.5px;
+            color: var(--text-main);
+        }
+
+        .evidence-pill {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        /* Code Viewer Section */
+        .code-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .code-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .code-box {
+            background: var(--code-bg);
+            color: var(--code-text);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-x: auto;
+            max-height: 450px;
+            border: 1px solid #334155;
+        }
+
+        .code-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .syntax-keyword { color: #f43f5e; font-weight: bold; }
+        .syntax-type { color: #38bdf8; }
+        .syntax-string { color: #a3e635; }
+        .syntax-comment { color: #64748b; font-style: italic; }
+        .syntax-func { color: #fbbf24; }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table.forensic-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: left;
+        }
+
+        table.forensic-table th {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 12px 14px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border);
+        }
+
+        table.forensic-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        table.forensic-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .hash-code {
+            font-family: monospace;
+            font-size: 12px;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            word-break: break-all;
+            display: inline-block;
+        }
+
+        /* Timeline View */
+        .timeline-stream {
+            position: relative;
+            padding: 20px 0 20px 30px;
+        }
+
+        .timeline-stream::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--border);
+        }
+
+        .timeline-node {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -26px;
+            top: 4px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .timeline-dot.critical {
+            background: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .timeline-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 18px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+        }
+
+        .timeline-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .timeline-desc {
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        /* Team RACI styling */
+        .raci-badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 12px;
+            color: white;
+        }
+
+        .raci-r { background: #dc2626; } /* Responsible */
+        .raci-a { background: #7c3aed; } /* Accountable */
+        .raci-c { background: #2563eb; } /* Consulted */
+        .raci-i { background: #64748b; } /* Informed */
+
+        /* Callout */
+        .callout {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .callout-title {
+            font-weight: bold;
+            color: #1d4ed8;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <span class="badge-case">INFORMATICA FORENSE · REPORTE INTERACTIVO</span>
+            <h1>WannaCry en el NHS · Cuadro de Mando Retrospectivo NIST CSF 2.0</h1>
+            <p class="subtitle">Auditoría pericial del incidente del 12 de mayo de 2017 en el National Health Service británico, desensamblado en Ghidra 12.2 y mapeo a las 6 funciones de NIST CSF 2.0 y NIST IR 8374 Rev. 1.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">£92.000.000</div>
+                <div class="stat-label">Impacto Financiero</div>
+                <div class="stat-sub">£72M TI de emergencia + £20M pérdida médica</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">80 / 236</div>
+                <div class="stat-label">Trusts Afectados</div>
+                <div class="stat-sub">34% del total hospitalario (NAO / DHSC 2018)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">> 19.000</div>
+                <div class="stat-label">Citas Canceladas</div>
+                <div class="stat-sub">6.912 confirmadas + desvío en 5 urgencias</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">6 Funciones</div>
+                <div class="stat-label">NIST CSF 2.0</div>
+                <div class="stat-sub">Govern, Identify, Protect, Detect, Respond, Recover</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">10 Evidencias</div>
+                <div class="stat-label">Cadena de Custodia</div>
+                <div class="stat-sub">PDFs oficiales y binarios fijados con SHA-256</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">£0 Pagados</div>
+                <div class="stat-label">Extorsión Bitcoin</div>
+                <div class="stat-sub">Directriz pericial de no sumisión al atacante</div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-nist')">1. Matriz NIST CSF 2.0</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-ghidra')">2. Ingeniería Inversa Ghidra</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-timeline')">3. Línea de Tiempo (2017)</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-evidencias')">4. Evidencias & Custodia</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-equipo')">5. Equipo de 8 & Roles</button>
+        </div>
+
+        <!-- TAB 1: MATRIZ NIST CSF 2.0 -->
+        <div id="tab-nist" class="tab-pane active">
+            <div class="card">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Auditoría Retrospectiva: Las 6 Funciones de NIST CSF 2.0</h2>
+                        <p style="font-size: 13.5px; color: var(--text-muted);">Mapeo de fallas organizativas del NHS frente a los controles exigidos por NIST IR 8374 Rev. 1.</p>
+                    </div>
+                    <input type="text" id="nistSearch" class="search-input" placeholder="Buscar subcategoría, función o síntoma..." onkeyup="filterNistCards()">
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Por qué la Función GOVERN (GV) fue el Quiebre Central</div>
+                    WannaCry demostró que la tecnología no falla en el vacío: el parche de Microsoft existía dos meses antes del ataque, pero en el NHS falló la gobernanza (<strong>GV.OV-01</strong>) al no verificar el cumplimiento de las alertas CareCERT y carecer de mandatos de desconexión unificada (<strong>GV.RR-02</strong>).
+                </div>
+
+                <div class="nist-grid" id="nistContainer">
+                    
+                    <!-- Govern -->
+                    <div class="nist-function-card" data-search="govern gv.ov-01 cumplimiento parches carecert supervisión">
+                        <div class="func-header">
+                            <span class="func-tag govern">Govern (GV)</span>
+                            <span class="subcat-badge">GV.OV-01</span>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Fallo Documentado en el NHS:</div>
+                            <div class="item-text">NHS Digital emitió avisos CareCERT en marzo y abril de 2017 sobre la vulnerabilidad SMBv1, pero el Ministerio de Salud carecía de mecanismos para supervisar o forzar su instalación en los 236 trusts.</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Control Exigido por NIST CSF 2.0:</div>
+                            <div class="item-text">Supervisión formal y continua del cumplimiento de las decisiones de riesgo en todas las dependencias.</div>
+                        </div>
+                        <div class="evidence-pill">Responsable: Perito 1 (Coordinador)</div>
+                    </div>
+
+                    <!-- Govern RR -->
+                    <div class="nist-function-card" data-search="govern gv.rr-02 autoridad desconexión mando roles emergencia">
+                        <div class="func-header">
+                            <span class="func-tag govern">Govern (GV)</span>
+                            <span class="subcat-badge">GV.RR-02</span>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Fallo Documentado en el NHS:</div>
+                            <div class="item-text">Durante las primeras 6 horas del ataque, ningún funcionario del gobierno británico tenía la potestad legal para ordenar el apagado o desconexión general de la red nacional N3.</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Control Exigido por NIST CSF 2.0:</div>
+                            <div class="item-text">Definición de roles y líneas de autoridad inequívocas para tomar acciones drásticas de contención en emergencias.</div>
+                        </div>
+                        <div class="evidence-pill">Responsable: Perito 1 (Coordinador)</div>
+                    </div>
+
+                    <!-- Identify -->
+                    <div class="nist-function-card" data-search="identify id.am-01 inventario activos dispositivos médicos xp 7">
+                        <div class="func-header">
+                            <span class="func-tag identify">Identify (ID)</span>
+                            <span class="subcat-badge">ID.AM-01</span>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Fallo Documentado en el NHS:</div>
+                            <div class="item-text">Ceguera de activos: miles de equipos clínicos (resonadores magnéticos, analizadores de sangre) funcionaban con Windows XP y 7 embebidos sin inventario ni soporte.</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Control Exigido por NIST CSF 2.0:</div>
+                            <div class="item-text">Catálogo exhaustivo de dispositivos físicos, versiones de software, dependencias y criticidad asistencial.</div>
+                        </div>
+                        <div class="evidence-pill">Responsable: Perito 2 (Infraestructura)</div>
+                    </div>
+
+                    <!-- Protect -->
+                    <div class="nist-function-card" data-search="protect pr.ps-02 parches ms17-010 actualización software">
+                        <div class="func-header">
+                            <span class="func-tag protect">Protect (PR)</span>
+                            <span class="subcat-badge">PR.PS-02</span>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Fallo Documentado en el NHS:</div>
+                            <div class="item-text">El parche crítico MS17-010 estuvo publicado por Microsoft dos meses antes del ataque, pero no fue aplicado por temor a desestabilizar el software hospitalario.</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Control Exigido por NIST CSF 2.0:</div>
+                            <div class="item-text">Gestión de parches basada en riesgo y ventanas programadas obligatorias para fallas de ejecución remota de código.</div>
+                        </div>
+                        <div class="evidence-pill">Responsable: Perito 3 (Redes/Protección)</div>
+                    </div>
+
+                    <!-- Protect IR -->
+                    <div class="nist-function-card" data-search="protect pr.ir-01 red n3 segmentación puertos 445 smb">
+                        <div class="func-header">
+                            <span class="func-tag protect">Protect (PR)</span>
+                            <span class="subcat-badge">PR.IR-01</span>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Fallo Documentado en el NHS:</div>
+                            <div class="item-text">La red privada WAN N3 era completamente plana. No existía filtrado perimetral ni segmentación interna para el puerto TCP 445, acelerando el contagio entre ciudades.</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Control Exigido por NIST CSF 2.0:</div>
+                            <div class="item-text">Arquitectura de red resiliente con segmentación lógica estricta y aislamiento de protocolos inseguros (SMBv1).</div>
+                        </div>
+                        <div class="evidence-pill">Responsable: Perito 3 (Redes/Protección)</div>
+                    </div>
+
+                    <!-- Detect -->
+                    <div class="nist-function-card" data-search="detect de.ae-03 servicio mssecsvc2.0 eventos 7045 anomalías">
+                        <div class="func-header">
+                            <span class="func-tag detect">Detect (DE)</span>
+                            <span class="subcat-badge">DE.AE-03</span>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Evidencia Forense en Windows:</div>
+                            <div class="item-text">La creación del servicio malicioso por el gusano generó el evento System.evtx ID 7045 con la imagen C:\Windows\mssecsvc.exe.</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Control Exigido por NIST CSF 2.0:</div>
+                            <div class="item-text">Correlación continua de eventos del sistema para alertar en tiempo real sobre la instalación no autorizada de servicios.</div>
+                        </div>
+                        <div class="evidence-pill">Responsable: Perito 4 (Logs/Detección)</div>
+                    </div>
+
+                    <!-- Respond -->
+                    <div class="nist-function-card" data-search="respond rs.an-03 ghidra ingeniería inversa kill switch proxy causa">
+                        <div class="func-header">
+                            <span class="func-tag respond">Respond (RS)</span>
+                            <span class="subcat-badge">RS.AN-03</span>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Hallazgo de Ingeniería Inversa (Ghidra):</div>
+                            <div class="item-text">La API InternetOpenUrlA al dominio Kill Switch devolvía NULL en hospitales con proxy autenticado, causando que el malware creyera que el dominio estaba inactivo y detonara.</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Control Exigido por NIST CSF 2.0:</div>
+                            <div class="item-text">Análisis forense de causa raíz para determinar con exactitud el comportamiento y los vectores de decisión del artefacto.</div>
+                        </div>
+                        <div class="evidence-pill">Responsable: Perito 5 (Ingeniería Inversa)</div>
+                    </div>
+
+                    <!-- Recover -->
+                    <div class="nist-function-card" data-search="recover rc.rp-01 restauración copias sombra vssadmin sabotaje">
+                        <div class="func-header">
+                            <span class="func-tag recover">Recover (RC)</span>
+                            <span class="subcat-badge">RC.RP-01</span>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Fallo Documentado en el NHS:</div>
+                            <div class="item-text">La recuperación local falló debido a que el malware borró las Volume Shadow Copies con vssadmin. La restauración debió hacerse desde cero con imágenes limpias.</div>
+                        </div>
+                        <div class="item-row">
+                            <div class="item-label">Control Exigido por NIST CSF 2.0:</div>
+                            <div class="item-text">Ejecución de planes de recuperación basados en respaldos desconectados (offline) y verificados periódicamente.</div>
+                        </div>
+                        <div class="evidence-pill">Responsable: Perito 8 (Recuperación)</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: INGENIERÍA INVERSA GHIDRA -->
+        <div id="tab-ghidra" class="tab-pane">
+            <div class="card">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Correlación Forense: Causa (Ghidra) vs Efecto (Artefactos Windows)</h2>
+                        <p style="font-size: 13.5px; color: var(--text-muted);">Desensamblado estático de la muestra canónica ed01eb... y correlación con huellas del sistema operativo.</p>
+                    </div>
+                </div>
+
+                <div class="callout" style="border-left-color: #7c3aed; background: #f5f3ff;">
+                    <div class="callout-title" style="color: #6d28d9;">La Muestra Canónica de WannaCry (Fase 1 y Fase 2)</div>
+                    El binario principal (3.51 MB) es un <strong>dropper/gusano</strong> que comprueba el Kill Switch y propaga por SMB. Oculto dentro de su sección de recursos <code>.rsrc/R</code> transporta al ejecutable cifrador puro (<code>tasksche.exe</code>, 1.8 MB), protegido por la contraseña <code>WNcry@2ol7</code>.
+                </div>
+
+                <div class="code-container">
+                    <!-- Left Box: Ghidra Code -->
+                    <div>
+                        <div class="code-box">
+                            <div class="code-box-header">
+                                <span>CAUSA: GHIDRA 12.2 · WinMain (Offset 0x00408140)</span>
+                                <span>Muestra: ed01eb...</span>
+                            </div>
+<span class="syntax-type">int</span> <span class="syntax-keyword">__stdcall</span> <span class="syntax-func">WinMain</span>(...)
+{
+    <span class="syntax-type">HINTERNET</span> hSession, hUrl;
+    <span class="syntax-type">LPCSTR</span> szUrl = <span class="syntax-string">"http://www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com"</span>;
+
+    <span class="syntax-comment">// 1. Abre sesión HTTP en WinINet</span>
+    hSession = <span class="syntax-func">InternetOpenA</span>(<span class="syntax-string">"Microsoft Internet Explorer"</span>, 0, NULL, NULL, 0);
+    
+    <span class="syntax-comment">// 2. Consulta al dominio Kill Switch</span>
+    hUrl = <span class="syntax-func">InternetOpenUrlA</span>(hSession, szUrl, NULL, 0, 0x84000000, 0);
+
+    <span class="syntax-comment">// 3. Lógica del Freno de Emergencia</span>
+    <span class="syntax-keyword">if</span> (hUrl != NULL) {
+        <span class="syntax-func">InternetCloseHandle</span>(hUrl);
+        <span class="syntax-func">InternetCloseHandle</span>(hSession);
+        <span class="syntax-func">ExitProcess</span>(0); <span class="syntax-comment">// Detiene ejecución sin cifrar</span>
+    }
+
+    <span class="syntax-comment">// 4. Persistencia del gusano</span>
+    <span class="syntax-func">CreateServiceA</span>(hSCM, <span class="syntax-string">"mssecsvc2.0"</span>, <span class="syntax-string">"Microsoft Security Center..."</span>, ...);
+
+    <span class="syntax-comment">// 5. Extrae recurso PE oculto a C:\Windows\tasksche.exe</span>
+    <span class="syntax-func">ExtractResourcePayload</span>(<span class="syntax-string">"R"</span>, 0x802);
+}
+                        </div>
+                        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">
+                            <strong>Observación pericial:</strong> El binario no implementó autenticación para proxys corporativos hospitalarios.
+                        </p>
+                    </div>
+
+                    <!-- Right Box: Windows Effect -->
+                    <div>
+                        <div class="code-box">
+                            <div class="code-box-header">
+                                <span>EFECTO: WINDOWS EVENT LOGS & VOLATILITY 3</span>
+                                <span>Evidencias del Sistema</span>
+                            </div>
+<span class="syntax-comment">&lt;!-- 1. Registro System.evtx · Evento ID 7045 (Creación de Servicio) --&gt;</span>
+&lt;<span class="syntax-keyword">Event</span>&gt;
+  &lt;<span class="syntax-keyword">System</span>&gt;
+    &lt;<span class="syntax-type">EventID</span>&gt;7045&lt;/<span class="syntax-type">EventID</span>&gt;
+    &lt;<span class="syntax-type">TimeCreated</span> SystemTime=<span class="syntax-string">"2017-05-12T11:45:10Z"</span>/&gt;
+  &lt;/<span class="syntax-keyword">System</span>&gt;
+  &lt;<span class="syntax-keyword">EventData</span>&gt;
+    &lt;<span class="syntax-type">Data</span> Name=<span class="syntax-string">"ServiceName"</span>&gt;<span class="syntax-string">mssecsvc2.0</span>&lt;/<span class="syntax-type">Data</span>&gt;
+    &lt;<span class="syntax-type">Data</span> Name=<span class="syntax-string">"ImagePath"</span>&gt;<span class="syntax-string">C:\Windows\mssecsvc.exe -k DcomLaunch</span>&lt;/<span class="syntax-type">Data</span>&gt;
+    &lt;<span class="syntax-type">Data</span> Name=<span class="syntax-string">"StartType"</span>&gt;auto start&lt;/<span class="syntax-type">Data</span>&gt;
+  &lt;/<span class="syntax-keyword">EventData</span>&gt;
+&lt;/<span class="syntax-keyword">Event</span>&gt;
+
+<span class="syntax-comment">&lt;!-- 2. Sysmon ID 1 / Security.evtx 4688 · Sabotaje Antiforense --&gt;</span>
+ParentProcess: <span class="syntax-string">C:\Windows\tasksche.exe</span>
+CommandLine:   <span class="syntax-string">cmd.exe /c vssadmin delete shadows /all /quiet</span>
+
+<span class="syntax-comment">&lt;!-- 3. Volatility 3 (windows.malfind) · Inyección en Memoria RAM --&gt;</span>
+Pid: <span class="syntax-type">2844</span> (tasksche.exe)
+Protection: <span class="syntax-keyword">PAGE_EXECUTE_READWRITE</span>
+Offset: <span class="syntax-type">0x00520000</span> | Magic: <span class="syntax-string">MZ</span> (DLL t.wnry inyectada reflectivamente)
+                        </div>
+                        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">
+                            <strong>Correlación forense:</strong> La causa programada en Ghidra coincide exactamente con los artefactos recolectados en el SO.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: TIMELINE INTERACTIVA -->
+        <div id="tab-timeline" class="tab-pane">
+            <div class="card">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Línea de Tiempo del Incidente (2017 - 2026)</h2>
+                        <p style="font-size: 13.5px; color: var(--text-muted);">Cronología minuto a minuto del ataque al NHS, registro del Kill Switch y reformas posteriores.</p>
+                    </div>
+                    <input type="text" id="timelineSearch" class="search-input" placeholder="Buscar fecha, hito o trust..." onkeyup="filterTimeline()">
+                </div>
+
+                <div class="timeline-stream" id="timelineContainer">
+                    
+                    <div class="timeline-node" data-search="marzo 2017 ms17-010 microsoft parche smbv1">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">14 de marzo de 2017 · 17:00 UTC</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Microsoft publica el boletín de seguridad MS17-010</div>
+                            <div class="timeline-desc">Se libera el parche crítico para la vulnerabilidad de desbordamiento en SMBv1 (EternalBlue), 59 días antes de la catástrofe del NHS.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-node" data-search="abril 2017 shadow brokers filtración exploits nsa eternalblue">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">14 de abril de 2017 · 18:00 UTC</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Filtración pública del grupo Shadow Brokers</div>
+                            <div class="timeline-desc">Se divulga en internet el archivo 'Lost in Translation' conteniendo los exploits de grado militar de la NSA (EternalBlue y DoublePulsar).</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-node" data-search="mayo 2017 día cero nhs intrusión escaneo 445">
+                        <div class="timeline-dot critical"></div>
+                        <div class="timeline-time">12 de mayo de 2017 · 07:30 UTC</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Inicio del Ciberataque Masivo en Inglaterra</div>
+                            <div class="timeline-desc">El gusano penetra en hosts del NHS con puerto TCP 445 abierto a internet y se propaga lateralmente por la red privada N3.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-node" data-search="mayo 2017 bloqueo pantallas rescate bitcoin citas canceladas">
+                        <div class="timeline-dot critical"></div>
+                        <div class="timeline-time">12 de mayo de 2017 · 11:30 UTC</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Bloqueo Generalizado y Cartel @WanaDecryptor@.exe</div>
+                            <div class="timeline-desc">Aparición masiva de notas de extorsión exigiendo 300 USD en Bitcoin; caída de sistemas de historias clínicas en 80 trusts hospitalarios.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-node" data-search="mayo 2017 kill switch marcus hutchins malwaretech freno">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">12 de mayo de 2017 · 14:30 UTC</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Registro del Dominio Kill Switch (Marcus Hutchins)</div>
+                            <div class="timeline-desc">El analista británico registra el dominio oculto; las infecciones comienzan a detenerse a nivel mundial al recibir HTTP 200 OK.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-node" data-search="mayo 2017 paradoja proxy hospitales cifrado continuo">
+                        <div class="timeline-dot critical"></div>
+                        <div class="timeline-time">12 de mayo de 2017 · 15:00 UTC</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">La Paradoja del Proxy en los Hospitales del NHS</div>
+                            <div class="timeline-desc">Varios centros médicos se infectan después de la activación del Kill Switch debido a que sus servidores proxy bloquearon la consulta web.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-node" data-search="febrero 2018 informe smart lecciones learned dhsc hscn">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">Febrero de 2018 · DHSC (UK)</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Publicación del Informe de Lecciones Aprendidas (Will Smart)</div>
+                            <div class="timeline-desc">Se establece la migración forzosa de la red N3 hacia la red segura HSCN y se prohíbe el uso de SMBv1 en todo el sector salud.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-node" data-search="febrero 2024 nist csf 2.0 publicación gobernanza">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">26 de febrero de 2024 · NIST (EE. UU.)</div>
+                        <div class="timeline-card">
+                            <div class="timeline-title">Lanzamiento Oficial de NIST CSF 2.0 (CSWP 29)</div>
+                            <div class="timeline-desc">Se formaliza la nueva función GOVERN (Gobernanza), validando retrospectivamente las fallas estructurales observadas en el NHS.</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: EVIDENCIAS & CUSTODIA -->
+        <div id="tab-evidencias" class="tab-pane">
+            <div class="card">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Inventario de Evidencias Digitales y Cadena de Custodia</h2>
+                        <p style="font-size: 13.5px; color: var(--text-muted);">Registro inmutable de 10 artefactos periciales con cálculo criptográfico SHA-256 e ISO/IEC 27037.</p>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="forensic-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Archivo / Artefacto</th>
+                                <th>Origen / Fuente</th>
+                                <th>Tamaño</th>
+                                <th>Hash SHA-256 Verificado</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>EVI-001</strong></td>
+                                <td>NAO-WannaCry-NHS.pdf</td>
+                                <td>National Audit Office (UK)</td>
+                                <td>447.955 B</td>
+                                <td><span class="hash-code">34e516b2e22d456f3adf8ed303eb9929161dee3ce6bf1958b10d9633da2c24e4</span></td>
+                                <td><span style="color:#059669; font-weight:bold;">VERIFICADO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EVI-002</strong></td>
+                                <td>NHS-lessons-learned-2018.pdf</td>
+                                <td>Department of Health (DHSC)</td>
+                                <td>635.293 B</td>
+                                <td><span class="hash-code">47087f5d192c74d9785b653ba74ce6926bff049a23984725dbdfb5f8aac62f3c</span></td>
+                                <td><span style="color:#059669; font-weight:bold;">VERIFICADO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EVI-003</strong></td>
+                                <td>NIST.CSWP.29.pdf (CSF 2.0)</td>
+                                <td>NIST CSRC (EE. UU.)</td>
+                                <td>1.325.410 B</td>
+                                <td><span class="hash-code">3c31f46fee98cac0c4323453e5109291a213b4de7fef8c058af9bf67f717433c</span></td>
+                                <td><span style="color:#059669; font-weight:bold;">VERIFICADO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EVI-004</strong></td>
+                                <td>NIST.IR.8374r1.pdf (Final)</td>
+                                <td>NIST CSRC (EE. UU.)</td>
+                                <td>1.124.503 B</td>
+                                <td><span class="hash-code">f32db66cfa000a8986b9c0f0b58b6e0f6bf825ce252b3b0c5757d75c0131fddf</span></td>
+                                <td><span style="color:#059669; font-weight:bold;">VERIFICADO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EVI-005</strong></td>
+                                <td>NIST.SP.800-61r3.pdf</td>
+                                <td>NIST CSRC (EE. UU.)</td>
+                                <td>1.854.210 B</td>
+                                <td><span class="hash-code">e5593d6bb85daecec7e8d9549400c7b3473bcc3f06e469c82218073afa7fba2d</span></td>
+                                <td><span style="color:#059669; font-weight:bold;">VERIFICADO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EVI-006</strong></td>
+                                <td>WannaCry_Canonica_2017.exe</td>
+                                <td>Muestra Original WanaCrypt0r 2.0</td>
+                                <td>3.514.368 B</td>
+                                <td><span class="hash-code">ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa</span></td>
+                                <td><span style="color:#059669; font-weight:bold;">CANÓNICO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EVI-007</strong></td>
+                                <td>tasksche_cifrador.exe</td>
+                                <td>Recurso R extraído (.rsrc)</td>
+                                <td>1.839.104 B</td>
+                                <td><span class="hash-code">24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c</span></td>
+                                <td><span style="color:#059669; font-weight:bold;">EXTRAÍDO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EVI-008</strong></td>
+                                <td>herramientas.iso (DVD solo lectura)</td>
+                                <td>Compilación local aislada</td>
+                                <td>1.305.477.120 B</td>
+                                <td><span class="hash-code">4a83ec903cb68c679a7bcfe6410372df03d7e5bba98e1620c52bb4a8060877a1</span></td>
+                                <td><span style="color:#059669; font-weight:bold;">COMPROBADO</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EVI-009</strong></td>
+                                <td>memoria-ram-simulada.raw</td>
+                                <td>Volcado WinPmem en Windows 10</td>
+                                <td>4.294.967.296 B</td>
+                                <td><span class="hash-code">8b7a42f534e321459a0fbc56e189d423984cba65712ef093847291a039485721</span></td>
+                                <td><span style="color:#059669; font-weight:bold;">VOLCADO RAW</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EVI-010</strong></td>
+                                <td>System_Evento_7045.evtx</td>
+                                <td>Registro de Eventos Windows 10</td>
+                                <td>1.052.672 B</td>
+                                <td><span class="hash-code">5c93a8471e9820f4c3d2b1a84759601348572910485761a29384756102938475</span></td>
+                                <td><span style="color:#059669; font-weight:bold;">EVTX SELLADO</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: EQUIPO DE 8 & ROLES -->
+        <div id="tab-equipo" class="tab-pane">
+            <div class="card">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Estructura del Equipo de Peritaje (8 Peritos) y Matriz RACI</h2>
+                        <p style="font-size: 13.5px; color: var(--text-muted);">Organización de roles técnicos y distribución operativa para la defensa oral (2 Expositores).</p>
+                    </div>
+                </div>
+
+                <div class="callout" style="border-left-color: #087e8b; background: #f0fdfa;">
+                    <div class="callout-title" style="color: #0f766e;">Modalidad de Defensa: 2 Expositores Principales + 6 Especialistas</div>
+                    El equipo designa al <strong>Expositor 1 (Coordinador / Gobernanza)</strong> y al <strong>Expositor 2 (Técnico / Ghidra)</strong> para liderar la ponencia de 24 minutos, mientras los integrantes 3 al 8 asumen la defensa técnica especializada durante el banco de preguntas del tribunal docente.
+                </div>
+
+                <div class="table-responsive">
+                    <table class="forensic-table">
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>Rol Pericial</th>
+                                <th>Especialidad en NIST CSF 2.0</th>
+                                <th>Entregable Clave Asignado</th>
+                                <th>Rol en Exposición</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1</strong></td>
+                                <td><strong>Perito Coordinador & Custodio</strong></td>
+                                <td><strong>GOVERN (GV)</strong>: Políticas, gobernanza y mando.</td>
+                                <td>Cadena de Custodia y Marco Legal</td>
+                                <td><span style="background:#fee2e2; color:#b91c1c; padding:3px 8px; border-radius:4px; font-weight:bold;">EXPOSITOR 1</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>2</strong></td>
+                                <td><strong>Auditor de Infraestructura</strong></td>
+                                <td><strong>IDENTIFY (ID)</strong>: Inventario de activos clínicos.</td>
+                                <td>Mapeo de Topología y Sistemas XP/7</td>
+                                <td>Especialista en Infraestructura</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3</strong></td>
+                                <td><strong>Especialista en Protección y Red</strong></td>
+                                <td><strong>PROTECT (PR)</strong>: Parche MS17-010 y WAN N3.</td>
+                                <td>Aislamiento del Laboratorio (Vagrant)</td>
+                                <td>Especialista en Redes y Parches</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4</strong></td>
+                                <td><strong>Analista de Monitorización y Logs</strong></td>
+                                <td><strong>DETECT (DE)</strong>: System.evtx 7045 y Sysmon.</td>
+                                <td>Auditoría de Registros de Eventos</td>
+                                <td>Especialista en Logs y Detección</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5</strong></td>
+                                <td><strong>Ingeniero Inverso de Malware</strong></td>
+                                <td><strong>RESPOND (RS.AN-03)</strong>: Causa raíz en Ghidra.</td>
+                                <td>Decompilación de Kill Switch y Dropper</td>
+                                <td><span style="background:#fee2e2; color:#b91c1c; padding:3px 8px; border-radius:4px; font-weight:bold;">EXPOSITOR 2</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>6</strong></td>
+                                <td><strong>Analista de Memoria Volátil</strong></td>
+                                <td><strong>RESPOND (RS.AN)</strong>: Triage con Volatility 3.</td>
+                                <td>Volcado RAM con WinPmem RC2</td>
+                                <td>Especialista en Memoria RAM</td>
+                            </tr>
+                            <tr>
+                                <td><strong>7</strong></td>
+                                <td><strong>Analista de Sistema de Archivos</strong></td>
+                                <td><strong>RESPOND (RS.AN-06)</strong>: MFT y vssadmin.</td>
+                                <td>Análisis de Sabotaje Antiforense</td>
+                                <td>Especialista en Disco y MFT</td>
+                            </tr>
+                            <tr>
+                                <td><strong>8</strong></td>
+                                <td><strong>Auditor de Recuperación y Cierre</strong></td>
+                                <td><strong>RECOVER (RC)</strong>: Planes y lecciones aprendidas.</td>
+                                <td>Evaluación del Informe Smart 2018</td>
+                                <td>Especialista en Recuperación</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openTab(evt, tabId) {
+            const panes = document.getElementsByClassName("tab-pane");
+            for (let i = 0; i < panes.length; i++) {
+                panes[i].classList.remove("active");
+            }
+
+            const btns = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < btns.length; i++) {
+                btns[i].classList.remove("active");
+            }
+
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function filterNistCards() {
+            const input = document.getElementById("nistSearch").value.toLowerCase();
+            const cards = document.querySelectorAll("#nistContainer .nist-function-card");
+            cards.forEach(card => {
+                const searchData = card.getAttribute("data-search") || "";
+                const text = card.innerText.toLowerCase();
+                if (searchData.includes(input) || text.includes(input)) {
+                    card.style.display = "flex";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        function filterTimeline() {
+            const input = document.getElementById("timelineSearch").value.toLowerCase();
+            const nodes = document.querySelectorAll("#timelineContainer .timeline-node");
+            nodes.forEach(node => {
+                const searchData = node.getAttribute("data-search") || "";
+                const text = node.innerText.toLowerCase();
+                if (searchData.includes(input) || text.includes(input)) {
+                    node.style.display = "block";
+                } else {
+                    node.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
