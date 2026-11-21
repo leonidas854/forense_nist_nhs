@@ -1,0 +1,24 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];
+node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",fontcolor="black",style="filled",fillcolor="white",margin=".14,.10"];
+edge [fontname="DejaVu Sans",fontsize=10,color="black",fontcolor="black"];
+
+    a [label="Marzo–abril de 2017
+Correcciones y avisos disponibles"];
+    b [label="Persisten equipos expuestos
+Verificación de avisos insuficiente"];
+    c [label="12 de mayo
+Brote y propagación documentada"];
+    d [label="Infecciones y perturbaciones
+Impacto asistencial"];
+    e [label="Kill switch
+Limita impacto posterior"];
+    f [label="Respuesta institucional
+Coordinación y desconexiones"];
+    g [label="Recuperación progresiva
+Reinstalación y parcheo documentados"];
+    h [label="Revisiones 2017–2018
+Lecciones y seguimiento"];
+    a -> b -> c; c -> d -> f -> g -> h; c -> e;
+
+}

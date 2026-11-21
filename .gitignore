@@ -9,6 +9,9 @@
 /trabajo/
 /salida/
 /wannacry/
+# Antecedentes aportados: originales locales; publicar la edición nueva revisada.
+/INFORME_WANNA_CRY.pdf
+/INFORME_WANNA_CRY.docx
 *.gpr
 *.rep/
 *.gar

@@ -1,4 +1,45 @@
-# Estado Comprobado · 15 de noviembre de 2026
+# Estado comprobado · 20 de noviembre de 2026
+
+## Entrega nueva y Windows existente
+
+- Nueva entrega en [entrega_nist](../entrega_nist/README.md): informe general y
+  parte práctica PDF/Word, ocho autores, cuatro capítulos por componente,
+  diagramas vectoriales, transcripciones y trazabilidad.
+- El PDF y DOCX aportados en la raíz se conservaron sin cambios; revisión
+  editorial separada. No se modificaron fuentes PDF ni locks de descargas.
+- Se cotejaron de nuevo 49 archivos/20 filas del caso y 20 archivos/16
+  transcripciones de la edición anterior. Sin nueva sesión MCP: el puente no
+  estaba activo y se utilizaron resultados preservados del 15/11.
+- El usuario autorizó una copia completa de la VM «Windows 10». Se creó
+  `forense-nhs-win10-copia` en el registro privado, con NICs desactivadas y sin
+  comparticiones, USB, VRDE o portapapeles. Snapshot previo al primer arranque.
+- Escritorio y winver observados: Windows 10 Pro 1903, compilación 18362.356.
+  Capturas y logs originales locales, fuera de Git. No se afirma instalación
+  nueva, validación de herramientas, detonación ni adquisición de RAM.
+- Copia apagada tras solicitar apagado normal desde Windows. La configuración
+  consultada de la original antes y después coincide; la original no se arrancó.
+- 18/18 pruebas, `./lab validate` y aislamiento real de ambas VMs del proyecto
+  correctos. La VM administrada por Vagrant permanece vacía; `./lab status` no
+  consulta la copia nueva. [Guía de uso](windows10-copia-aislada.md).
+- Los registros UTC del 21/11 corresponden a la noche del 20/11 en Bolivia.
+- Entrega validada: informe general de 21 páginas y parte práctica de 42 páginas;
+  ocho autores y 16 cuerpos de pseudocódigo íntegros, sin etiquetas individuales
+  en los documentos nuevos. Siete figuras revisadas mediante renderizado y
+  comprobaciones de integridad y enlaces locales.
+- Ambos Word se abrieron mediante conversión de LibreOffice para verificar su
+  lectura. Los PDF principales tienen índice paginado y marcadores; el Word es
+  una versión editable con paginación propia.
+- DVD de lectura `local/entrega-nist-lectura.iso` conectado a SATA 1 de la copia,
+  con 41 archivos de la nueva entrega. Contenido extraído y cotejado por hash
+  en el anfitrión. No se afirma haber abierto esos PDF dentro de Windows.
+- No se sustituyó el DVD anterior de herramientas. Originales aportados,
+  muestras, registros de VM, capturas e imágenes de discos permanecen locales.
+
+Las secciones siguientes conservan los estados anteriores del 15/11. Las
+afirmaciones sobre Windows pendiente se refieren a la VM vacía inicial, no a la
+copia del sistema existente comprobada en esta revisión.
+
+## Antecedentes del 15 de noviembre de 2026
 
 ## Diagramas y análisis general
 

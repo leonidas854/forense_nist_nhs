@@ -1,5 +1,17 @@
 # WannaCry en el NHS · Laboratorio y Peritaje Forense con NIST CSF 2.0
 
+**Entrega vigente, 20/11/2026 — ocho autores, capítulos por componente:**
+[informe general PDF](entrega_nist/INFORME_GENERAL_NIST_NHS.pdf) y
+[parte práctica PDF](entrega_nist/PARTE_PRACTICA_NIST_GHIDRA.pdf).
+La [carpeta de entrega](entrega_nist/README.md) incluye Word editables, fuentes,
+cuatro análisis, diagramas y trazabilidad. Sustituye la organización por personas
+de los cuadernos anteriores para la presentación final.
+
+**Windows disponible:** se incorporó una [copia aislada del Windows 10 existente](docs/windows10-copia-aislada.md),
+con escritorio y versión comprobados. La VM vacía anterior de Vagrant se conserva;
+`./lab status` consulta esa VM, no la copia. La instalación y validación de
+herramientas en el invitado siguen pendientes.
+
 **Vista general y flujos:** [15 diagramas con análisis de los componentes, el caso
 NHS y los límites de evidencia](equipo/DIAGRAMAS-Y-ANALISIS.md).
 
@@ -10,9 +22,10 @@ leer directamente en GitHub o VS Code, sin instalar Windows ni disponer de muest
 La [guía de alcance](equipo/ALCANCE-Y-AMPLIACION.md) explica las demás funciones,
 los criterios de selección y cómo ampliar el análisis de los cuatro componentes.
 
-**Plan vigente para cuatro personas:** [elaboración, análisis, glosario, Windows 10 y exposición](docs/plan-trabajo-equipo-4.md).
-Sustituye la organización anterior para esta etapa. Las prácticas previstas son
-análisis estático y simulación benigna. La VM está preparada y apagada, sin Windows instalado.
+**Plan previo para cuatro personas:** [elaboración, análisis, glosario, Windows 10 y exposición](docs/plan-trabajo-equipo-4.md).
+Se conserva como antecedente; la entrega vigente mantiene ocho autores y organiza
+los cuatro componentes sin etiquetas individuales. Las prácticas previstas son
+análisis estático y simulación benigna. La VM original de preparación sigue vacía.
 Consulta [materiales descargados y preparación](docs/materiales-preparados.md).
 
 **Para entender el código abierto en Ghidra:** sigue el
@@ -43,18 +56,12 @@ Repositorio pericial para el estudio del caso **WannaCry en el National Health S
 
 ---
 
-## Organización vigente: cuatro integrantes
+## Organización vigente: ocho autores, cuatro componentes
 
-Cada integrante analiza, documenta y expone un componente, con revisión cruzada.
-El [plan de trabajo](docs/plan-trabajo-equipo-4.md) define sesiones, entregables y aceptación.
-
-- **P1:** 24d004… y coordinación de historia/informe. Revisor: P2.
-- **P2:** ed01… y registro de integridad/relaciones. Revisor: P3.
-- **P3:** u.wnry y simulación benigna/recuperación. Revisor: P4.
-- **P4:** ec1383… y preparación/verificación de VM. Revisor: P1.
-
-La organización antigua de ocho personas queda como antecedente; los materiales
-orales y roles anteriores requieren adaptación antes de su uso.
+La nueva entrega conserva los ocho nombres del informe aportado y presenta
+24d004…, ed01…, u.wnry y ec1383… por componente. La revisión es colectiva,
+sin atribuir tareas individuales no acreditadas. Los cuadernos anteriores
+conservan su organización y hashes como antecedentes de lectura.
 
 ---
 

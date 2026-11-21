@@ -1,0 +1,113 @@
+{
+  "edicion": "2026-11-20",
+  "zona_horaria": "America/La_Paz",
+  "alcance": "Síntesis académica y transcripciones; no expediente hospitalario",
+  "originales_preservados": [
+    {
+      "archivo": "INFORME_WANNA_CRY.pdf",
+      "bytes": 2084157,
+      "sha256": "d2e04deb0e6974a597a808fa3747f01389c1b11c881b503dbc34382df2ab2459"
+    },
+    {
+      "archivo": "INFORME_WANNA_CRY.docx",
+      "bytes": 2184050,
+      "sha256": "7473b4ee146a25c54ccc7d4a04b136624db12392d873c00912930ab24f67f723"
+    }
+  ],
+  "fuentes_nist_historicas": [
+    {
+      "archivo": "fuentes/NAO-WannaCry-NHS.pdf",
+      "bytes": 2511591,
+      "sha256": "34e516b2e22d456f3adf8ed303eb9929161dee3ce6bf1958b10d9633da2c24e4"
+    },
+    {
+      "archivo": "fuentes/NHS-lessons-learned-2018.pdf",
+      "bytes": 639574,
+      "sha256": "47087f5d192c74d9785b653ba74ce6926bff049a23984725dbdfb5f8aac62f3c"
+    },
+    {
+      "archivo": "fuentes/NIST.CSWP.29.pdf",
+      "bytes": 1518858,
+      "sha256": "3c31f46fee98cac0c4323453e5109291a213b4de7fef8c058af9bf67f717433c"
+    },
+    {
+      "archivo": "fuentes/NIST.IR.8374r1.pdf",
+      "bytes": 643659,
+      "sha256": "f32db66cfa000a8986b9c0f0b58b6e0f6bf825ce252b3b0c5757d75c0131fddf"
+    },
+    {
+      "archivo": "fuentes/NIST.SP.800-61r3.pdf",
+      "bytes": 1040566,
+      "sha256": "e5593d6bb85daecec7e8d9549400c7b3473bcc3f06e469c82218073afa7fba2d"
+    },
+    {
+      "archivo": "fuentes/NIST.SP.800-86.pdf",
+      "bytes": 2818618,
+      "sha256": "ea7eb645bcd3feaf3ab9ea7dfc3c8987a08bf260c40682df1e5e8292bf9fe9b4"
+    }
+  ],
+  "entradas_editoriales": [
+    {
+      "archivo": "equipo/indice.json",
+      "bytes": 8100,
+      "sha256": "bfe4799512be5101e22fed9425dd3c986e4da5ca017442b3ef33cc8be0496b83"
+    },
+    {
+      "archivo": "equipo/SHA256SUMS",
+      "bytes": 1866,
+      "sha256": "2bb099b598017192ed25f9060bcf977623c61681fcba42c4650f4a9abf44ea10"
+    },
+    {
+      "archivo": "docs/analisis-ghidra-codigo.md",
+      "bytes": 6648,
+      "sha256": "06f5fb74d860df609beeda41ceb6b712da4da6bef6ebe79343406a96ab89f244"
+    },
+    {
+      "archivo": "docs/guia-capas-decompilado-desensamblado.md",
+      "bytes": 24716,
+      "sha256": "b41bb98b1cd1720eca883d964853816ade66ea49c8c26fae9485b71e2c4f3814"
+    },
+    {
+      "archivo": "docs/matriz-nist.csv",
+      "bytes": 10029,
+      "sha256": "dd4c6c3d912f0961784bc975895509458ff9dcb51b493635d4d2390cf83ab855"
+    },
+    {
+      "archivo": "config/descargas.lock.json",
+      "bytes": 6991,
+      "sha256": "1854ae99094109cb0cd83bb29245e87beae305c5d8ec3a16d1507c8666a157ea"
+    },
+    {
+      "archivo": "config/fuentes-forense.lock.json",
+      "bytes": 432,
+      "sha256": "a2de1f69ea384d54565325942326f89b1afec33a76273014be4985da59fd4e99"
+    }
+  ],
+  "exportaciones_ghidra": "2026-11-15T17:53:58Z; no sesión MCP nueva en esta edición",
+  "verificacion_actual": {
+    "archivos_caso": 49,
+    "filas_matriz": 20,
+    "archivos_edicion_previa": 20,
+    "transcripciones": 16,
+    "pruebas_laboratorio": 18,
+    "windows_copia": "Windows 10 Pro 1903; compilación 18362.356; escritorio y winver observados; sin detonación",
+    "registro_originales_vm": "Local y excluido de Git"
+  },
+  "fuentes_web_consultadas": [
+    {
+      "titulo": "WannaCrypt ransomware worm targets out-of-date systems",
+      "url": "https://www.microsoft.com/en-us/security/blog/2017/05/12/wannacrypt-ransomware-worm-targets-out-of-date-systems/",
+      "consulta_local": "2026-11-20"
+    },
+    {
+      "titulo": "WannaCry Malware Profile",
+      "url": "https://cloud.google.com/blog/topics/threat-intelligence/wannacry-malware-profile",
+      "consulta_local": "2026-11-20"
+    },
+    {
+      "titulo": "Respuesta parlamentaria 181321",
+      "url": "https://questions-statements.parliament.uk/written-questions/detail/2018-10-18/181321",
+      "consulta_local": "2026-11-20"
+    }
+  ]
+}

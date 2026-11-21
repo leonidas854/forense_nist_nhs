@@ -1,0 +1,26 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];
+node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",fontcolor="black",style="filled",fillcolor="white",margin=".14,.10"];
+edge [fontname="DejaVu Sans",fontsize=10,color="black",fontcolor="black"];
+
+    a [label="Pregunta y alcance"];
+    b [label="Recolección y preservación
+Origen, identidad y registro"];
+    c [label="Examen
+Bytes, recursos, Listing y C"];
+    d [label="Análisis
+Condiciones y fuentes"];
+    e [shape=diamond, label="¿Soporte
+suficiente?"];
+    f [label="Informe: conclusión
+y límites"];
+    g [label="Hipótesis y prueba
+pendiente"];
+    h [label="Mapeo retrospectivo CSF
+y revisión colectiva"];
+    a -> b -> c -> d -> e;
+    e -> f [label="Sí, para esa afirmación"];
+    e -> g [label="No"];
+    f -> h; g -> h;
+
+}

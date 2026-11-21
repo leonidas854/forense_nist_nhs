@@ -1,0 +1,127 @@
+{
+  "generado_utc": "2026-11-21T01:17:57.948522+00:00",
+  "fecha_editorial": "2026-11-20",
+  "contraste_figuras": "Negro/blanco 21:1; etiquetas y formas, no solo color",
+  "dependencias": {
+    "reportlab": "4.4.10",
+    "python-docx": "1.2.0",
+    "Markdown": "3.11.3",
+    "beautifulsoup4": "4.15.0",
+    "svglib": "1.6.0"
+  },
+  "graphviz": "dot - graphviz version 16.1.1 (0)",
+  "transcripciones": [
+    {
+      "componente": "24d004…",
+      "direccion": "00408140",
+      "sha256_texto": "8d0bf499f6cbc3af112853f89ed9b0175568bdfab22cf6388bed707b5964923c",
+      "fuente": "equipo/p1-24d004/codigo.md",
+      "consulta_utc": "2026-11-15T17:53:59.916705+00:00"
+    },
+    {
+      "componente": "24d004…",
+      "direccion": "00408090",
+      "sha256_texto": "83a426907069d4138d4bd5e6651ae17f6af7fce3663ac3c80eef547866d1cf36",
+      "fuente": "equipo/p1-24d004/codigo.md",
+      "consulta_utc": "2026-11-15T17:53:59.916705+00:00"
+    },
+    {
+      "componente": "24d004…",
+      "direccion": "00407f20",
+      "sha256_texto": "18681d7dcaa3a5fc156aa52ed94286c142ee7a91860c292bc2fe1cfd7cc3624e",
+      "fuente": "equipo/p1-24d004/codigo.md",
+      "consulta_utc": "2026-11-15T17:53:59.916705+00:00"
+    },
+    {
+      "componente": "24d004…",
+      "direccion": "00407c40",
+      "sha256_texto": "98ba32fa4ec88f2c73e099fa67c2815506016966d0355c4fc683d936fae6daed",
+      "fuente": "equipo/p1-24d004/codigo.md",
+      "consulta_utc": "2026-11-15T17:53:59.916705+00:00"
+    },
+    {
+      "componente": "24d004…",
+      "direccion": "00407ce0",
+      "sha256_texto": "c9d6d4dedbd69abe828d4aef4b5b8beaca40cf1638251009387aac6dbec60953",
+      "fuente": "equipo/p1-24d004/codigo.md",
+      "consulta_utc": "2026-11-15T17:53:59.916705+00:00"
+    },
+    {
+      "componente": "24d004…",
+      "direccion": "00407480",
+      "sha256_texto": "b45f4987ac8f481d9a835bd6c71658a4d096c85045b338d07ba0352a061ea069",
+      "fuente": "equipo/p1-24d004/codigo.md",
+      "consulta_utc": "2026-11-15T17:53:59.916705+00:00"
+    },
+    {
+      "componente": "ed01…",
+      "direccion": "00401dab",
+      "sha256_texto": "522583d38470d6df0bb54a9c12d6486001bf90f1b35fa4494cac7c4671037839",
+      "fuente": "equipo/p2-ed01/codigo.md",
+      "consulta_utc": "2026-11-15T17:54:00.489884+00:00"
+    },
+    {
+      "componente": "ed01…",
+      "direccion": "00401fe7",
+      "sha256_texto": "59f3ddada1899d6524135935dcafe896db631c7c25e3cf477a4bb04297b8962f",
+      "fuente": "equipo/p2-ed01/codigo.md",
+      "consulta_utc": "2026-11-15T17:54:00.489884+00:00"
+    },
+    {
+      "componente": "ed01…",
+      "direccion": "00401064",
+      "sha256_texto": "bfc8f1dadf78f3215be9f3ad6a41bedc517fe2ca9eaf55804d4956e8a58fb2e4",
+      "fuente": "equipo/p2-ed01/codigo.md",
+      "consulta_utc": "2026-11-15T17:54:00.489884+00:00"
+    },
+    {
+      "componente": "ed01…",
+      "direccion": "004014a6",
+      "sha256_texto": "bffa0cee354a21feeb1ed5829e9bb9c57014242947db012aa9295953bdb2bb2c",
+      "fuente": "equipo/p2-ed01/codigo.md",
+      "consulta_utc": "2026-11-15T17:54:00.489884+00:00"
+    },
+    {
+      "componente": "u.wnry",
+      "direccion": "00401bb0",
+      "sha256_texto": "2e92c8759380b9f3a68ba9f7c872243e64acd91c209da9218b689efe5e5d334a",
+      "fuente": "equipo/p3-u-wnry/codigo.md",
+      "consulta_utc": "2026-11-15T17:54:00.965095+00:00"
+    },
+    {
+      "componente": "u.wnry",
+      "direccion": "00401b50",
+      "sha256_texto": "3fdb377a5f7ffa6ee26998d5406080fd35bcb8feaeef0870e9aa7db6f493abff",
+      "fuente": "equipo/p3-u-wnry/codigo.md",
+      "consulta_utc": "2026-11-15T17:54:00.965095+00:00"
+    },
+    {
+      "componente": "u.wnry",
+      "direccion": "00401a90",
+      "sha256_texto": "98a63f40ce9bf10d35894531da5e521c482d84b2a5a8c1213122e1364724d28b",
+      "fuente": "equipo/p3-u-wnry/codigo.md",
+      "consulta_utc": "2026-11-15T17:54:00.965095+00:00"
+    },
+    {
+      "componente": "ec1383…",
+      "direccion": "1800011a4",
+      "sha256_texto": "e482dc9fdf87d47a80b68d1510e5ae33606b83358f6ce190e80813f24e62a97a",
+      "fuente": "equipo/p4-ec1383/codigo.md",
+      "consulta_utc": "2026-11-15T17:54:00.726286+00:00"
+    },
+    {
+      "componente": "ec1383…",
+      "direccion": "180001014",
+      "sha256_texto": "1fbd2e361cddc4567dfb726bee7ce9583446d744a4829fcebba1f49cc20d5ec8",
+      "fuente": "equipo/p4-ec1383/codigo.md",
+      "consulta_utc": "2026-11-15T17:54:00.726286+00:00"
+    },
+    {
+      "componente": "ec1383…",
+      "direccion": "1800010f8",
+      "sha256_texto": "8bb41e3e17617a367c46fd0e7a1bd9cd8930f7b71f421777a9298dc2e3c10e06",
+      "fuente": "equipo/p4-ec1383/codigo.md",
+      "consulta_utc": "2026-11-15T17:54:00.726286+00:00"
+    }
+  ]
+}

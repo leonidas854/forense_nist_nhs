@@ -1,0 +1,27 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];
+node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",fontcolor="black",style="filled",fillcolor="white",margin=".14,.10"];
+edge [fontname="DejaVu Sans",fontsize=10,color="black",fontcolor="black"];
+
+    a [label="24d004…
+PE32 x86"];
+    b [label="ed01…
+PE32 x86"];
+    z [label="ZIP: 36 miembros"];
+    u [label="u.wnry"];
+    t [label="t.wnry y otros
+componentes"];
+    d [label="ec1383…
+DLL x64"];
+    w [label="W/101
+Longitud + datos"];
+    p [label="PE 93db4b26…
+Distinto de 24d004…"];
+    a -> b [label="R/1831: identidad"];
+    b -> z [label="XIA/2058"];
+    z -> u; z -> t;
+    d -> w [label="Contiene recurso"];
+    w -> p [label="Tramo desde +4"];
+    {rank=same; a; d;}
+
+}

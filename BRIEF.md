@@ -3,7 +3,7 @@ trabajo: forense_nist_nhs
 titulo: 'WannaCry en el NHS: laboratorio forense con NIST CSF 2.0'
 materia: Informática Forense
 idioma: es
-modalidad: 'Equipo actual de 4 estudiantes; cada integrante analiza, documenta y expone un componente'
+modalidad: 'Ocho autores confirmados; cuatro componentes documentados sin etiquetas individuales'
 docente: null
 entrega: null
 entregables:
@@ -49,6 +49,15 @@ terminado:
 «realizar en mi github privado de leonidas un repositorio privado y descarga todo par poder trabajar mi idea es sobre vagrant trabajar, en virtualbox, este caso de estudio es para la materia de forense... quiero que tomes en cuenta que es en grupo de 8, ya la mayoria este en este repo es para exponer tambien esto, haz pull a todo el proyecto para seguir trabajando... solo dos expondran este tema, entonces empecemos desde la base que debo escoger para poder avanzar».
 
 # Qué quiero que salga
+
+**Actualización de alcance, 20/11/2026:** entrega nueva en `entrega_nist/`, con
+informe general y parte práctica PDF/Word. El usuario mantiene los ocho autores
+del PDF aportado y solicita quitar el reparto por etiquetas individuales de la
+nueva entrega. Autorizó una copia aislada de su VM «Windows 10»: se creó
+`forense-nhs-win10-copia`, se comprobó escritorio y winver (Pro 1903, 18362.356)
+y se apagó. La original y la VM vacía anterior de Vagrant se conservan.
+Las herramientas en el invitado y prácticas benignas siguen pendientes.
+Véase `docs/windows10-copia-aislada.md`. Los párrafos siguientes son antecedentes.
 
 **Actualización de alcance, 15/11/2026:** cuatro personas desarrollarán el análisis
 estático de 24d004, ed01, u.wnry y ec1383, contrastado con fuentes históricas y

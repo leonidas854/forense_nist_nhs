@@ -1,0 +1,21 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];
+node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",fontcolor="black",style="filled",fillcolor="white",margin=".14,.10"];
+edge [fontname="DejaVu Sans",fontsize=10,color="black",fontcolor="black"];
+
+    a [label="Dato 00420fd8
+Referencia y copia en Listing"];
+    b [label="CALL 00401bb0
+Consulta de SID/token"];
+    c [shape=diamond, label="¿Retorno
+no cero?"];
+    d [label="00401a90
+Solicitud CreateProcessA"];
+    e [label="00401b50
+ShellExecuteExA, verbo runas"];
+    f [label="Efecto externo no observado
+Requiere evidencia adicional"];
+    a -> b -> c; c -> d [label="Sí"]; c -> e [label="No"];
+    d -> f; e -> f;
+
+}

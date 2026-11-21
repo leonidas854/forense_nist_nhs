@@ -1,3 +1,10 @@
 # Conservar los hashes de la edición didáctica también al clonar en Windows.
 equipo/** text eol=lf
 scripts/verificar_material_equipo.py text eol=lf
+# Artefactos editoriales: preservar bytes y evitar diffs de contenido binario.
+/entrega_nist/** -text
+/entrega_nist/*.pdf binary
+/entrega_nist/*.docx binary
+/entrega_nist/figuras/*.png binary
+# CSV compatible con hojas de cálculo; CRLF intencional.
+/entrega_nist/matriz_nist_entrega.csv whitespace=cr-at-eol
