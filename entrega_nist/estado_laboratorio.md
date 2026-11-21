@@ -78,7 +78,7 @@ fuente declara el mismo SHA-256 del ejemplar 24d004… examinado estáticamente.
 La captura y su registro de procedencia permanecen bajo `local/` y fuera de Git.
 Esto completa una revisión de tráfico reproducible; no es captura hecha por
 nuestro equipo, no es tráfico del NHS, no se instaló Wireshark dentro del invitado
-y no se ejecutó WannaCry en la VM.
+y no se ejecutó WannaCry en esa copia durante la revisión offline.
 
 Para permitir que el equipo estudie el mismo archivo sin red, se creó
 `local/wannacry-pcap-lectura.iso` con el PCAP y una guía de filtros, sin incluir
@@ -90,3 +90,28 @@ abierto dentro del invitado; el instalador oficial 4.6.9 está en el DVD de
 herramientas en SATA 2. La revisión ya se realizó con TShark 4.7.4 en el
 anfitrión; la unidad proporciona una copia offline, de solo lectura, para que el
 equipo pueda seguir las mismas conversaciones en la interfaz de Wireshark.
+
+### Actualización: intento controlado bloqueado por protección de Windows, 21 de noviembre
+
+La copia base `forense-nhs-win10-copia` permaneció apagada y con sus ocho NIC
+desactivados. Se creó un clon enlazado desde su snapshot de práctica, se conectó
+un ISO de muestra de solo lectura y se habilitó únicamente una red interna
+VirtualBox sin NAT, puente ni acceso al anfitrión. La propia interfaz de Windows
+mostró IPv4 `169.254.106.134`, sin puerta de enlace ni DNS. Carpetas compartidas,
+USB, portapapeles, transferencia por portapapeles, drag-and-drop y VRDE estuvieron
+desactivados. PowerShell informó que Windows no podía abrir la muestra porque
+contenía un virus o software potencialmente no deseado, un mensaje compatible
+con bloqueo antimalware. No se consultó un evento que identifique el motor o la
+firma. No se modificó Defender ni se intentó sortear el bloqueo. No se obtuvo
+evidencia de ejecución efectiva. El clon se apagó y eliminó;
+copia base y original quedaron intactas.
+
+`local/wannacry-detonacion/` conserva el ZIP, el ejecutable, ISO, capturas, PCAP,
+análisis y hashes; todo está excluido de Git. TShark 4.7.4 reportó 100 paquetes,
+duración 449,225006 s, cero TCP, cero TCP/445 y cero DNS. Los paquetes observados
+son del inicio y descubrimiento de Windows, sin base para atribuirlos a WannaCry.
+El PCAP de nictrace tiene timestamps absolutos en 1969 y no sirve para establecer
+la hora de los hechos. Por tanto, el resultado es un intento bloqueado, no una
+detonación ni una prueba del comportamiento de red del malware. El reporte
+metodológico y el mapeo limitado a SP 800-86/CSF 2.0 están en
+`ejecucion_controlada_bloqueada.md`.

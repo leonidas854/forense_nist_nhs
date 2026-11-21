@@ -1,5 +1,31 @@
 # Estado comprobado · 21 de noviembre de 2026
 
+## Intento controlado de muestra bloqueado · 21 de noviembre
+
+- Se obtuvo del enlace de la fuente Malware-Traffic-Analysis.net la muestra
+  `24d004…`; SHA-256 del EXE extraído verificado en el anfitrión coincide con
+  `24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c`.
+- Se trabajó sobre un clon enlazado desechable de la copia aislada, sin iniciar
+  la VM original ni la copia base. El único NIC activo fue una red interna
+  VirtualBox única, sin NAT, puente, host-only, gateway ni DNS; los siete
+  restantes quedaron desactivados. Windows mostró `169.254.106.134`, sin ruta
+  por defecto ni DNS.
+- Al invocar el EXE desde el ISO de solo lectura, PowerShell informó que Windows
+  no podía abrirlo por contener un virus o software potencialmente no deseado.
+  El mensaje es compatible con bloqueo antimalware, pero no se consultó un
+  evento para identificar motor o firma. No se desactivó Defender ni se creó
+  exclusión; no se obtuvo evidencia de ejecución efectiva ni impacto.
+- La captura nictrace tiene 100 paquetes: cero TCP, cero TCP/445 y cero DNS;
+  cuatro paquetes UDP/138 de anuncios NetBIOS y otros protocolos de inicio y
+  descubrimiento Windows. No se atribuyen al malware. Timestamps absolutos del
+  PCAP en 1969, inválidos para cronología.
+- El clon se apagó y eliminó. La copia base pasó `scripts/check_isolation.py`;
+  conserva sus ocho NIC desactivados, sin comparticiones, clipboard, drag/drop,
+  USB ni VRDE. Muestra, PCAP, ISO y capturas quedan fuera de Git bajo `local/`.
+- El resultado se documenta en `entrega_nist/ejecucion_controlada_bloqueada.md`.
+  Es un intento bloqueado, no una detonación, ni una evidencia del NHS. El
+  contraste NIST SP 800-86/CSF 2.0 es metodológico y retrospectivo.
+
 ## Revisión de enfoque OSI y NIST · 21 de noviembre de 2026
 
 - Se amplió la parte práctica con una matriz de las siete capas OSI que explica

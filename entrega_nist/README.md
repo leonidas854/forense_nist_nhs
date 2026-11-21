@@ -30,13 +30,16 @@ Ruta de estudio de esta revisión:
 4. [Guion y preguntas para la exposición](guion_exposicion_osi.md): sección 13,
    ensayo de 20 minutos y respuestas justificadas.
 
-La captura examinada es de un laboratorio externo, no del NHS ni de esta VM. Su
-PCAP se conserva fuera de Git; la fuente, SHA-256, filtros y resultados están
-documentados localmente. El equipo no detonó WannaCry; la revisión de tráfico usa
-un PCAP de laboratorio de terceros con el mismo hash de muestra.
+La captura externa es de un laboratorio de terceros, no del NHS ni de esta VM.
+Además, se hizo un intento de abrir la muestra en un clon enlazado aislado;
+Windows lo rechazó con un mensaje de virus/software potencialmente no deseado.
+No se recuperó un evento que identifique el motor o la firma. No se desactivó la
+protección, no hubo detonación y no se observó impacto local. La captura y las
+imágenes permanecen fuera de Git; el [suplemento](ejecucion_controlada_bloqueada.md)
+registra el resultado y sus límites.
 
 La revisión amplía la explicación del material conservado; no añade una sesión
-Ghidra ni una ejecución de WannaCry. El original aportado continúa intacto.
+Ghidra ni una detonación efectiva de WannaCry. El original aportado continúa intacto.
 
 ## Alcance de la entrega
 
@@ -44,7 +47,7 @@ Investigación documental del NHS de Inglaterra y análisis estático de compone
 locales. NIST SP 800-86 organiza recolección, examen, análisis e informe.
 CSF 2.0 se aplica retrospectivamente; no se declara certificación ni auditoría
 completa del NHS. El documento es final para ese alcance, con límites explícitos:
-no hay ejecución de WannaCry, adquisición forense hospitalaria
+no hay ejecución efectiva de WannaCry, adquisición forense hospitalaria
 ni interpretación exhaustiva de las 1.755 funciones reconocidas.
 
 Se incorporó una copia aislada del Windows 10 existente del usuario y se comprobó

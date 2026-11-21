@@ -4,7 +4,7 @@
 
 Esta parte permite estudiar cómo se pasa de un archivo a una conclusión forense defendible. Integra cuatro capítulos por componente, diagramas, fragmentos de desensamblado y las 16 transcripciones de pseudocódigo preservadas. La autoría corresponde a los ocho autores de la portada; no se atribuyen actuaciones individuales que no estén registradas.
 
-El resultado técnico disponible combina **análisis estático seleccionado** con revisión offline de una captura de red externa producida por un laboratorio que declara haber utilizado el mismo hash de muestra. Se comprobaron identidades y relaciones de contenido, ramas de funciones y tráfico SMB registrado por TShark. No se ejecutó WannaCry en la VM de este equipo ni se observó impacto local; la captura externa no es del NHS. Las actividades no realizadas se identifican sin presentarlas como resultados.
+El resultado técnico disponible combina **análisis estático seleccionado**, revisión offline de una captura de red externa y un intento de apertura en un clon aislado que la protección antimalware de Windows rechazó antes de que se observara la creación de un proceso. No se recuperó un evento del antivirus ni un identificador de detección que permita atribuir con más precisión el bloqueo a un motor o firma concreta. No hubo detonación efectiva ni impacto local atribuible a WannaCry. El PCAP externo no es del NHS; las actividades no realizadas se identifican sin presentarlas como resultados.
 
 La secuencia de estudio es: método → identidad de los objetos → recursos y capas → lectura de cada componente → correlación de hallazgos → NIST → práctica benigna y revisión. El informe general contiene la reconstrucción histórica; esta parte explica cómo sostener las afirmaciones técnicas. Ambos documentos distinguen el NHS de Inglaterra de los archivos del laboratorio.
 
@@ -292,7 +292,7 @@ fuente declara el mismo SHA-256 del ejemplar 24d004… examinado estáticamente.
 La captura y su registro de procedencia permanecen bajo `local/` y fuera de Git.
 Esto completa una revisión de tráfico reproducible; no es captura hecha por
 nuestro equipo, no es tráfico del NHS, no se instaló Wireshark dentro del invitado
-y no se ejecutó WannaCry en la VM.
+y no se ejecutó WannaCry en esa copia durante la revisión offline.
 
 Para permitir que el equipo estudie el mismo archivo sin red, se creó
 `local/wannacry-pcap-lectura.iso` con el PCAP y una guía de filtros, sin incluir
@@ -304,6 +304,31 @@ abierto dentro del invitado; el instalador oficial 4.6.9 está en el DVD de
 herramientas en SATA 2. La revisión ya se realizó con TShark 4.7.4 en el
 anfitrión; la unidad proporciona una copia offline, de solo lectura, para que el
 equipo pueda seguir las mismas conversaciones en la interfaz de Wireshark.
+
+### Actualización: intento controlado bloqueado por protección de Windows, 21 de noviembre
+
+La copia base `forense-nhs-win10-copia` permaneció apagada y con sus ocho NIC
+desactivados. Se creó un clon enlazado desde su snapshot de práctica, se conectó
+un ISO de muestra de solo lectura y se habilitó únicamente una red interna
+VirtualBox sin NAT, puente ni acceso al anfitrión. La propia interfaz de Windows
+mostró IPv4 `169.254.106.134`, sin puerta de enlace ni DNS. Carpetas compartidas,
+USB, portapapeles, transferencia por portapapeles, drag-and-drop y VRDE estuvieron
+desactivados. PowerShell informó que Windows no podía abrir la muestra porque
+contenía un virus o software potencialmente no deseado, un mensaje compatible
+con bloqueo antimalware. No se consultó un evento que identifique el motor o la
+firma. No se modificó Defender ni se intentó sortear el bloqueo. No se obtuvo
+evidencia de ejecución efectiva. El clon se apagó y eliminó;
+copia base y original quedaron intactas.
+
+`local/wannacry-detonacion/` conserva el ZIP, el ejecutable, ISO, capturas, PCAP,
+análisis y hashes; todo está excluido de Git. TShark 4.7.4 reportó 100 paquetes,
+duración 449,225006 s, cero TCP, cero TCP/445 y cero DNS. Los paquetes observados
+son del inicio y descubrimiento de Windows, sin base para atribuirlos a WannaCry.
+El PCAP de nictrace tiene timestamps absolutos en 1969 y no sirve para establecer
+la hora de los hechos. Por tanto, el resultado es un intento bloqueado, no una
+detonación ni una prueba del comportamiento de red del malware. El reporte
+metodológico y el mapeo limitado a SP 800-86/CSF 2.0 están en
+`ejecucion_controlada_bloqueada.md`.
 
 
 ### 5.1 Herramientas y función en el estudio
@@ -797,6 +822,18 @@ de nuevo el aislamiento. La ausencia de interfaces habilitadas es una
 comprobación concreta de configuración, no una garantía absoluta sobre el
 hipervisor o la limpieza previa del sistema clonado.
 
+
+### 11.5 Intento controlado de apertura de la muestra: bloqueado
+
+El 21 de noviembre de 2026 se descargó el ZIP de la muestra 24d004… desde la entrada de Malware-Traffic-Analysis.net y se comprobó que el ejecutable extraído coincide con el SHA-256 `24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c`. Se preparó como ISO óptico y se conectó a un **clon enlazado desechable** de la copia autorizada de Windows 10. La VM original y la copia base no se arrancaron ni modificaron.
+
+El clon tuvo un único adaptador conectado a una red interna VirtualBox de nombre único, sin NAT, puente, host-only, puerta de enlace o DNS; los otros siete adaptadores quedaron desactivados. Dentro de Windows se observó IPv4 automática `169.254.106.134`, sin gateway ni DNS. Carpetas compartidas, USB, portapapeles, transferencia por portapapeles, drag-and-drop y VRDE estuvieron desactivados. La interfaz capturó tráfico mediante `nictrace` de VirtualBox. No se desactivó Defender, no se creó una exclusión y no se elevó el proceso.
+
+Al solicitar la apertura del único `.EXE` del ISO, PowerShell devolvió que la operación no podía completarse porque el archivo contenía un virus o software potencialmente no deseado. El mensaje es compatible con un bloqueo antimalware de Windows, pero no se consultó el registro de Defender para identificar motor, firma o evento. **Resultado:** intento bloqueado por protección del invitado; no se obtuvo evidencia de ejecución efectiva de WannaCry, cifrado, servicio creado ni propagación. No debe describirse como detonación. La identidad del archivo se verificó en el anfitrión antes de construir el ISO; la lectura/hash desde Windows recibió un error equivalente de protección.
+
+La captura de VirtualBox contiene 100 paquetes durante 449,225006 s. TShark 4.7.4 contó 0 tramas TCP, 0 TCP/445 y 0 DNS; encontró anuncios de red del propio Windows, incluidos cuatro paquetes UDP/138. No se atribuyen esos paquetes a WannaCry: el bloqueo observado y la ausencia de evidencia de proceso impiden esa atribución. Los tiempos absolutos del PCAP aparecen en 1969; son inválidos y no se usan como cronología. No había un segundo equipo conectado al segmento interno, por lo que esta práctica tampoco podía probar propagación ni recibir una respuesta de explotación.
+
+En términos de SP 800-86, se registraron fuente, hash, configuración, acción, salida de error, captura y limitaciones para examen, análisis e informe. Como contraste retrospectivo de CSF 2.0, el ejercicio muestra una configuración de aislamiento relacionada con PR.IR-01 y una actividad de análisis de evento relacionada con RS.AN-03; **no certifica controles ni demuestra hechos del NHS**. El PCAP, las imágenes, la muestra y el clon permanecen fuera de Git; el clon enlazado se apagó y eliminó tras preservar los registros. El suplemento ampliado está en `entrega_nist/ejecucion_controlada_bloqueada.md`; el resumen del laboratorio, en `entrega_nist/estado_laboratorio.md`.
 
 ## 12. Cómo ampliar el análisis de las demás funciones
 

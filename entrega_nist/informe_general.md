@@ -31,11 +31,11 @@ El objetivo general es reconstruir documentalmente el caso NHS y explicar mecani
 
 ### 1.3 Delimitación temporal, geográfica y técnica
 
-El objeto histórico principal es el NHS de **Inglaterra**, en mayo de 2017, con informes posteriores de 2017–2018. No se generalizan automáticamente las cifras a todo el Reino Unido. Esta revisión editorial del 21 de noviembre de 2026, hora de Bolivia, amplía el enfoque OSI y la explicación de funciones. La práctica benigna anterior conserva sus fechas originales: algunos registros UTC del 21 corresponden a la noche del 20 en Bolivia. No se añade una ejecución del malware ni una nueva adquisición Ghidra.
+El objeto histórico principal es el NHS de **Inglaterra**, en mayo de 2017, con informes posteriores de 2017–2018. No se generalizan automáticamente las cifras a todo el Reino Unido. Esta revisión editorial del 21 de noviembre de 2026, hora de Bolivia, amplía el enfoque OSI y la explicación de funciones e incorpora un intento de apertura controlado en un clon aislado, bloqueado por Windows Defender antes de que se observara una ejecución efectiva. No hubo detonación ni nueva adquisición Ghidra.
 
 El objeto técnico son tres archivos originales ya presentes y un componente derivado: 24d004…, ed01…, ec1383… y u.wnry. Se conservan 16 transcripciones seleccionadas de 1.755 funciones reconocidas por Ghidra. Ese denominador mide reconocimiento automático, no cobertura de análisis. Se utilizan exportaciones del 15 de noviembre; en esta edición no se realizó una nueva sesión de decompilación por MCP.
 
-Quedan fuera del alcance una atribución criminal independiente, la identificación del paciente cero, el análisis de cada host hospitalario, la criptografía completa de t.wnry, la explotación de SMB y la ejecución real de ransomware. La práctica prevista usa Windows 10 como estación de análisis y ejercicios benignos; no pretende reproducir exactamente un entorno clínico de 2017.
+Quedan fuera del alcance una atribución criminal independiente, la identificación del paciente cero, el análisis de cada host hospitalario, la criptografía completa de t.wnry, la explotación de SMB y una detonación efectiva de ransomware. La práctica usa Windows 10 para ejercicios benignos y un intento de apertura bloqueado; no pretende reproducir exactamente un entorno clínico de 2017.
 
 ## 2. Marco metodológico NIST
 

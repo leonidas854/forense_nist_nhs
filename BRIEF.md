@@ -61,6 +61,12 @@ ficticio y proceso, con PowerShell y Bloc de notas. La validación de paquetes
 descargados dentro del invitado sigue pendiente. No se ejecutó WannaCry.
 Véase `docs/windows10-copia-aislada.md`. Los párrafos siguientes son antecedentes.
 
+**Actualización, 21/11/2026:** se hizo un intento de apertura de la muestra
+24d004… en un clon enlazado con red interna aislada. Windows bloqueó el archivo
+como virus/software potencialmente no deseado; no hubo detonación efectiva ni
+se desactivó Defender. El clon se apagó y eliminó; la VM original y la copia
+base quedaron intactas. Véase `entrega_nist/ejecucion_controlada_bloqueada.md`.
+
 **Actualización de alcance, 15/11/2026:** cuatro personas desarrollarán el análisis
 estático de 24d004, ed01, u.wnry y ec1383, contrastado con fuentes históricas y
 mapeado retrospectivamente a NIST CSF 2.0. Plan vigente:
