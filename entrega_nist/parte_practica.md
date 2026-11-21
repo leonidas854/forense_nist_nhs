@@ -67,7 +67,7 @@ La selección prioriza decisiones relevantes y relaciones verificables. Las dem�
 
 Los desplazamientos anteriores son offsets de archivo documentados en la extracción. Las direcciones de funciones de Ghidra son direcciones virtuales del programa importado. No se intercambian ambos valores. El resto del recurso W/101, fuera de los cuatro bytes iniciales y la longitud declarada, no integra el PE delimitado.
 
-## 4. Cómo leer las capas sin confundirlas
+## 4. Capas OSI, componentes y operaciones de Windows
 
 ### 4.1 Bytes, formato PE y recursos
 
@@ -100,6 +100,8 @@ Los errores de tipo afectan la lectura: un entero mal interpretado como puntero 
 Un retorno de cero no tiene un significado universal. `memcmp == 0` expresa igualdad; un handle NULL puede indicar fallo; una rutina propia puede devolver cero tanto tras éxito como tras fallo. Una API puede devolver éxito y escribir otro resultado en un parámetro de salida. Finalmente, solicitar un proceso no acredita que terminara ni que alcanzara su objetivo. [API1–API4]
 
 Estas distinciones explican buena parte del análisis: seguir solo el nombre de una función o su último return lleva a conclusiones incorrectas. Los cuatro capítulos muestran casos concretos.
+
+{{INCLUIR:enfoque_osi.md}}
 
 ## 5. Entorno de laboratorio y herramientas
 
@@ -180,6 +182,8 @@ No se equipara un evento de autenticación de red con RDP sin más datos. Un tim
 
 Una nueva ficha debe identificar a quien hizo realmente la comprobación. Este ejemplo expone un razonamiento documentado; no acredita una revisión individual nueva por cada autor.
 
+{{INCLUIR:catalogo_funciones.md}}
+
 ## 11. Prácticas benignas: procedimiento y resultados
 
 ### 11.1 Ejercicio de decisiones, sin ejecución del malware
@@ -234,6 +238,8 @@ Los ocho autores pueden revisar por pares de manera rotativa, eligiendo un compo
 | ¿La VM demuestra lo ocurrido en 2017? | No; sirve para lectura y ejercicios benignos con resultados propios |
 
 La exposición puede seguir este orden: identidad de los objetos, mapa de contenido, una decisión de cada componente, relación documental con el NHS, resultados NIST y límites. El detalle de código debe explicar una afirmación concreta; no es necesario leer en voz alta cada inicialización automática.
+
+{{INCLUIR:guion_exposicion_osi.md}}
 
 ## 14. Conclusión práctica
 

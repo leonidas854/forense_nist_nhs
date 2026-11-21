@@ -1,4 +1,25 @@
-# Estado comprobado · 20 de noviembre de 2026
+# Estado comprobado · 21 de noviembre de 2026
+
+## Revisión de enfoque OSI y NIST · 21 de noviembre de 2026
+
+- Se amplió la parte práctica con una matriz de las siete capas OSI que explica
+  protocolo/función, recursos y datos, evidencia disponible y límites de cada
+  afirmación. El diagrama separa comunicación de operaciones locales de Windows.
+- Se añadió el mapa de las 16 funciones por componente, un catálogo de entradas,
+  condiciones, recursos, continuación y pruebas necesarias, más una secuencia de
+  exposición y respuestas preparadas para preguntas técnicas.
+- La metodología forense queda ligada a SP 800-86; CSF 2.0 se mantiene como
+  contraste retrospectivo de capacidades/resultados del caso. No se equiparan
+  capas OSI, funciones de malware y categorías NIST.
+- Informe general: 22 páginas; parte práctica: 56 páginas. Ocho autores.
+  Se revisaron el render de la tabla OSI y el diagrama. Los originales PDF,
+  locks, muestras y registros de laboratorio no se modificaron.
+- `python3 scripts/verificar_entrega_nist.py`: 47 archivos, 16 transcripciones,
+  20 resultados NIST y enlaces locales coherentes. `python3
+  scripts/verificar_material_equipo.py`: 16 transcripciones coherentes.
+  `python3 scripts/verificar_caso_nist.py`: 49 archivos y 20 filas comprobados.
+- Estos controles son editoriales; no acreditan ejecución de WannaCry, actividad
+  de red, procedencia hospitalaria ni certificación/cumplimiento NIST.
 
 ## Práctica benigna ejecutada en Windows
 

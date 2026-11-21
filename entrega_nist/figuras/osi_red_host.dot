@@ -1,0 +1,25 @@
+digraph G {
+graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];
+node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",fontcolor="black",style="filled",fillcolor="white",margin=".14,.10"];
+edge [fontname="DejaVu Sans",fontsize=10,color="black",fontcolor="black"];
+a [label="Proceso y APIs de Windows\nDos vistas del trabajo solicitado"];
+    subgraph cluster_red {
+      label="COMUNICACIÓN: siete capas OSI"; fontname="DejaVu Sans";
+      osi7 [label="7 Aplicación\nHTTP / SMB"];
+      osi6 [label="6 Presentación\nNo aislada en estas funciones"];
+      osi5 [label="5 Sesión\nNo reconstruida aquí"];
+      osi4 [label="4 Transporte\nTCP / puerto 445 (indicio)"];
+      osi3 [label="3 Red\nIP: sin captura local"];
+      osi2 [label="2 Enlace\nNIC / tecnología no identificada"];
+      osi1 [label="1 Física\nMedio no identificado"];
+      osi7 -> osi6 -> osi5 -> osi4 -> osi3 -> osi2 -> osi1;
+    }
+    subgraph cluster_local {
+      label="HOST: operaciones de Windows, fuera de OSI"; fontname="DejaVu Sans";
+      h1 [label="Recursos PE y memoria\nLocalizar e interpretar datos"];
+      h2 [label="Archivos y servicios\nSolicitar cambios"];
+      h3 [label="Procesos y token\nCondiciones y ejecución solicitada"];
+      h1 -> h2 -> h3 [style=dashed, label="Dependencia según función"];
+    }
+    a -> osi7; a -> h1;
+}

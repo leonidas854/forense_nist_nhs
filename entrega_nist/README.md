@@ -1,6 +1,6 @@
 # Entrega académica: WannaCry y NHS
 
-Edición del 20 de noviembre de 2026. Autoría colectiva de los ocho autores del
+Edición del 21 de noviembre de 2026. Autoría colectiva de los ocho autores del
 informe aportado. Los capítulos se organizan por componente, sin reparto nominal
 de tareas ni atribución de análisis individuales no acreditados.
 
@@ -9,7 +9,8 @@ de tareas ni atribución de análisis individuales no acreditados.
 - [Informe general en PDF](INFORME_GENERAL_NIST_NHS.pdf): problema, método,
   reconstrucción histórica, resultados, valoración NIST y conclusiones.
 - [Parte práctica en PDF](PARTE_PRACTICA_NIST_GHIDRA.pdf): laboratorio, lectura
-  por capas, cuatro análisis, diagramas, 16 transcripciones y ejercicios.
+  por capas OSI, cuatro análisis, recursos, catálogo de 16 funciones,
+  diagramas, transcripciones, ejercicios y defensa oral.
 - [Informe general editable](INFORME_GENERAL_NIST_NHS.docx).
 - [Parte práctica editable](PARTE_PRACTICA_NIST_GHIDRA.docx).
 
@@ -17,6 +18,18 @@ Fuentes editables: [informe general](informe_general.md),
 [parte práctica](parte_practica.md) y [análisis por componente](analisis/).
 Los cuatro análisis se integran completos en la parte práctica; sus archivos
 individuales permiten estudiar cada mecanismo por separado.
+
+Ruta de estudio de esta revisión:
+
+1. [OSI, operaciones locales y recursos](enfoque_osi.md): sección 4 del PDF.
+2. Capítulos 6–9: Listing, decompilado y razonamiento de cada componente.
+3. [Catálogo de las 16 funciones](catalogo_funciones.md): sección 10, entradas,
+   condiciones, objetos utilizados, continuación y evidencia faltante.
+4. [Guion y preguntas para la exposición](guion_exposicion_osi.md): sección 13,
+   ensayo de 20 minutos y respuestas justificadas.
+
+La revisión amplía la explicación del material conservado; no añade una sesión
+Ghidra ni una ejecución de WannaCry. El original aportado continúa intacto.
 
 ## Alcance de la entrega
 

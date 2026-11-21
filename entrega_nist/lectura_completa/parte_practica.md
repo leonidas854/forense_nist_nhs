@@ -67,7 +67,7 @@ La selección prioriza decisiones relevantes y relaciones verificables. Las dem�
 
 Los desplazamientos anteriores son offsets de archivo documentados en la extracción. Las direcciones de funciones de Ghidra son direcciones virtuales del programa importado. No se intercambian ambos valores. El resto del recurso W/101, fuera de los cuatro bytes iniciales y la longitud declarada, no integra el PE delimitado.
 
-## 4. Cómo leer las capas sin confundirlas
+## 4. Capas OSI, componentes y operaciones de Windows
 
 ### 4.1 Bytes, formato PE y recursos
 
@@ -100,6 +100,99 @@ Los errores de tipo afectan la lectura: un entero mal interpretado como puntero 
 Un retorno de cero no tiene un significado universal. `memcmp == 0` expresa igualdad; un handle NULL puede indicar fallo; una rutina propia puede devolver cero tanto tras éxito como tras fallo. Una API puede devolver éxito y escribir otro resultado en un parámetro de salida. Finalmente, solicitar un proceso no acredita que terminara ni que alcanzara su objetivo. [API1–API4]
 
 Estas distinciones explican buena parte del análisis: seguir solo el nombre de una función o su último return lleva a conclusiones incorrectas. Los cuatro capítulos muestran casos concretos.
+
+### 4.6 La pregunta central: qué hace, cómo lo hace y qué ocurre después
+
+Para explicar WannaCry se necesitan tres vistas complementarias: **la comunicación entre equipos**, **la organización de sus componentes** y **las operaciones dentro de Windows**. OSI organiza la primera; los recursos PE y las llamadas entre funciones explican las otras dos. No existe una correspondencia de una función del malware con cada una de las siete capas. Tampoco las siete capas describen siete etapas cronológicas de la infección.
+
+En esta revisión, «observado en el código» significa encontrado en las transcripciones y el Listing conservados del 15/11/2026. No significa ejecutado. «Histórico» procede de fuentes del incidente; «esperable» describe un artefacto que habría que adquirir y comprobar. No se obtuvieron paquetes de una ejecución de WannaCry ni registros de un hospital.
+
+La exposición utilizará esta secuencia para cada mecanismo: **entrada → condición → API y recurso → efecto solicitado → siguiente llamada → evidencia necesaria**. Cuando falte el cuerpo de una auxiliar, se señalará esa frontera. El objetivo es explicar una relación causal comprobable, incluyendo sus posibles fallos. Para el trabajo forense, cada afirmación debe quedar vinculada a adquisición/preservación, examen, análisis e informe, conforme a SP 800-86. El CSF 2.0 se usa después para discutir resultados de gestión del NHS; no clasifica funciones del malware ni sustituye el análisis de evidencia.
+
+### 4.7 Las siete capas OSI contrastadas con el caso
+
+El modelo de referencia separa aplicación, presentación, sesión, transporte, red, enlace y física. Sirve para ordenar responsabilidades de comunicación; no es la especificación de implementación de Windows ni una metodología de investigación forense. La definición conceptual siguiente se apoya en X.200, cláusulas 6 y 7; la aplicación al código es una interpretación del presente estudio. [OSI1]
+
+| Capa y responsabilidad conceptual | Función/protocolo relacionado | Recursos y datos que intervienen | Evidencia y límite de la afirmación |
+|---|---|---|---|
+| 7. Aplicación: servicios y mensajes entre aplicaciones | HTTP para la consulta del kill switch; SMB para la propagación histórica | URL, datos de solicitud/respuesta y servicios WinINet/SMB | 00408140 llama a InternetOpenUrlA. El uso de SMBv1 en la propagación se sustenta en fuentes históricas. No hay captura local de ninguna conversación |
+| 6. Presentación: representación de datos intercambiados | No se identificó una operación específica de presentación de red en las 16 funciones | En una comunicación podrían intervenir formatos y transformaciones; aquí ZIP, DWORD y datos cifrados son objetos locales | El paquete y el cifrado de archivos no prueban presentación OSI. No se identificó una negociación de formato ni TLS en el material seleccionado |
+| 5. Sesión: organización del diálogo entre aplicaciones | No se reconstruyó una sesión de protocolo completa | Estado de diálogo que mantuviera el protocolo, si corresponde | El nombre `session` en el código WinINet no es evidencia suficiente. No hay traza para mostrar apertura, continuidad y cierre de una sesión de WannaCry |
+| 4. Transporte: comunicación extremo a extremo | TCP transportaría HTTP y SMB directo; el puerto 445 identifica el extremo SMB | Socket, puerto, estado TCP, buffers y handles de red | 00407480 contiene 0x1bd (=445) y llamadas WS2_32 por ordinal. Faltan prototipos y flujo de datos para reconstruir la conexión completa; no hay captura |
+| 3. Red: direccionamiento y encaminamiento | IP llevaría paquetes entre redes según el alcance disponible | Direcciones IP, rutas, interfaces y paquetes | No hay captura para afirmar IP de origen/destino, rutas ni secuencia de exploración. La dirección destino de la rutina requiere reconstruir sus llamadores |
+| 2. Enlace: transferencia por el enlace local | Ethernet, Wi-Fi u otro enlace sería gestionado por el sistema y el adaptador | Interfaz, tramas, direcciones MAC y, según entorno, VLAN | No se conocen MAC, VLAN ni tecnología de cada hospital a partir de estos binarios. No se observa manipulación del enlace |
+| 1. Física: transmisión de señales por el medio | Cable, radio u otro medio llevaría las señales de la comunicación | Adaptador y medio físico disponibles | No se observa modificación de hardware ni del medio. Esta capa es infraestructura del entorno, no una acción atribuida a estas funciones |
+
+**Capa 7: distinguir dos conversaciones.** La consulta del kill switch y la propagación SMB cumplen objetivos diferentes. En 24d004…, 00408140 solicita abrir una URL HTTP y utiliza el resultado para decidir si llama a 00408090. La propagación mediante vulnerabilidades de SMBv1 corresponde a la explicación técnica publicada en 2017. El boletín MS17-010 describe correcciones del manejo de solicitudes de SMBv1; no describe una vulnerabilidad del número 445. [RED2; HIST1]
+
+**Cómo sucede la consulta.** La función prepara texto en memoria, obtiene un contexto de WinINet y llama a InternetOpenUrlA. Windows gestiona los servicios subyacentes necesarios. El código seleccionado recibe un handle o NULL; no interpreta manualmente cada capa ni comprueba un estado HTTP 200. El handle es una referencia administrada por la API, no un paquete ni una dirección IP. La rama NULL llama a la preparación; la rama no nula evita esa llamada. [API1; capítulo 6]
+
+Si hiciera falta resolver el nombre del dominio, habría que comprobar cómo se obtuvo la dirección. Una consulta DNS en la red no se deduce necesariamente de la URL: puede intervenir información ya disponible en el sistema. DNS sería un protocolo de aplicación; que produzca direcciones IP no lo convierte en capa 3. No se contacta el dominio para este estudio.
+
+**Capas 6 y 5: lo que no está demostrado también se explica.** Una representación little-endian, una cadena ASCII o un ZIP dentro de un PE son formatos de datos locales. Eso no acredita una negociación de representación entre equipos. El cifrado de documentos transforma datos almacenados; clasificarlo automáticamente como capa 6 confundiría almacenamiento con comunicación. Tampoco se debe inventar TLS para esta URL HTTP ni atribuirle una sesión autenticada que no aparece en la evidencia. El contexto llamado session en el decompilado de WinINet no acredita por sí solo la capa 5. Las sesiones que un protocolo como SMB pueda gestionar deben estudiarse dentro de ese protocolo, sin convertir el modelo OSI en una correspondencia literal entre nombres.
+
+**Capa 4: el puerto ayuda a formular la hipótesis.** La asignación oficial de SMB sobre transporte TCP directo es 445, equivalente hexadecimal a 0x01bd. [RED1] En 00407480 aparece esa constante, junto a un parámetro dividido en dos mitades y llamadas por ordinal. Es un indicio estático consistente con una rutina de conexión, pero los argumentos recuperados son imperfectos. El paso pendiente es identificar los símbolos de WS2_32, corregir prototipos en una copia del proyecto y contrastar la estructura de destino en Listing. No se presentará como reconstrucción completa del exploit.
+
+Una comunicación TCP hacia 445 no demostraría por sí sola SMB malicioso. Para distinguir conexión intentada, conexión establecida, intercambio SMB y explotación harían falta evidencias diferentes. El contenido de los mensajes y el efecto en el equipo receptor importan tanto como el puerto. Este informe no incluye paquetes de explotación ni un procedimiento de propagación.
+
+**Capa 3: destino y alcance.** Para una comunicación IP real habría que identificar origen, destino, rutas y contexto temporal. El parámetro de 00407480, sin reconstruir todos sus llamadores, no demuestra qué direcciones se recorren ni su orden. El alcance entre subredes depende también de rutas y controles del entorno. No se deduce una topología del NHS leyendo una función local.
+
+**Capas 2 y 1: soporte, no acciones especiales demostradas.** Una comunicación externa necesita una interfaz y un medio disponibles. Eso no implica que WannaCry reprogramara una tarjeta, atacara una MAC o alterara cables. Tampoco hay evidencia aquí de suplantación de enlace. Las tramas o señales concretas requerirían información del entorno y adquisición apropiada. En la copia aislada del laboratorio se deshabilitaron los adaptadores; no hay observación de propagación para completar estas capas.
+
+![Figura 8. Vistas separadas: comunicación por la pila de red y trabajo local del proceso. Las flechas describen dependencias conceptuales, no una captura.](../figuras/osi_red_host.png)
+
+### 4.8 Dos recorridos que el expositor debe separar
+
+**Recorrido de red, conceptual.** Una aplicación solicita una comunicación; el sistema utiliza transporte, direccionamiento y enlace para entregar datos, si el entorno lo permite. El receptor procesa los datos con su pila y su servicio. Para SMB, debe distinguirse el servicio que interpreta mensajes de la conexión TCP que los transporta. El defecto corregido por MS17-010 está en el manejo de solicitudes SMBv1. Las capas inferiores permiten llegar al servicio; no son todas vulnerabilidades independientes. [RED2]
+
+**Recorrido dentro del equipo, comprobable estáticamente.** En el camino seleccionado de 24d004…, una decisión precede a la preparación de servicio y extracción. R/1831 contiene ed01…; ed01… contiene el ZIP XIA/2058 con u.wnry y t.wnry. Las funciones solicitan operaciones sobre esos datos. Contener un hijo no significa que ya se haya ejecutado; escribir un archivo no significa que el proceso haya iniciado; iniciar un proceso no significa que su objetivo haya terminado.
+
+El cifrado masivo y el impacto hospitalario pertenecen a la reconstrucción técnica e histórica contrastada. La selección local llega hasta una llamada indirecta asociada a TaskStart, sin recuperar todo el cuerpo de la carga transformada. Esa discontinuidad debe quedar visible al pasar de las funciones al relato del NHS. ec1383… se explica como una vía de extracción distinta: su PE interno tiene otro hash y no se une a 24d004… mediante una flecha de identidad.
+
+### 4.9 Qué significa «recursos que toma»
+
+**Recurso PE:** un bloque incorporado al ejecutable, localizado por módulo, tipo e identificador. R/1831, XIA/2058 y W/101 son pares tipo/ID. No son rutas web, puertos ni capas OSI. W/101 significa «tipo W, identificador 101»; 101 decimal se escribe 0x65 en hexadecimal. FindResourceA localiza el recurso; LoadResource y LockResource permiten acceder a sus datos. Ninguna de esas llamadas ejecuta por sí misma el bloque. [API2]
+
+**Recurso del sistema:** un objeto o capacidad usado durante una operación: archivo, memoria, proceso, hilo, token de seguridad, servicio o conexión. Un handle permite referirse a uno de esos objetos mediante la API adecuada. Cerrar el handle libera esa referencia; no equivale siempre a borrar un archivo, detener un servicio o terminar un proceso.
+
+| Recurso | Dónde se ve y para qué sirve | Qué medir o comprobar si se dispusiera de evidencia dinámica |
+|---|---|---|
+| Memoria del proceso | Buffers de texto, estructuras, punteros a recursos; GlobalAlloc en 004014a6 | Región, tamaño y vida de las asignaciones; un tamaño de archivo no es el consumo total de RAM |
+| CPU | Copias, comparaciones, bucles y llamadas | Tiempo y utilización por proceso/hilo. No hay medición de consumo del malware en esta práctica |
+| Disco y sistema de archivos | CreateFile, WriteFile, lectura de t.wnry y extracción de miembros | Existencia, contenido, hash, metadatos y resultado de escritura; espacio usado realmente |
+| Procesos e hilos | CreateProcessA y estructuras de salida | Identidad del padre/hijo, ruta, argumentos, token, inicio y finalización |
+| Servicios | OpenSCManager, CreateService y StartService | Configuración, permisos y estado del servicio; un nombre en una cadena no acredita instalación |
+| Token y SID | CheckTokenMembership en u.wnry | Contexto de seguridad efectivo y resultado de consulta/elevación; no confundir usuario con privilegios efectivos |
+| Red | WinINet y WS2_32 | Conexiones y mensajes correlacionados con proceso y tiempo; no hay captura local de WannaCry |
+
+**Cantidades conocidas, no estimaciones de rendimiento.** R/1831 mide 3.514.368 bytes y coincide con ed01…. XIA/2058 contiene un ZIP de 3.446.325 bytes con 36 miembros. W/101 mide 5.242.880 bytes, pero su DWORD inicial delimita 3.756.032 bytes a partir de +4. t.wnry mide 65.816 bytes. Son medidas estáticas de contenido. No se suman para calcular RAM ni disco de una infección: hay datos anidados, asignaciones no reconstruidas y operaciones cuyo éxito no se observó.
+
+### 4.10 Cómo demostrar el «cómo» en Ghidra
+
+1. Identificar el programa por SHA-256 y arquitectura. Una dirección solo tiene sentido junto con el programa: diferentes componentes pueden reutilizar direcciones parecidas.
+2. Ir a la dirección de la ficha y mostrar Listing y Decompiler del mismo tramo. El Listing representa instrucciones; el C recuperado propone estructuras, tipos y variables para leerlas.
+3. Señalar la entrada real: argumento, variable global, recurso, archivo o retorno de otra función. Seguir su referencia hasta la operación que la consume.
+4. Señalar la condición y sus dos caminos. En 00408140, TEST/JNZ y la llamada a 00408090 confirman el sentido de la decisión. Una llamada no alcanzada no produce el efecto solicitado.
+5. Explicar los argumentos de la API, el objeto afectado y el resultado que se comprueba. Si el prototipo es imperfecto, mostrar el Listing y declarar qué interpretación queda pendiente.
+6. Seguir el llamador: qué hace con el retorno y cuál es el siguiente paso. Si ignora el resultado, explicarlo expresamente. Un nombre descriptivo añadido por el analista no sustituye esta comprobación.
+7. Separar la conclusión estática del artefacto necesario para demostrar ejecución. Registrar hash, dirección, fuente, razonamiento y límite conforme al método SP 800-86.
+
+En x86, los PUSH de los ejemplos ayudan a reconstruir argumentos; en el ejemplo x64 de W/101, EDX contiene 0x65 y R8 apunta al tipo W antes de FindResourceA. No se intercambian convenios entre arquitecturas. En el puntero DWORD* de ec1383…, sumar 1 avanza cuatro bytes: el Listing muestra explícitamente +4. Estos dos ejemplos permiten explicar el código sin memorizar nombres automáticos como pDVar2.
+
+**Frase de comprobación para la defensa:** «En este componente y esta dirección observo esta entrada; la condición lleva a esta API sobre este recurso; el código continúa de esta forma. Para afirmar que ocurrió realmente necesitaría este artefacto». La sección 13 aplica esta estructura a preguntas del docente.
+
+### Fuentes del enfoque OSI
+
+[OSI1] Unión Internacional de Telecomunicaciones. (1994). *X.200: Modelo de referencia básico de interconexión de sistemas abiertos*. Texto equivalente a ISO/CEI 7498-1; cláusulas 6–7. [Ficha oficial y PDF en español](https://www.itu.int/rec/T-REC-X.200-199407-I/en).
+
+[RED1] Microsoft. (2025, 7 de abril). *[MS-SMB], 1.9 Standards Assignments*. Asignación de TCP/445 (0x01BD). [Especificación oficial](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-smb/acc6e3bd-3aba-42be-b15f-99397399ab51).
+
+[RED2] Microsoft. (2017, 14 de marzo). *Microsoft Security Bulletin MS17-010*. [Boletín oficial](https://learn.microsoft.com/en-us/security-updates/securitybulletins/2017/ms17-010).
+
+[HIST1] Microsoft Defender Security Research Team. (2017, 12 de mayo). *WannaCrypt ransomware worm targets out-of-date systems*. [Análisis técnico contemporáneo](https://www.microsoft.com/en-us/security/blog/2017/05/12/wannacrypt-ransomware-worm-targets-out-of-date-systems/).
+
+Fuentes web anteriores consultadas el 21/11/2026. Las referencias API1–API4 están al final de la parte práctica. El mapeo OSI es explicativo y no añade observaciones de ejecución a las exportaciones conservadas.
+
 
 ## 5. Entorno de laboratorio y herramientas
 
@@ -483,6 +576,67 @@ No se equipara un evento de autenticación de red con RDP sin más datos. Un tim
 
 Una nueva ficha debe identificar a quien hizo realmente la comprobación. Este ejemplo expone un razonamiento documentado; no acredita una revisión individual nueva por cada autor.
 
+### 10.2 Catálogo de las 16 funciones: entradas, recursos y continuación
+
+Este catálogo se lee junto con los capítulos 6–9 y las transcripciones del anexo. Resume las funciones seleccionadas; no incorpora nuevas exportaciones ni cubre las 1.755 funciones reconocidas. Las direcciones corresponden al programa indicado, no a una captura de memoria en ejecución. «Siguiente» describe el control previsto cuando se alcanza ese camino.
+
+### 24d004…: seis funciones
+
+| Dirección y entrada | Cómo opera y qué recursos utiliza | Condición, continuación y prueba del efecto |
+|---|---|---|
+| 00408140. URL incorporada al programa | Copia texto a un buffer local. InternetOpenA crea contexto WinINet; InternetOpenUrlA solicita la apertura. Usa memoria y servicios de comunicación | NULL conduce a 00408090; no nulo evita esa llamada. Ambos caminos retornan 0. Para acreditar una consulta real hacen falta resultado de API y contexto de red/proceso |
+| 00408090. Ruta del módulo y argc | GetModuleFileNameA alimenta una variable global. Examina argumentos; usa handles del administrador de servicios y del servicio existente | argc < 2 llama a 00407f20. El otro camino prepara el dispatcher con LAB_00408000, tras consultas condicionadas. Falta seguir todas las auxiliares y acreditar estado real del servicio |
+| 00407f20. Contexto preparado por el llamador | Llama a 00407c40 y luego a 00407ce0. Coordina dos operaciones; no realiza por sí misma una transferencia de red | No comprueba un resultado entre ambas llamadas. Retorna 0. El fallo de la primera no demuestra que se omita la segunda |
+| 00407c40. Ruta global del módulo | Forma la línea del servicio; OpenSCManagerA, CreateServiceA y StartServiceA solicitan administración, creación e inicio. Usa buffer y handles de servicio | El handle del administrador y luego el del servicio condicionan las llamadas. Cierra handles; retorna 0. Para probar instalación e inicio hay que comprobar configuración y estado, no solo el nombre mssecsvc2.0 |
+| 00407ce0. Módulo, APIs resueltas y R/1831 | GetProcAddress obtiene direcciones de funciones. FindResource/LoadResource/LockResource/SizeofResource acceden a datos; prepara rutas y solicita archivo, escritura y proceso. Usa memoria, disco y handles | Hay controles sobre APIs y recurso, y sobre el handle del archivo. El resultado de escritura no valida toda la secuencia. El hijo contenido coincide con ed01…; su ejecución requeriría artefactos de proceso. Los prototipos indirectos requieren Listing |
+| 00407480. param_1 y constante 0x1bd | Usa WS2_32 por ordinal, variables y estructuras parcialmente recuperadas. Se observa llamada inicial, control de -1, otras llamadas y devolución de un resultado | Es consistente con trabajo de conexión, sujeto a confirmar símbolos y prototipos. No se ha reconstruido su llamador completo ni el exploit. Una traza sería necesaria para afirmar destino, conexión o tráfico |
+
+**Relación con OSI y NIST.** En 24d004…, 00408140 se relaciona directamente con aplicación (HTTP/WinINet); 00407480 aporta un indicio de socket/transporte y posible destino 445, pendiente de reconstruir. Las otras cuatro funciones de ese módulo solicitan operaciones locales de servicio, archivo y proceso. Las cuatro funciones de ed01… trabajan con el ZIP, archivos, permisos y procesos; las tres de u.wnry consultan token y solicitan procesos; las tres de ec1383… localizan/escriben un recurso y solicitan un proceso. Estas catorce funciones son operaciones del host, fuera de la clasificación OSI. La investigación sigue SP 800-86 para preservar, examinar, analizar e informar evidencia. La relación con CSF 2.0 se presenta retrospectivamente en el capítulo 10.3, a nivel de resultado/capacidad y con sus límites; no se asigna un control CSF a cada función. La API de servicios podría tener otras capacidades en otros programas, pero aquí los parámetros locales deben guiar la interpretación; no se le atribuye administración remota por el nombre de la API.
+
+### ed01…: cuatro funciones
+
+| Dirección y entrada | Cómo opera y qué recursos utiliza | Condición, continuación y prueba del efecto |
+|---|---|---|
+| 00401dab. Módulo y datos auxiliares para XIA/2058 | Accede al recurso y entrega sus datos a 004075ad. Con un contexto válido, 004075c4 obtiene información de entradas y 0040763d solicita extracción. Usa memoria del paquete y rutas de archivos | Si el nombre es c.wnry y ya tiene atributos válidos, omite esa extracción. Cierra contexto con 00407656. Retorno 1 no prueba cada escritura; habría que cotejar los miembros producidos |
+| 00401fe7. Argumentos, ruta propia y directorio | Puede copiar tasksche.exe en la rama especial. En la principal establece directorio, solicita extracción y procesos de atributos/permisos. Después usa lectura y auxiliares hacia TaskStart | Puede salir antes por la rama de argumentos. Las llamadas externas con espera 0 no garantizan finalización. Solo alcanza la llamada indirecta si las condiciones sucesivas y el destino lo permiten. Falta el cuerpo completo de la carga |
+| 00401064. Línea de proceso, parámetro de espera y posible salida | Inicializa STARTUPINFO y PROCESS_INFORMATION. CreateProcessA solicita un hijo. Si corresponde, WaitForSingleObject espera y GetExitCodeProcess consulta; cierra handles | Fallo de creación devuelve 0. Con espera no cero, un resultado de espera no cero conduce a TerminateProcess. Devuelve 1 tras creación informada; no demuestra el efecto de atributos o permisos del hijo |
+| 004014a6. Archivo t.wnry y contexto de llamada | Abre y lee archivo, comprueba tamaño y WANACRY!, interpreta campos y reserva memoria con GlobalAlloc. Recurre a 004019e1, 00402a76 y 00403a77 | Comprobaciones fallidas impiden obtener el buffer útil. El llamador exige resultados posteriores antes de TaskStart. Hay que revisar el convenio __thiscall y las auxiliares para explicar la transformación completa |
+
+En estas cuatro funciones, paquete, permisos, memoria y procesos son recursos del equipo. Una contraseña interna de paquete no es necesariamente la clave de cifrado de documentos. La cabecera WANACRY! y el campo 256 se observan; atribuirles una función criptográfica exacta exige seguir sus consumidores. Ninguna de estas cuatro funciones demuestra por sí sola una nueva conversación de red.
+
+### u.wnry: tres auxiliares y un bloque de Listing
+
+| Dirección y entrada | Cómo opera y qué recursos utiliza | Condición, continuación y prueba del efecto |
+|---|---|---|
+| 00401bb0. Contexto de seguridad consultado con handle NULL | AllocateAndInitializeSid construye el SID de administradores. CheckTokenMembership escribe la pertenencia habilitada en una variable; FreeSid libera el SID | Retorna el resultado consultado, o 0 si hubo determinados fallos. El bloque llamador utiliza ese valor para elegir auxiliar. No cambia por sí misma permisos ni eleva privilegios |
+| 00401b50. Archivo, parámetros y opción de visualización | Prepara SHELLEXECUTEINFOA; coloca runas en lpVerb, el archivo en lpFile y argumentos en lpParameters; solicita ShellExecuteExA | La solicitud no prueba elevación concedida ni efecto sobre recuperación. La expresión booleana del decompilado debe leerse como está conservada; no se sustituye por un éxito de objetivo inventado |
+| 00401a90. Línea de proceso, espera y posible puntero de salida | CreateProcessA obtiene, si tiene éxito, handles de proceso/hilo. Puede esperar, solicitar terminación o consultar salida, según parámetros y resultados; cierra referencias | Retorna 0 si falla la creación y 1 al completar su camino posterior. Ese 1 no demuestra que se borraran copias ni que finalizara correctamente el hijo. Se necesitan evidencias del proceso y del objeto afectado |
+
+El Listing relaciona la cadena 00420fd8 con el bloque que consulta 00401bb0. Después selecciona 00401b50 en el camino cero o 00401a90 en el camino no cero, sujeto a las condiciones previas. El bloque principal no dispone de función contenedora correctamente decompilada en este proyecto. No se inventa un cuarto cuerpo para cubrir ese hueco. La finalidad contra recuperación se infiere del contenido y sus referencias; la eliminación efectiva no se observó.
+
+### ec1383…: tres funciones
+
+| Dirección y entrada | Cómo opera y qué recursos utiliza | Condición, continuación y prueba del efecto |
+|---|---|---|
+| 1800011a4, PlayGame. Invocación externa aún no identificada | sprintf construye C:\\WINDOWS\\mssecsvc.exe en una variable global. Llama al extractor y después a la auxiliar de proceso | No prueba el retorno del extractor entre llamadas. Retorna 0. La exportación existe, pero falta demostrar quién la invocó y con qué contexto |
+| 180001014. Handle global de módulo y ruta global | Busca W/101, obtiene datos y tamaño; lee el DWORD inicial como longitud. CreateFileA solicita el destino; WriteFile usa recurso+4 y esa longitud; cierra archivo | Fallos iniciales devuelven 0. Superados esos controles, puede retornar 1 aun si no abre el archivo. No valida el resultado de escritura ni todos los límites de longitud. El cotejo externo del PE no es una comprobación realizada por esta función |
+| 1800010f8. Ruta preparada por PlayGame | Inicializa estructuras y solicita CreateProcessA. Con resultado no cero, cierra los handles devueltos | No espera al proceso y retorna 0 en ambos caminos. Para afirmar ejecución y resultado se requieren registros correlacionados del hijo y sus cambios; cerrar handles no lo termina |
+
+W/101 es un recurso local del módulo. El PE delimitado tiene SHA-256 93db4b26… y es distinto de 24d004…. El nombre de archivo de destino o su parecido con un servicio no sustituye el hash. El comportamiento posterior del hijo requiere su propio análisis; no se heredan automáticamente todas las conclusiones de otro componente.
+
+### 10.3 De la función a la evidencia y al resultado NIST
+
+| Pregunta técnica | Evidencia adecuada para resolverla | Relación retrospectiva y límite |
+|---|---|---|
+| ¿Se abrió una conexión y qué transportó? | Tráfico o registros de red correlacionados con proceso, dirección y tiempo | DE.CM-01 orienta el monitoreo de redes; una constante estática no acredita ese monitoreo |
+| ¿Se creó un servicio o un proceso? | Configuración, registros y contexto de ejecución preservados | DE.CM-09 orienta el monitoreo del entorno de ejecución; las APIs son pistas para buscar artefactos |
+| ¿Se escribió el hijo esperado? | Contenido adquirido, tamaño, hash y procedencia; correlación temporal | RS.AN-03 apoya el análisis causal y RS.AN-07 la integridad/procedencia; nombre idéntico no prueba identidad |
+| ¿Se impidió la recuperación? | Estado anterior y posterior de mecanismos de recuperación y registros de operaciones | El código motiva investigar; no acredita por sí solo pérdida de respaldo ni éxito del ataque |
+| ¿Se recuperaron datos confiables? | Validación del respaldo y de los datos restaurados, con alcance declarado | RC.RP-03 orienta la verificación de los activos de restauración. La copia benigna en el mismo disco solo aporta una demostración limitada |
+
+OSI organiza dónde buscar comunicaciones; el método de SP 800-86 organiza cómo preservar y razonar sobre lo adquirido. Los códigos CSF no se asignan mecánicamente uno por capa. Un mismo hallazgo puede orientar detección, análisis y recuperación, sin demostrar que esos resultados de gestión estén plenamente implantados.
+
+
 ## 11. Prácticas benignas: procedimiento y resultados
 
 ### 11.1 Ejercicio de decisiones, sin ejecución del malware
@@ -618,6 +772,60 @@ Los ocho autores pueden revisar por pares de manera rotativa, eligiendo un compo
 | ¿La VM demuestra lo ocurrido en 2017? | No; sirve para lectura y ejercicios benignos con resultados propios |
 
 La exposición puede seguir este orden: identidad de los objetos, mapa de contenido, una decisión de cada componente, relación documental con el NHS, resultados NIST y límites. El detalle de código debe explicar una afirmación concreta; no es necesario leer en voz alta cada inicialización automática.
+
+### 13.1 Secuencia de exposición y reparto de revisión
+
+La autoría continúa siendo colectiva de los ocho autores. Para ensayar, cuatro parejas pueden revisar los cuatro componentes y luego intercambiar revisiones; no se atribuye una función a una persona sin constancia. Quienes expongan deben poder seguir el recorrido completo. El siguiente guion propone 20 minutos y puede repartirse entre dos voces sin cambiar la autoría.
+
+| Tiempo | Qué mostrar | Qué debe comprender el público |
+|---|---|---|
+| 0–2 min | Pregunta, caso NHS y fuentes | El incidente histórico y nuestras observaciones de laboratorio son conjuntos distintos |
+| 2–6 min | Matriz de las siete capas y figura 8 | HTTP/SMB, TCP/IP y soporte de enlace; operaciones locales fuera de esa clasificación |
+| 6–9 min | 24d004…, 00408140 y R/1831 | Condición NULL, continuación y extracción; API llamada no equivale a efecto completado |
+| 9–12 min | ed01…, XIA/2058 y TaskStart | Paquete, procesos externos y frontera de la carga no reconstruida |
+| 12–14 min | u.wnry, token y Listing | Consulta de pertenencia, selección de auxiliar y efecto contra recuperación aún no observado |
+| 14–16 min | ec1383…, W/101 | Longitud, +4, escritura y llamada siguiente aunque el retorno no se valide |
+| 16–18 min | Cadena de impacto y mapeo NIST | Cómo los mecanismos ayudan a explicar indisponibilidad, contención y recuperación histórica |
+| 18–20 min | Práctica benigna y conclusiones | Qué se comprobó realmente, qué sigue pendiente y cómo se preservó la evidencia |
+
+Cada explicación de código debe contener una entrada, una condición, un recurso y un siguiente paso. Es preferible mostrar dos decisiones bien justificadas y dejar el catálogo completo para las preguntas que leer 16 cuerpos de C en voz alta.
+
+### 13.2 Respuestas razonadas a preguntas del ingeniero
+
+**¿Qué hace WannaCry en cada capa OSI?** En las funciones seleccionadas se observa una solicitud HTTP mediante WinINet y una rutina con indicios de conexión a 445; la propagación mediante SMBv1 se sustenta además en fuentes técnicas. TCP/IP y enlace proporcionan el transporte subyacente. Para presentación y sesión no se ha aislado aquí un mecanismo específico. El archivo no contiene necesariamente una función por capa.
+
+**¿Dónde está la vulnerabilidad: en la capa 4 o en el puerto?** El puerto identifica un extremo de transporte. MS17-010 corrige el tratamiento de solicitudes en el servidor SMBv1. Una conexión a 445 no prueba explotación; hay que estudiar el protocolo y el efecto en el receptor. El servicio puede implementarse en componentes del sistema sin que cambie el papel conceptual del protocolo de aplicación.
+
+**¿El cifrado corresponde a presentación?** El cifrado de documentos en disco es una operación local. Para asignar un mecanismo a presentación habría que justificar su papel en el intercambio de datos entre entidades; transformar bytes por sí solo no basta. Aquí tampoco se reconstruyó el cifrador entero, así que distinguimos la descripción técnica publicada del cuerpo local disponible.
+
+**¿Qué función hace el cifrado exactamente?** Nuestra selección muestra lectura y procesamiento de t.wnry, auxiliares y una llamada indirecta asociada a TaskStart. Falta recuperar y analizar toda esa carga para asignar cada operación criptográfica a instrucciones concretas. No es correcto llamar «cifrador completo» a 004014a6 ni al CALL EAX sin estudiar su destino.
+
+**¿Qué es W/101 y por qué se suma 1?** W es el tipo del recurso PE y 101 es su ID. El primer DWORD contiene la longitud. Como el puntero es DWORD*, sumar 1 avanza cuatro bytes, no uno; la instrucción LEA confirma +4. Así se omite la longitud y se apunta al PE. Esa rutina copia datos; no muestra descifrado.
+
+**¿Qué sucede si falla la escritura en ec1383…?** La auxiliar puede devolver 1 tras superar los controles iniciales aunque no logre abrir el destino; tampoco comprueba el resultado de WriteFile para decidir ese retorno. PlayGame llama después a la auxiliar de proceso sin validar la extracción. Que exista esa llamada no garantiza un hijo válido: pueden faltar datos, permisos o un archivo utilizable.
+
+**¿Qué es un handle y por qué lo cierra?** Es una referencia gestionada por una API a un objeto o contexto. Se usa para operaciones posteriores y se cierra con la API correspondiente. Cerrar el handle del proceso no equivale a terminarlo. El significado se obtiene del tipo de objeto y del contrato de la API.
+
+**¿Cero siempre significa error?** No. InternetOpenUrlA devuelve NULL si falla; memcmp devuelve cero cuando los bytes comparados coinciden. Algunas auxiliares de las muestras devuelven cero en todos sus caminos. Hay que leer el contrato de la API y las ramas del llamador, no memorizar un significado universal.
+
+**¿Cuánta memoria o CPU utiliza?** Conocemos tamaños de archivos y recursos, y vemos reservas y operaciones. No medimos consumo dinámico del malware. El tamaño del PE, la reserva de una auxiliar y la memoria total del proceso son magnitudes diferentes. La VM configurada con 4 GB no demuestra que el malware consuma 4 GB ni que necesite esa cantidad.
+
+**¿Qué sigue después de CreateProcessA?** Primero se distingue si informó éxito. Luego se mira si el llamador espera, consulta salida o solo cierra handles. En 1800010f8 no hay espera. En 00401064 y 00401a90 la espera depende de un parámetro. Para demostrar el trabajo del hijo se necesitan datos de ese hijo y del objeto afectado. [API3]
+
+**¿Sin red ya no puede hacer nada?** Deshabilitar la red impide ese canal de comunicación; no equivale a impedir operaciones locales. En 00408140, un resultado NULL permite continuar hacia preparación. El aislamiento del laboratorio no es una prueba de inocuidad ni se utilizó para ejecutar WannaCry. Se estudiaron las decisiones estáticamente y se realizó un ejercicio benigno separado.
+
+**¿El error 500 de ANY.RUN demuestra que se detuvo?** El dato comunicado corresponde a la página del servicio. Sin informe de tarea no tenemos resultado de la API del malware, traza del proceso ni efecto sobre archivos. No se traslada ese 500 a la condición del kill switch.
+
+**¿Podemos afirmar que estos cuatro archivos recorrieron juntos el NHS?** No. La contención 24d004… → ed01… → paquete con u.wnry se acredita localmente. ec1383… contiene otro PE. La cadena hospitalaria concreta requeriría evidencias con procedencia, tiempos y contexto del hospital, no solo parecido funcional.
+
+**¿En qué parte se aplica NIST?** SP 800-86 ordena preservación, examen, análisis e informe. CSF 2.0 permite discutir resultados de gestión retrospectivamente. OSI ayuda a explicar comunicaciones. Los tres aportan perspectivas distintas; ninguno transforma una hipótesis en observación. La matriz se sustenta en los hallazgos y declara sus límites.
+
+### 13.3 Ensayo de una respuesta completa
+
+«En ec1383…, la exportación PlayGame construye una ruta global y llama a 180001014. Esta busca W/101, comprueba referencias iniciales, lee una longitud de cuatro bytes y solicita escribir el tramo siguiente. El recurso utiliza memoria del módulo y la escritura utiliza un archivo del sistema. Su retorno no garantiza que se haya escrito. PlayGame llama después a 1800010f8 sin validar ese resultado; esta solicita un proceso y no espera a que termine. Son operaciones locales, no siete pasos OSI. Para demostrar ejecución necesitaríamos correlacionar archivo, contenido, proceso y tiempo. El código local no acredita por sí solo que esto sucediera en el NHS».
+
+Para evaluar el ensayo, el compañero debe poder señalar la dirección de cada afirmación y distinguir llamada, retorno y efecto. Una respuesta correcta puede concluir «no está demostrado con esta selección» y explicar qué evidencia lo resolvería.
+
 
 ## 14. Conclusión práctica
 

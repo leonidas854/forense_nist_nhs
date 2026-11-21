@@ -24,14 +24,14 @@ El objetivo general es reconstruir documentalmente el caso NHS y explicar mecani
 
 1. Conservar e identificar las fuentes, registrar su edición y distinguir su procedencia.
 2. Reconstruir antecedentes, brote, afectación, contención y recuperación sin inventar eventos por hospital.
-3. Interpretar cuatro componentes mediante recursos, hashes, referencias, desensamblado y pseudocódigo.
+3. Interpretar cuatro componentes mediante recursos, hashes, referencias, desensamblado y pseudocódigo, explicando qué hace cada función seleccionada, cómo lo solicita y qué ocurre después.
 4. Explicar qué comprueba cada observación y qué permanece sin demostrar.
 5. Relacionar los hallazgos con resultados NIST y criterios de verificación, sin porcentajes de cumplimiento infundados.
-6. Entregar una parte práctica reproducible y una base de estudio para los ocho autores.
+6. Contrastar las siete capas OSI con los mecanismos observados, distinguiendo comunicaciones de operaciones locales, y entregar una parte práctica y guía de exposición para los ocho autores.
 
 ### 1.3 Delimitación temporal, geográfica y técnica
 
-El objeto histórico principal es el NHS de **Inglaterra**, en mayo de 2017, con informes posteriores de 2017–2018. No se generalizan automáticamente las cifras a todo el Reino Unido. La edición académica se cierra el 20 de noviembre de 2026, hora de Bolivia. Los registros de comprobación pueden tener fecha UTC del 21 de noviembre por la diferencia de cuatro horas.
+El objeto histórico principal es el NHS de **Inglaterra**, en mayo de 2017, con informes posteriores de 2017–2018. No se generalizan automáticamente las cifras a todo el Reino Unido. Esta revisión editorial del 21 de noviembre de 2026, hora de Bolivia, amplía el enfoque OSI y la explicación de funciones. La práctica benigna anterior conserva sus fechas originales: algunos registros UTC del 21 corresponden a la noche del 20 en Bolivia. No se añade una ejecución del malware ni una nueva adquisición Ghidra.
 
 El objeto técnico son tres archivos originales ya presentes y un componente derivado: 24d004…, ed01…, ec1383… y u.wnry. Se conservan 16 transcripciones seleccionadas de 1.755 funciones reconocidas por Ghidra. Ese denominador mide reconocimiento automático, no cobertura de análisis. Se utilizan exportaciones del 15 de noviembre; en esta edición no se realizó una nueva sesión de decompilación por MCP.
 
@@ -203,6 +203,22 @@ Los capítulos prácticos detallan entradas, condiciones, llamadas, retornos, ev
 
 El usuario aclaró que el error apareció en la **página de ANY.RUN**. No aportó un informe accesible con hash de tarea, procesos y tiempos. Se registra como información comunicada. No permite decidir si el análisis comenzó, si falló al mostrarse o si hubo actividad de la muestra. Tampoco demuestra que el kill switch detuviera ec1383… ni invalida la revisión estática, que se apoya en otra fuente.
 
+### 5.4 Cómo explicar el mecanismo mediante OSI y operaciones locales
+
+La explicación técnica sigue **entrada → condición → API y recurso → efecto solicitado → continuación → evidencia**. OSI organiza responsabilidades de comunicación; no es una secuencia de infección ni exige que cada función del malware corresponda a una capa. La parte práctica desarrolla la comparación de las siete capas en la sección 4, el catálogo de las 16 funciones en la sección 10 y el guion de defensa en la sección 13.
+
+| Vista | Mecanismo y soporte | Límite que se debe explicar |
+|---|---|---|
+| Aplicación de red | URL HTTP y WinINet en 00408140; SMBv1 en las fuentes técnicas de 2017 | La condición local comprueba un handle; no un estado HTTP 200 |
+| Transporte y red | Constante 445 y WS2_32 en 00407480; TCP/IP como soporte conceptual | El puerto no demuestra mensajes SMB, explotación ni una dirección atacada |
+| Presentación y sesión | Categorías del modelo de referencia | No se identificó aquí un mecanismo específico; cifrar documentos en disco no equivale a capa 6 |
+| Enlace y física | Infraestructura necesaria para comunicar equipos | No hay captura, MAC, topología hospitalaria ni modificación de hardware demostradas |
+| Trabajo local del proceso | Recursos PE, archivos, memoria, servicios, token y procesos | Se comprueban solicitudes y condiciones; sus efectos requieren artefactos del sistema |
+
+Esta aplicación del modelo es interpretativa. X.200 define la arquitectura conceptual; Microsoft asigna TCP/445 al transporte directo de SMB y MS17-010 describe fallos del procesamiento de solicitudes SMBv1. Las capas inferiores transportan datos hacia el servicio; no se presentan como siete vulnerabilidades explotadas. [OSI1; RED1; RED2]
+
+La cadena local de contenido conecta R/1831 con ed01… y XIA/2058 con miembros como u.wnry. ec1383… aporta otra extracción y solicitud de proceso. Ninguna flecha de contención prueba ejecución ni procedencia hospitalaria. El consumo de CPU/RAM tampoco se calcula sumando tamaños de recursos: no existe medición dinámica del malware en esta práctica. La reconstrucción del impacto NHS continúa sustentada en fuentes históricas, con esa frontera explícita.
+
 ## 6. Mapeo retrospectivo a NIST CSF 2.0
 
 ### 6.1 Criterio de mapeo
@@ -286,6 +302,12 @@ NIST aporta un método para conservar, examinar, razonar e informar, y un lengua
 Esta edición entrega el informe general y una parte práctica completa para el alcance declarado. Los pendientes de adquisición, validación de herramientas, cobertura de funciones y revisión humana se conservan abiertos. Una ampliación deberá identificar nuevas fuentes, fechas y resultados, sin reescribir retrospectivamente lo que se sabía en esta edición.
 
 ## Referencias
+
+[OSI1] Unión Internacional de Telecomunicaciones. (1994). *X.200: Modelo de referencia básico de interconexión de sistemas abiertos*. Cláusulas 6–7. [Ficha oficial, con PDF en español](https://www.itu.int/rec/T-REC-X.200-199407-I/en). Consulta: 21/11/2026.
+
+[RED1] Microsoft. (2025, 7 de abril). *[MS-SMB], 1.9 Standards Assignments*. [Especificación de TCP/445](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-smb/acc6e3bd-3aba-42be-b15f-99397399ab51). Consulta: 21/11/2026.
+
+[RED2] Microsoft. (2017, 14 de marzo). *Microsoft Security Bulletin MS17-010*. [Boletín oficial](https://learn.microsoft.com/en-us/security-updates/securitybulletins/2017/ms17-010). Consulta: 21/11/2026.
 
 [H1] National Audit Office. (2018, 25 de abril). *Investigation: WannaCry cyber attack and the NHS* (HC 414; revisión del informe de 2017). [PDF institucional](https://www.nao.org.uk/wp-content/uploads/2017/10/Investigation-WannaCry-cyber-attack-and-the-NHS.pdf). Copia preservada: `fuentes/NAO-WannaCry-NHS.pdf`.
 

@@ -46,6 +46,28 @@ def digest(path):
 
 
 GRAPHS = {
+    'osi_red_host': '''
+    a [label="Proceso y APIs de Windows\\nDos vistas del trabajo solicitado"];
+    subgraph cluster_red {
+      label="COMUNICACIÓN: siete capas OSI"; fontname="DejaVu Sans";
+      osi7 [label="7 Aplicación\\nHTTP / SMB"];
+      osi6 [label="6 Presentación\\nNo aislada en estas funciones"];
+      osi5 [label="5 Sesión\\nNo reconstruida aquí"];
+      osi4 [label="4 Transporte\\nTCP / puerto 445 (indicio)"];
+      osi3 [label="3 Red\\nIP: sin captura local"];
+      osi2 [label="2 Enlace\\nNIC / tecnología no identificada"];
+      osi1 [label="1 Física\\nMedio no identificado"];
+      osi7 -> osi6 -> osi5 -> osi4 -> osi3 -> osi2 -> osi1;
+    }
+    subgraph cluster_local {
+      label="HOST: operaciones de Windows, fuera de OSI"; fontname="DejaVu Sans";
+      h1 [label="Recursos PE y memoria\\nLocalizar e interpretar datos"];
+      h2 [label="Archivos y servicios\\nSolicitar cambios"];
+      h3 [label="Procesos y token\\nCondiciones y ejecución solicitada"];
+      h1 -> h2 -> h3 [style=dashed, label="Dependencia según función"];
+    }
+    a -> osi7; a -> h1;
+    ''',
     'metodo': '''
     a [label="Pregunta y alcance"];
     b [label="Recolección y preservación\nOrigen, identidad y registro"];
@@ -451,7 +473,7 @@ def main():
         print('Generado:', name)
     metadata = {
         'generado_utc': datetime.now(timezone.utc).isoformat(),
-        'fecha_editorial': '2026-11-20',
+        'fecha_editorial': '2026-11-21',
         'contraste_figuras': 'Negro/blanco 21:1; etiquetas y formas, no solo color',
         'dependencias': {p: importlib.metadata.version(p) for p in
                         ['reportlab', 'python-docx', 'Markdown', 'beautifulsoup4', 'svglib']},
