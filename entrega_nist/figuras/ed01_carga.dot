@@ -1,0 +1,24 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.14, nodesep=.18, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=17,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.72, penwidth=1.1];
+  label="ed01 · etapa 3: auxiliares y procesamiento de t.wnry";
+  subgraph cluster_pool { label="POOL · continuación de 00401fe7"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_program { label="CARRIL · secuencia del programa"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Tras XIA/2058", fixedsize=true, width=.36];
+      aux [shape=box, label="Solicitar auxiliares
+wait = 0", style="rounded,filled"];
+      g [shape=diamond, label="¿Condiciones pasan?"];
+      t [shape=box, label="Procesar t.wnry", style="rounded,filled"];
+      end [shape=doublecircle, label="", xlabel="Sigue", fixedsize=true, width=.36];
+    }
+  s -> aux;
+  aux -> g;
+  g -> t [label="Sí"];
+  t -> end;
+  }
+}

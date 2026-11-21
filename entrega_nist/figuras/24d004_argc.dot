@@ -1,0 +1,33 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.12, nodesep=.16, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=16,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".10,.07", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.7, penwidth=1.1];
+  label="24d004 · ¿qué hace 00408090 con los argumentos?";
+  subgraph cluster_pool { label="POOL · distribución por argumentos"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_code { label="CARRIL · decisión del programa"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Entrada", fixedsize=true, width=.36];
+      g [shape=diamond, label="¿argc < 2?"];
+      endsvc [shape=doublecircle, label="", xlabel="Fin de ruta
+servicio/recurso", fixedsize=true, width=.36];
+      enddisp [shape=doublecircle, label="", xlabel="Fin de ruta
+dispatcher", fixedsize=true, width=.36];
+    }
+    subgraph cluster_win { label="CARRIL · solicitudes a Windows"; color=gray45; style="rounded"; margin=9;
+      svc [shape=box, label="Crear/iniciar
+mssecsvc2.0", style="rounded,filled"];
+      res [shape=box, label="Procesar recurso
+R/1831", style="rounded,filled"];
+      disp [shape=box, label="SCM / dispatcher", style="rounded,filled"];
+    }
+  s -> g;
+  g -> svc [label="Sí"];
+  svc -> res;
+  res -> endsvc;
+  g -> disp [label="No"];
+  disp -> enddisp;
+  }
+}

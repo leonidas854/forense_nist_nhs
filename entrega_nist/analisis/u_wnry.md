@@ -25,19 +25,35 @@ La función construye el SID correspondiente al grupo de administradores y consu
 
 El flujo del llamador selecciona una ruta según ese retorno. Un valor no cero conduce hacia la auxiliar de creación de proceso; el camino cero hacia la auxiliar de ShellExecuteExA. No debe afirmarse que todo cero significa exclusivamente «usuario no administrador»: también puede representar una falla de consulta.
 
-![Figura 6. BPMN del fragmento disponible: dato, consulta del SID/token y selección de auxiliares. El inicio real del bloque no está recuperado.](../figuras/u_wnry.png)
+![Figura 6. BPMN de la referencia a la cadena y la consulta local del SID/token.](../figuras/u_wnry.png)
+
+La consulta devuelve dos ideas que deben mantenerse separadas: si Windows pudo comprobar el token y si el grupo de administradores está habilitado. El resultado cero no permite distinguir por sí solo entre “no pertenece” y “falló la comprobación”.
+
+![Figura 6a. BPMN de la rama que elige 00401a90 o 00401b50 según el retorno de la consulta.](../figuras/u_wnry_ramas.png)
+
+La respuesta no nula selecciona la primera auxiliar; la nula selecciona la segunda. Como el helper también devuelve cero ante una consulta fallida, el rombo describe el retorno del helper, no una certeza universal sobre el usuario.
 
 ### Solicitud con runas: 00401b50
 
-Esta auxiliar llena una estructura SHELLEXECUTEINFOA, coloca los parámetros recibidos y utiliza el verbo runas al solicitar ShellExecuteExA. El dato explica una solicitud de ejecución con elevación, no una elevación concedida. Falta evidencia de contexto del usuario, respuesta del sistema y proceso resultante para afirmar su efecto real.
+Esta auxiliar llena una estructura SHELLEXECUTEINFOA, coloca los parámetros recibidos y utiliza el verbo `runas` al solicitar ShellExecuteExA. En Windows, el verbo pide al shell iniciar la acción con elevación, normalmente mediante el consentimiento del sistema. El código demuestra la solicitud, no que se aceptara ni que el proceso obtuviera privilegios. Falta evidencia de contexto del usuario, respuesta del sistema y proceso resultante para afirmar su efecto real.
 
 La expresión booleana del decompilado se preserva literalmente en el anexo. No se simplifica silenciosamente como una garantía de éxito, y no se atribuye a la biblioteca una vulnerabilidad de elevación solo por ver el verbo runas.
 
 ### Creación y espera: 00401a90
 
-La auxiliar prepara estructuras, solicita CreateProcessA y devuelve cero ante fallo. Cuando el segundo parámetro es no cero, espera y puede solicitar terminación si el resultado de espera no es cero. Si hay parámetro de salida, consulta el código del proceso dentro de ese bloque. Después cierra handles y retorna 1.
+La auxiliar prepara estructuras y solicita CreateProcessA. La primera bifurcación separa fallo (retorno cero) de creación informada por la API. Si se informa éxito, el segundo parámetro controla si el código espera; si no espera, pasa al cierre.
+
+![Figura 6b. BPMN de solicitar CreateProcessA y consultar el parámetro de espera.](../figuras/u_wnry_proceso.png)
+
+La figura muestra la decisión inicial. Un parámetro de espera distinto de cero lleva a WaitForSingleObject; el resultado de esa API se analiza en la siguiente etapa. Si hay parámetro de salida, el código consulta el código de salida dentro del camino correspondiente. Después cierra handles y retorna 1 en las rutas de éxito.
 
 Hay tres hechos distintos: la API informa creación, el proceso puede terminar, y la acción externa puede conseguir un cambio. Esta auxiliar no acredita los tres. Una solicitud de terminación tampoco demuestra que la orden prevista hubiera terminado antes. El valor de retorno no es una medición del estado de copias de respaldo.
+
+![Figura 6c. BPMN de WaitForSingleObject y de sus dos posibles resultados en el fragmento.](../figuras/u_wnry_espera.png)
+
+Si el resultado de la espera es distinto de cero, el flujo puede solicitar TerminateProcess; si es cero, pasa al cierre. El diagrama siguiente aísla ese último paso para que la condición no se confunda con una terminación comprobada.
+
+![Figura 6d. BPMN de la solicitud de TerminateProcess y el cierre de handles.](../figuras/u_wnry_termina.png)
 
 ### Qué explica y qué no explica para el NHS
 

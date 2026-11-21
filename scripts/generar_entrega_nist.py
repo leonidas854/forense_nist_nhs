@@ -16,17 +16,18 @@ import markdown
 from bs4 import BeautifulSoup, NavigableString
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.section import WD_ORIENT, WD_SECTION_START
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
-    BaseDocTemplate, Frame, PageBreak, PageTemplate, Paragraph, Spacer, Table,
+    BaseDocTemplate, Frame, PageBreak, PageTemplate, NextPageTemplate, Paragraph, Spacer, Table,
     TableStyle, XPreformatted, KeepTogether,
 )
 from reportlab.platypus.tableofcontents import TableOfContents
@@ -160,8 +161,14 @@ def render_graphs():
     folder.mkdir(exist_ok=True)
     # Negro sobre blanco: luminancias 0 y 1; (1 + .05) / (0 + .05) = 21.
     assert (1 + .05) / .05 >= 4.5
+    authored_bpmn = {'24d004', 'ed01', 'u_wnry', 'ec1383'}
     for name, body in GRAPHS.items():
         dot = folder / f'{name}.dot'
+        if name in authored_bpmn and dot.exists():
+            for fmt in ('svg', 'png'):
+                subprocess.run(['dot', f'-T{fmt}', '-Gdpi=180', str(dot),
+                                '-o', str(folder / f'{name}.{fmt}')], check=True)
+            continue
         dot.write_text('digraph G {\n'
                        'graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];\n'
                        'node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",'
@@ -224,9 +231,13 @@ class Report(BaseDocTemplate):
                          rightMargin=52, topMargin=50, bottomMargin=50,
                          title=title, author='; '.join(AUTHORS['autores']))
         self.short_title = short_title
-        self.addPageTemplates(PageTemplate(id='normal',
+        normal = PageTemplate(id='normal', pagesize=letter,
             frames=Frame(52, 50, WIDTH, 692, leftPadding=0, rightPadding=0,
-                         topPadding=0, bottomPadding=0), onPage=self.page_decoration))
+                         topPadding=0, bottomPadding=0), onPage=self.page_decoration)
+        figure = PageTemplate(id='figure', pagesize=landscape(letter),
+            frames=Frame(36, 36, 720, 540, leftPadding=0, rightPadding=0,
+                         topPadding=0, bottomPadding=0), onPage=self.figure_decoration)
+        self.addPageTemplates([normal, figure])
 
     def page_decoration(self, canvas, doc):
         canvas.saveState()
@@ -240,6 +251,18 @@ class Report(BaseDocTemplate):
         canvas.setFont('DV', 8)
         canvas.drawString(52, 28, 'Estudio documental y estático · Aplicación retrospectiva de NIST')
         canvas.drawRightString(560, 28, str(doc.page))
+        canvas.restoreState()
+
+    def figure_decoration(self, canvas, doc):
+        canvas.saveState()
+        canvas.setFillColor(colors.black)
+        canvas.setFont('DV', 8)
+        canvas.drawString(36, 586, self.short_title + ' · diagrama BPMN')
+        canvas.drawRightString(756, 586, 'Informática Forense · 2026')
+        canvas.setLineWidth(.4)
+        canvas.line(36, 578, 756, 578)
+        canvas.drawString(36, 20, 'Flujo estático reconstruido · no representa ejecución observada')
+        canvas.drawRightString(756, 20, str(doc.page))
         canvas.restoreState()
 
     def afterFlowable(self, flowable):
@@ -309,11 +332,21 @@ def make_pdf(soup, target, title, short, s):
         elif tag == 'p' and node.find('img'):
             img = node.find('img')
             drawing = svg2rlg(str((OUT / img['src']).with_suffix('.svg')))
-            factor = min(WIDTH / drawing.width, 470 / drawing.height, 1)
-            drawing.scale(factor, factor)
-            drawing.width *= factor
-            drawing.height *= factor
-            story.append(KeepTogether([drawing, Paragraph(escape(img.get('alt', '')), s['Caption'])]))
+            caption = Paragraph(escape(img.get('alt', '')), s['Caption'])
+            if 'BPMN' in img.get('alt', ''):
+                story.extend([NextPageTemplate('figure'), PageBreak()])
+                factor = min(720 / drawing.width, 480 / drawing.height, 1)
+                drawing.scale(factor, factor)
+                drawing.width *= factor
+                drawing.height *= factor
+                story.append(KeepTogether([drawing, caption]))
+                story.extend([NextPageTemplate('normal'), PageBreak()])
+            else:
+                factor = min(WIDTH / drawing.width, 470 / drawing.height, 1)
+                drawing.scale(factor, factor)
+                drawing.width *= factor
+                drawing.height *= factor
+                story.append(KeepTogether([drawing, caption]))
         elif tag == 'p':
             story.append(Paragraph(pdf_inline(node), s['Body']))
         elif tag in ('ul', 'ol'):
@@ -387,6 +420,8 @@ def make_docx(soup, target, title, short):
     for name in ['Title', 'Heading 1', 'Heading 2', 'Heading 3']:
         doc.styles[name].font.name = 'DejaVu Sans'
         doc.styles[name].font.color.rgb = RGBColor(0, 0, 0)
+    doc.styles['Caption'].font.name = 'DejaVu Sans'
+    doc.styles['Caption'].font.color.rgb = RGBColor(0, 0, 0)
     doc.core_properties.title = title
     doc.core_properties.author = '; '.join(AUTHORS['autores'])
     for line in [AUTHORS['institucion'], '“' + AUTHORS['denominacion'] + '”',
@@ -419,12 +454,26 @@ def make_docx(soup, target, title, short):
             doc.add_heading(node.get_text(), 2)
         elif tag == 'p' and node.find('img'):
             img = node.find('img')
-            from PIL import Image
             path = OUT / img['src']
-            with Image.open(path) as im:
-                width = min(6.5, 6.5 * im.width / im.height)
-            doc.add_picture(str(path), width=Inches(width))
-            doc.add_paragraph(img.get('alt', ''), 'Caption')
+            if 'BPMN' in img.get('alt', ''):
+                section = doc.add_section(WD_SECTION_START.NEW_PAGE)
+                section.orientation = WD_ORIENT.LANDSCAPE
+                section.page_width, section.page_height = Inches(11), Inches(8.5)
+                section.top_margin = section.bottom_margin = Inches(.45)
+                section.left_margin = section.right_margin = Inches(.55)
+                doc.add_picture(str(path), width=Inches(9.8))
+                doc.add_paragraph(img.get('alt', ''), 'Caption')
+                section = doc.add_section(WD_SECTION_START.NEW_PAGE)
+                section.orientation = WD_ORIENT.PORTRAIT
+                section.page_width, section.page_height = Inches(8.5), Inches(11)
+                section.top_margin = section.bottom_margin = Inches(.7)
+                section.left_margin = section.right_margin = Inches(.72)
+            else:
+                from PIL import Image
+                with Image.open(path) as im:
+                    width = min(6.5, 6.5 * im.width / im.height)
+                doc.add_picture(str(path), width=Inches(width))
+                doc.add_paragraph(img.get('alt', ''), 'Caption')
         elif tag == 'p':
             word_inline(doc.add_paragraph(), node)
         elif tag in ('ul', 'ol'):

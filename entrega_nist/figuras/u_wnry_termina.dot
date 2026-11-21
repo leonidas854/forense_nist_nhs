@@ -1,0 +1,22 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.14, nodesep=.18, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=17,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.72, penwidth=1.1];
+  label="u.wnry · proceso · etapa 2B: terminar o cerrar";
+  subgraph cluster_pool { label="POOL · continuación tras espera"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_lane { label="CARRIL · secuencia del código"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Resultado no cero", fixedsize=true, width=.36];
+      term [shape=box, label="Solicitar
+TerminateProcess", style="rounded,filled"];
+      close [shape=box, label="Cerrar handles", style="rounded,filled"];
+      end [shape=doublecircle, label="", xlabel="Retorno 1", fixedsize=true, width=.36];
+    }
+  s -> term;
+  term -> close;
+  close -> end;
+  }
+}

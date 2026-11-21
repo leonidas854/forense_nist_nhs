@@ -1,0 +1,31 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.14, nodesep=.18, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=17,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.72, penwidth=1.1];
+  label="ed01 · XIA/2058 · recorrer cada miembro";
+  subgraph cluster_pool { label="POOL · bucle de entradas del paquete"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_lane { label="CARRIL · secuencia del código"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Handle + contador", fixedsize=true, width=.36];
+      more [shape=diamond, label="¿Quedan entradas?"];
+      item [shape=box, label="Leer nombre de entrada", style="rounded,filled"];
+      name [shape=diamond, label="¿Es c.wnry?"];
+      extract [shape=box, label="Otro miembro: solicitar
+0040763d", style="rounded,filled"];
+      special [shape=doublecircle, label="", xlabel="c.wnry: ver
+figura 5d", fixedsize=true, width=.36];
+      close [shape=doublecircle, label="", xlabel="Lista agotada:
+cerrar, retorno 1", fixedsize=true, width=.36];
+    }
+    s -> more;
+    more -> item [label="Sí"];
+    more -> close [label="No"];
+    item -> name;
+    name -> extract [label="No"];
+    name -> special [label="Sí"];
+    extract -> more [label="incrementar índice / repetir"];
+  }
+}

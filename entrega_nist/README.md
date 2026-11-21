@@ -38,6 +38,12 @@ protección, no hubo detonación y no se observó impacto local. La captura y la
 imágenes permanecen fuera de Git; el [suplemento](ejecucion_controlada_bloqueada.md)
 registra el resultado y sus límites.
 
+Los BPMN de los capítulos 6–9 se presentan en páginas apaisadas, con piscinas y
+carriles para separar decisiones del código, llamadas de Windows y comprobaciones
+forenses. Las rutas largas se dividen en etapas y se explican junto a cada figura;
+se especifican condiciones, resultado de cada rama y qué evidencia externa haría
+falta para confirmar el efecto. La edición práctica actual tiene 105 páginas.
+
 La revisión amplía la explicación del material conservado; no añade una sesión
 Ghidra ni una detonación efectiva de WannaCry. El original aportado continúa intacto.
 

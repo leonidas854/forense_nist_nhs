@@ -117,9 +117,11 @@ Estas distinciones explican buena parte del análisis: seguir solo el nombre de 
 
 ### 4.7 Cómo leer los diagramas BPMN de los capítulos
 
-Los diagramas son BPMN didáctico de la lógica reconstruida, no una traza de ejecución. El círculo fino marca el inicio del fragmento disponible; el círculo doble, un final o retorno; los rectángulos redondeados son tareas/llamadas; los rombos son compuertas exclusivas (XOR), por lo que se sigue una sola salida según la condición escrita. Las notas con borde continuo describen datos o recursos incorporados; las notas con borde discontinuo son aclaraciones del analista y no pasos del malware. Las flechas continuas son secuencia de control; las asociaciones discontinuas conectan una nota con el punto que explica.
+Los diagramas son BPMN didáctico reconstruido desde el código estático, no una traza de ejecución. El rectángulo grande es la **piscina** del participante; cada barra interior es un **carril** que separa partes del trabajo, por ejemplo, decisión del programa y API de Windows. Las flechas continuas muestran la secuencia que permiten las instrucciones, incluso cuando cruzan de un carril al otro. Los círculos finos marcan entradas; los círculos dobles, una salida o retorno. Los rectángulos redondeados son tareas o llamadas y los rombos son compuertas exclusivas (XOR): en cada ejecución se toma una sola salida según la condición escrita.
 
-Las compuertas incluyen el valor comprobado, no solo «sí/no»: por ejemplo, `handle == NULL`, `SizeofResource != 0` o `GetFileAttributesA != INVALID_FILE_ATTRIBUTES`. «Pasa» significa que el flujo puede continuar de acuerdo con las instrucciones; no que el efecto externo se completó. Los diagramas de recursos separan validaciones que el binario sí realiza de verificaciones del analista, como cotejar límites y hash. Una zona marcada como incompleta identifica una frontera de conocimiento, no una decisión omitida por conveniencia.
+La etiqueta sobre cada flecha explica el resultado que abre esa ruta, por ejemplo «sí: handle NULL». Un **handle** es un valor que Windows devuelve para que el programa identifique un objeto abierto; NULL o `INVALID_HANDLE_VALUE` son condiciones diferentes y la rutina comprueba la que corresponde a cada API. El `retorno 0/1` es el valor devuelto por esa función y no necesariamente el éxito de la operación anterior. Los diagramas amplios se colocan en página apaisada completa para que se puedan leer impresos.
+
+Las compuertas nombran el dato comprobado, no solo «sí/no»: `argc < 2`, referencia no nula, atributos válidos o tamaño mayor que cero. «Pasa» significa que el código continúa por esa rama; no que la acción externa se completó. Los cotejos de CRC, longitud y SHA-256 que hace el analista se explican en el texto por separado y no forman parte de la secuencia del malware. Las llamadas asíncronas (`wait = 0`) tampoco garantizan que la tarea solicitada haya terminado antes de la siguiente instrucción.
 
 ### 4.6 La pregunta central: qué hace, cómo lo hace y qué ocurre después
 
@@ -399,11 +401,17 @@ La función copia una cadena y llama a InternetOpenA e InternetOpenUrlA. Guarda 
 
 El Listing permite verificar la dirección de la rama. No debe invertirse la condición al explicarla: el camino NULL continúa hacia preparación. La API documenta el handle como resultado de apertura; esta función no consulta explícitamente un estado HTTP 200. Tampoco basta decir «con Internet se detiene»: el resultado depende de la operación concreta. [API1]
 
-![Figura 4. BPMN de la decisión en 00408140 y la ruta por argumentos; ambos caminos terminan con sus retornos documentados.](../figuras/24d004.png)
+![Figura 4. BPMN de la primera decisión: NULL hace que el código llame a 00408090; no NULL evita esa llamada.](../figuras/24d004.png)
+
+**Cómo leerla:** `InternetOpenUrlA` entrega un handle al programa. El rombo pregunta si ese handle es nulo. La rama NULL sigue hacia la preparación; la rama no NULL termina este camino. El código no pregunta si la respuesta web fue HTTP 200. Este flujo muestra una decisión prevista, no una conexión observada.
 
 ### Distribución por argumentos: 00408090 y 00407f20
 
-00408090 obtiene la ruta del módulo y revisa la cantidad de argumentos. Cuando argc es menor que 2, llama a 00407f20 y vuelve. En el otro camino consulta el administrador de servicios, intenta abrir el servicio existente, llama a una auxiliar cuando obtiene un handle y prepara StartServiceCtrlDispatcherA con una referencia a LAB_00408000. La selección no permite describir una única secuencia que todos los argumentos recorran.
+00408090 obtiene la ruta del módulo y revisa la cantidad de argumentos (`argc`). `argc` cuenta los argumentos que recibió el programa, incluido normalmente el nombre del ejecutable. Si `argc < 2`, llama a 00407f20; con dos o más, toma la ruta de servicio y prepara StartServiceCtrlDispatcherA. Es una bifurcación del flujo de control: cada ejecución concreta sigue una de esas rutas.
+
+![Figura 4a. BPMN de la decisión por cantidad de argumentos y de las solicitudes que siguen en cada rama.](../figuras/24d004_argc.png)
+
+En la rama corta, 00407f20 llama primero al auxiliar de servicio y después al procesamiento de R/1831. En la otra, el código consulta el Service Control Manager (SCM, administrador de servicios de Windows) y prepara el dispatcher. La figura resume ramas; los retornos de las APIs no equivalen a que el servicio haya quedado instalado.
 
 00407f20 llama primero a 00407c40 y después a 00407ce0. No hay una condición entre ambas llamadas que valide el resultado de la primera. Por tanto, un fallo de creación de servicio no demuestra que la rutina de extracción no se alcanzaría. A la inversa, que ambas se llamen no demuestra que ambas tengan éxito.
 
@@ -426,7 +434,27 @@ La función resuelve dinámicamente varias APIs de kernel32 mediante GetProcAddr
 
 El recurso empieza en offset 204.964 del archivo y mide 3.514.368 bytes. La extracción preservada coincide con ed01… según los cotejos documentados. Esta es una relación de contenido fuerte; no demuestra el momento de lanzamiento. Las llamadas indirectas y sprintf del decompilado tienen argumentos imperfectos, por lo que su lectura exige Listing. No se interpreta una variable automática como puntero confirmado solo por su posición en el C recuperado.
 
-![Figura 4a. BPMN detallado de selección, validación y solicitudes posteriores al recurso R/1831. La nota distingue controles del binario de cotejos del analista.](../figuras/24d004_recurso.png)
+![Figura 4b. BPMN de comprobar el módulo y resolver las cuatro APIs que necesita 00407ce0.](../figuras/24d004_recurso.png)
+
+Las cuatro direcciones de función que el código intenta resolver corresponden a CreateProcessA, CreateFileA, WriteFile y CloseHandle. Comprueba que estén disponibles antes de continuar.
+
+El selector del recurso usa dos identificadores a la vez: el tipo `R` y el ID decimal `1831` (hexadecimal `0x727`). Si el módulo, las funciones o la referencia del recurso no están disponibles, el camino no llega a la carga. El identificador no es un nombre de archivo ni un puerto.
+
+![Figura 4c. BPMN de FindResourceA: buscar el recurso por tipo R e ID 1831 después de resolver las APIs.](../figuras/24d004_find.png)
+
+`FindResourceA` devuelve una referencia al recurso, no el contenido. Si no devuelve una referencia válida, la ruta no puede cargar esos bytes. La coincidencia tipo + ID especifica qué bloque dentro del PE intenta localizar el programa.
+
+![Figura 4d. BPMN de la segunda parte de R/1831: cargar los datos, obtener el puntero y comprobar que el tamaño no sea cero.](../figuras/24d004_validacion.png)
+
+`LoadResource` obtiene un handle de los datos; `LockResource` obtiene un puntero a ellos; `SizeofResource` obtiene cuántos bytes tiene el recurso. Son pasos distintos, y cada uno depende del anterior. En este programa, la condición documentada es que el tamaño sea mayor que cero. El análisis independiente cotejó que el contenido extraído mide 3.514.368 bytes y coincide por SHA-256 con ed01…; ese cotejo lo hizo el analista, no lo hace esta función.
+
+![Figura 4e. BPMN de preparar la ruta, solicitar CreateFileA y decidir si se alcanza la escritura.](../figuras/24d004_salida.png)
+
+`CreateFileA` solicita abrir o crear el destino. Windows devuelve un handle o un valor inválido. Solo el handle válido conduce a la solicitud de `WriteFile`. El resultado de escritura no gobierna el retorno de esta rutina, así que el flujo estático no acredita que se hayan escrito todos los bytes.
+
+![Figura 4f. BPMN de solicitar WriteFile y después CreateProcessA.](../figuras/24d004_lanzamiento.png)
+
+Cuando el handle es válido, la rutina solicita escribir y luego solicita crear un proceso. El resultado de WriteFile no controla el retorno; por eso no se confirma que la escritura se completara. La rutina también solicita crear un proceso después de esa ruta. Una llamada a `CreateProcessA` es una solicitud: para acreditar creación y actividad se necesitarían eventos de proceso, archivos y tiempos de una ejecución atribuible.
 
 ### Referencia a 445: 00407480
 
@@ -476,21 +504,43 @@ La rutina localiza el tipo XIA e identificador 0x80a, carga y bloquea el recurso
 00401dcd  JZ 00401e07       ; salida de fallo
 ```
 
+![Figura 5a. BPMN de FindResourceA para localizar el recurso XIA con ID 2058.](../figuras/ed01_recurso.png)
+
 El formato ZIP no se deduce del nombre XIA: procede del examen del contenido, estructura y comprobaciones de CRC de la extracción estática. El paquete mide 3.446.325 bytes y tiene 36 miembros. Que la rutina termine con 1 tras cerrar el paquete no prueba que cada archivo se escribiera; incluso un conteo sin entradas puede alcanzar ese retorno. [API2; manifiesto local]
+
+![Figura 5b. BPMN de la carga de bytes y la entrega del paquete a 004075ad.](../figuras/ed01_recurso_datos.png)
+
+`FindResourceA` localiza los datos dentro del PE. `LoadResource` y `LockResource` obtienen acceso al contenido; `SizeofResource` consulta el tamaño; 004075ad abre o interpreta el paquete. El nombre XIA no prueba que el contenido sea ZIP: eso se comprobó fuera del flujo del malware con su estructura y CRC.
+
+![Figura 5c. BPMN del bucle que enumera los miembros y dirige c.wnry a una regla especial.](../figuras/ed01_miembros.png)
+
+En cada vuelta, la rutina lee un nombre y toma una rama. Los miembros distintos de `c.wnry` llegan a la llamada 0040763d. El bucle incrementa el índice y vuelve a comprobar si quedan entradas. Si la lista se agota, cierra el paquete; si el nombre es `c.wnry`, el control salta a una regla especial. Al terminar la lista se cierra el paquete y el auxiliar puede retornar 1. Ese retorno solo describe la ruta de la función; no acredita el contenido de cada archivo.
+
+![Figura 5d. BPMN de la regla especial para c.wnry.](../figuras/ed01_cwnry.png)
+
+Si `GetFileAttributesA` devuelve atributos válidos, el archivo ya existe y la rutina omite la extracción de `c.wnry`. Si devuelve el marcador de error, solicita extraerlo. No se ve una comparación del hash del archivo existente con el miembro: “ya existe” no significa “es el mismo archivo” ni “está íntegro”.
 
 ### Preparación y caminos: 00401fe7
 
 La función tiene una rama inicial especial asociada a cantidad y contenido de argumentos. En ciertas condiciones intenta copiarse como tasksche.exe y puede retornar antes de la preparación principal. El informe no elimina esa salida para dibujar una secuencia más simple.
 
-El camino posterior establece un directorio de trabajo, llama a auxiliares y a la extracción del paquete. Solicita operaciones externas de atributos y permisos mediante 00401064 con espera cero. El código no comprueba aquí el resultado de todas esas operaciones antes de continuar. Un orden de llamadas no garantiza que procesos externos hayan terminado en ese mismo orden.
+El camino posterior establece un directorio de trabajo y llama a la extracción del paquete. Solicita operaciones auxiliares de atributos y permisos por medio de 00401064 con espera cero. “Espera cero” significa que el llamador no bloquea el flujo hasta que termine el proceso auxiliar; por tanto, el orden de llamadas no demuestra que cada operación termine antes de la siguiente comprobación.
+
+![Figura 5g. BPMN de las operaciones auxiliares y las condiciones que permiten procesar t.wnry.](../figuras/ed01_carga.png)
 
 Después aparecen condiciones sobre auxiliares de preparación, lectura de t.wnry, procesamiento posterior y obtención de un destino asociado a TaskStart. Solo si esas condiciones permiten continuar se realiza la llamada indirecta. Los nombres de auxiliares automáticos no constituyen una explicación de sus cuerpos.
 
-![Figura 5. BPMN de preparación y condiciones principales hacia la llamada indirecta; las compuertas agrupadas se explican en el texto.](../figuras/ed01.png)
+![Figura 5h. BPMN de la búsqueda del destino TaskStart y de la llamada indirecta CALL EAX.](../figuras/ed01_taskstart.png)
 
-El primer rombo resume la rama especial inicial completa: cantidad de argumentos, comparación y resultados auxiliares. El rombo posterior resume comprobaciones sucesivas; no significa una sola API. El decompilado íntegro del anexo permite revisar cada condición individual.
+`CALL EAX` es una transferencia de control a la dirección que está en el registro EAX. No sabemos qué hace esa rutina solo por el destino o el nombre TaskStart; se necesitaría recuperar y analizar el cuerpo de la función apuntada.
 
-![Figura 5a. BPMN del paquete XIA/2058: localización, validaciones, recorrido, tratamiento de c.wnry y límites de retorno.](../figuras/ed01_recurso.png)
+![Figura 5e. BPMN de la rama especial inicial: argumentos, copia de tasksche.exe y posible salida temprana.](../figuras/ed01.png)
+
+La ruta especial depende de las condiciones de argumentos y de los resultados auxiliares; el diagrama no implica que una copia se haya completado. La rama no especial continúa al directorio de trabajo y al extractor.
+
+![Figura 5f. BPMN de la rama principal, que establece el directorio y llama al extractor XIA/2058.](../figuras/ed01_principal.png)
+
+El gráfico muestra el límite entre esta función y el extractor. Los resultados de la extracción deben analizarse en su propia ficha; una llamada no equivale a que el paquete se haya desplegado.
 
 ### Auxiliar de proceso: 00401064
 
@@ -563,19 +613,35 @@ La función construye el SID correspondiente al grupo de administradores y consu
 
 El flujo del llamador selecciona una ruta según ese retorno. Un valor no cero conduce hacia la auxiliar de creación de proceso; el camino cero hacia la auxiliar de ShellExecuteExA. No debe afirmarse que todo cero significa exclusivamente «usuario no administrador»: también puede representar una falla de consulta.
 
-![Figura 6. BPMN del fragmento disponible: dato, consulta del SID/token y selección de auxiliares. El inicio real del bloque no está recuperado.](../figuras/u_wnry.png)
+![Figura 6. BPMN de la referencia a la cadena y la consulta local del SID/token.](../figuras/u_wnry.png)
+
+La consulta devuelve dos ideas que deben mantenerse separadas: si Windows pudo comprobar el token y si el grupo de administradores está habilitado. El resultado cero no permite distinguir por sí solo entre “no pertenece” y “falló la comprobación”.
+
+![Figura 6a. BPMN de la rama que elige 00401a90 o 00401b50 según el retorno de la consulta.](../figuras/u_wnry_ramas.png)
+
+La respuesta no nula selecciona la primera auxiliar; la nula selecciona la segunda. Como el helper también devuelve cero ante una consulta fallida, el rombo describe el retorno del helper, no una certeza universal sobre el usuario.
 
 ### Solicitud con runas: 00401b50
 
-Esta auxiliar llena una estructura SHELLEXECUTEINFOA, coloca los parámetros recibidos y utiliza el verbo runas al solicitar ShellExecuteExA. El dato explica una solicitud de ejecución con elevación, no una elevación concedida. Falta evidencia de contexto del usuario, respuesta del sistema y proceso resultante para afirmar su efecto real.
+Esta auxiliar llena una estructura SHELLEXECUTEINFOA, coloca los parámetros recibidos y utiliza el verbo `runas` al solicitar ShellExecuteExA. En Windows, el verbo pide al shell iniciar la acción con elevación, normalmente mediante el consentimiento del sistema. El código demuestra la solicitud, no que se aceptara ni que el proceso obtuviera privilegios. Falta evidencia de contexto del usuario, respuesta del sistema y proceso resultante para afirmar su efecto real.
 
 La expresión booleana del decompilado se preserva literalmente en el anexo. No se simplifica silenciosamente como una garantía de éxito, y no se atribuye a la biblioteca una vulnerabilidad de elevación solo por ver el verbo runas.
 
 ### Creación y espera: 00401a90
 
-La auxiliar prepara estructuras, solicita CreateProcessA y devuelve cero ante fallo. Cuando el segundo parámetro es no cero, espera y puede solicitar terminación si el resultado de espera no es cero. Si hay parámetro de salida, consulta el código del proceso dentro de ese bloque. Después cierra handles y retorna 1.
+La auxiliar prepara estructuras y solicita CreateProcessA. La primera bifurcación separa fallo (retorno cero) de creación informada por la API. Si se informa éxito, el segundo parámetro controla si el código espera; si no espera, pasa al cierre.
+
+![Figura 6b. BPMN de solicitar CreateProcessA y consultar el parámetro de espera.](../figuras/u_wnry_proceso.png)
+
+La figura muestra la decisión inicial. Un parámetro de espera distinto de cero lleva a WaitForSingleObject; el resultado de esa API se analiza en la siguiente etapa. Si hay parámetro de salida, el código consulta el código de salida dentro del camino correspondiente. Después cierra handles y retorna 1 en las rutas de éxito.
 
 Hay tres hechos distintos: la API informa creación, el proceso puede terminar, y la acción externa puede conseguir un cambio. Esta auxiliar no acredita los tres. Una solicitud de terminación tampoco demuestra que la orden prevista hubiera terminado antes. El valor de retorno no es una medición del estado de copias de respaldo.
+
+![Figura 6c. BPMN de WaitForSingleObject y de sus dos posibles resultados en el fragmento.](../figuras/u_wnry_espera.png)
+
+Si el resultado de la espera es distinto de cero, el flujo puede solicitar TerminateProcess; si es cero, pasa al cierre. El diagrama siguiente aísla ese último paso para que la condición no se confunda con una terminación comprobada.
+
+![Figura 6d. BPMN de la solicitud de TerminateProcess y el cierre de handles.](../figuras/u_wnry_termina.png)
 
 ### Qué explica y qué no explica para el NHS
 
@@ -619,9 +685,13 @@ La exportación forma la ruta global `C:\WINDOWS\mssecsvc.exe`. Llama a 18000101
 
 La consecuencia es precisa: una devolución de fallo de la primera rutina no impide por sí misma que el llamador solicite la siguiente. Eso no garantiza que exista un archivo válido para lanzar. La presencia de PlayGame en la tabla de exportaciones tampoco demuestra que se haya invocado. La práctica no necesita ejecutar la DLL para responder estas preguntas.
 
+![Figura 7. BPMN de PlayGame: formar una ruta, llamar al extractor y luego al helper de proceso.](../figuras/ec1383_playgame.png)
+
+No hay compuerta entre las dos llamadas; PlayGame no comprueba ahí el retorno de extracción. La exportación prueba que existe un punto de entrada en el archivo, no que alguien lo haya invocado.
+
 ### W/101, desde cero
 
-W es el tipo del recurso y 101 su identificador decimal; en las instrucciones se ve 0x65. FindResourceA utiliza módulo, nombre/identificador y tipo. Obtener la referencia al recurso no equivale a ejecutar su contenido; después se consulta el bloque y se interpretan sus datos. [API2]
+W es el tipo del recurso y 101 su identificador decimal; en las instrucciones se ve 0x65. `FindResourceA` usa módulo, nombre/identificador y tipo. Obtener una referencia al recurso no ejecuta su contenido: primero Windows localiza los datos y luego el código los carga.
 
 ```text
 Recurso W/101: 5.242.880 bytes
@@ -631,29 +701,43 @@ Recurso W/101: 5.242.880 bytes
 Después       Bytes restantes del recurso, fuera de ese tramo
 ```
 
-El análisis externo verifica que el intervalo esté dentro del recurso y calcula su hash. Esta validación del extractor no debe atribuirse al malware: la rutina seleccionada usa la longitud inicial sin mostrar una comprobación completa de sus límites frente al tamaño del recurso.
+![Figura 7a. BPMN de FindResourceA y el control de referencia al recurso W/101.](../figuras/ec1383.png)
 
-### Extracción: 180001014
+Si `FindResourceA` devuelve NULL, no se llega a cargar el recurso. Si devuelve una referencia, el flujo continúa con la siguiente API. W/101 es notación tipo/ID del directorio PE; no representa una URL, puerto ni una capa OSI.
 
-La rutina realiza comprobaciones iniciales de FindResourceA, LoadResource, LockResource y tamaño distinto de cero. Si alguna falla, retorna cero. Después lee el DWORD inicial, solicita abrir el archivo de destino y, si el handle es válido, solicita escribir desde recurso+4 con la longitud leída. Cierra el archivo y llega al retorno 1.
+### Carga de los datos: LoadResource y LockResource
+
+`LoadResource` intenta cargar los datos referidos por HRSRC. El código comprueba que el resultado sea distinto de NULL; si falla, retorna cero. Después `LockResource` obtiene un puntero a los bytes y se comprueba también que no sea NULL; si falla, también retorna cero. Son controles sucesivos: superar el primero no salta el segundo.
+
+![Figura 7b. BPMN de LoadResource y LockResource con sus controles de NULL.](../figuras/ec1383_carga.png)
+
+### Longitud y frontera del recurso: 180001014
+
+Después de validar el puntero, `SizeofResource` obtiene el tamaño y la rutina comprueba que sea distinto de cero. Solo entonces lee el DWORD inicial como longitud L. Ese DWORD ocupa cuatro bytes y se interpreta en little-endian; por eso el contenido empieza en +4. El código entrega L como longitud para `WriteFile`.
+
+![Figura 7c. BPMN de SizeofResource, su compuerta de tamaño y la lectura de L.](../figuras/ec1383_medicion.png)
+
+La comprobación del binario cubre que el tamaño sea mayor que cero, pero no muestra una comparación completa de L con el tamaño disponible. El analista valida el límite `L ≤ tamaño_recurso − 4` y calcula el hash del tramo delimitado. Esta comprobación externa no se atribuye al malware.
 
 ```text
 18000102a  LEA R8,[1800092b0]  ; tipo W, tercer argumento
 180001031  MOV EDX,0x65       ; identificador 101
 180001036  CALL [180009030]   ; FindResourceA
-18000108b  MOV ESI,[RDI]      ; DWORD de longitud
+18000108b  MOV ESI,[RDI]      ; DWORD de longitud L
 1800010c4  LEA RDX,[RDI+4]    ; inicio del contenido
 1800010cd  MOV R8D,ESI        ; longitud para WriteFile
 1800010d3  CALL [180009008]   ; solicitud de escritura
 ```
 
-En el C recuperado, pDVar2 es DWORD*. `*pDVar2` lee el campo y `pDVar2 + 1` avanza cuatro bytes, como confirma LEA con +4. La rutina copia; no hay una operación de descifrado en el tramo examinado.
+En el C recuperado, pDVar2 es DWORD*. `*pDVar2` lee el DWORD y `pDVar2 + 1` avanza cuatro bytes; el Listing lo confirma con LEA +4. La rutina copia bytes. En este fragmento no se observa descifrado.
 
-![Figura 7. BPMN de W/101: controles que sí hace el binario y solicitudes de archivo; retorno 1 no garantiza escritura correcta.](../figuras/ec1383.png)
+### Solicitud de escritura y significado del retorno
 
-El hallazgo decisivo está en el manejo de errores. Tras superar los controles iniciales, si CreateFileA falla, se omite WriteFile y aun así se retorna 1. Cuando WriteFile se alcanza, su resultado tampoco gobierna el retorno. Por ello, etiquetar el retorno 1 como «extracción exitosa» sería incorrecto.
+`CreateFileA` solicita crear o abrir `mssecsvc.exe`. Si devuelve `INVALID_HANDLE_VALUE`, el código omite `WriteFile`, pero retorna 1. Si el handle es válido, solicita escribir desde recurso+4 por L bytes, ignora el resultado de `WriteFile`, cierra el handle y retorna 1.
 
-![Figura 7a. BPMN de PlayGame: extracción seguida de solicitud de proceso sin comprobar el retorno intermedio.](../figuras/ec1383_playgame.png)
+![Figura 7d. BPMN de CreateFileA, WriteFile y las dos rutas que retornan 1.](../figuras/ec1383_escritura.png)
+
+Así, «retorno 1» no equivale a «archivo extraído correctamente». La comprobación externa tendría que establecer existencia, tamaño, contenido y SHA-256. El tramo delimitado mide 3.756.032 bytes y tiene el hash `93db4b26…` registrado en el inventario.
 
 ### Solicitud de proceso: 1800010f8
 

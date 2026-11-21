@@ -1,23 +1,26 @@
-digraph BPMN_PlayGame {
-  graph [rankdir=TB, bgcolor="white", pad=.22, nodesep=.28, ranksep=.36,
-         splines=polyline, fontname="DejaVu Sans", label="BPMN didáctico · ec1383 · PlayGame conecta extracción y solicitud de proceso",
-         labelloc=t, fontsize=16];
-  node [fontname="DejaVu Sans", fontsize=10, color="black", fontcolor="black",
-        style="filled", fillcolor="white", margin=".12,.08"];
-  edge [fontname="DejaVu Sans", fontsize=9, color="black", fontcolor="black",
-        arrowsize=.7];
-  subgraph cluster_pool {
-    label="POOL · exportación PlayGame (1800011a4), si alguien la invoca";
-    color="black"; penwidth=1.2; style="rounded"; margin=16;
-    s [shape=circle, fixedsize=true, width=.4, label="", xlabel="Evento de\nentrada externo"];
-    route [shape=box, style="rounded,filled", label="sprintf\nformar C:\\WINDOWS\\mssecsvc.exe"];
-    extract [shape=box, style="rounded,filled", label="1800011c9\nllamar extracción W/101"];
-    launch [shape=box, style="rounded,filled", label="1800011ce\nllamar CreateProcess helper"];
-    end [shape=doublecircle, fixedsize=true, width=.42, label="", xlabel="Retorno 0\nPlayGame"];
-    s -> route -> extract -> launch -> end;
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.12, nodesep=.16, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=16,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".10,.07", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.7, penwidth=1.1];
+  label="ec1383 · PlayGame · en qué orden solicita las acciones";
+  subgraph cluster_pool { label="POOL · exportación 1800011a4"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_code { label="CARRIL · flujo de la exportación"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Si alguien la invoca", fixedsize=true, width=.36];
+      path [shape=box, label="Formar ruta
+mssecsvc.exe", style="rounded,filled"];
+      extract [shape=box, label="Llamar extractor
+W/101", style="rounded,filled"];
+      launch [shape=box, label="Llamar helper
+CreateProcessA", style="rounded,filled"];
+      end [shape=doublecircle, label="", xlabel="Retorno 0", fixedsize=true, width=.36];
+    }
+  s -> path;
+  path -> extract;
+  extract -> launch;
+  launch -> end;
   }
-  note [shape=note, style="filled", label="No hay gateway entre las llamadas: PlayGame no comprueba el retorno\nde extracción antes de solicitar el proceso. La exportación no prueba invocación."];
-  note -> launch [style=dashed, arrowhead=none, constraint=false];
-  osi [shape=note, style="dashed,filled", label="OSI\nLa ruta y el archivo son operaciones locales.\nCreateProcessA no implica por sí solo tráfico de red."];
-  osi -> route [style=dotted, arrowhead=none, constraint=false];
 }

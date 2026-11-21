@@ -1,0 +1,29 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.14, nodesep=.18, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=17,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.72, penwidth=1.1];
+  label="ec1383 · W/101 · etapa 3: escribir y retornar";
+  subgraph cluster_pool { label="POOL · extracción en archivo local"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_lane { label="CARRIL · secuencia del código"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Longitud L", fixedsize=true, width=.36];
+      create [shape=box, label="Solicitar CreateFileA", style="rounded,filled"];
+      g [shape=diamond, label="¿Handle válido?"];
+      write [shape=box, label="Solicitar WriteFile
+recurso +4, L bytes", style="rounded,filled"];
+      close [shape=box, label="Cerrar handle
+ignorar resultado", style="rounded,filled"];
+      yes [shape=doublecircle, label="", xlabel="Retorno 1
+tras WriteFile", fixedsize=true, width=.36];
+      no [shape=doublecircle, label="", xlabel="Retorno 1
+sin escribir", fixedsize=true, width=.36];
+    }
+    s -> create -> g;
+    g -> write [label="Sí"];
+    g -> no [label="No"];
+    write -> close -> yes;
+  }
+}

@@ -1,0 +1,22 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.14, nodesep=.18, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=17,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.72, penwidth=1.1];
+  label="ed01 · etapa 2: entrar a la ruta principal";
+  subgraph cluster_pool { label="POOL · preparación y paquete"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_main { label="CARRIL · secuencia del programa"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Ruta no especial", fixedsize=true, width=.36];
+      prep [shape=box, label="Preparar directorio", style="rounded,filled"];
+      extract [shape=box, label="Llamar extractor
+XIA/2058", style="rounded,filled"];
+      end [shape=doublecircle, label="", xlabel="Continuar", fixedsize=true, width=.36];
+    }
+  s -> prep;
+  prep -> extract;
+  extract -> end;
+  }
+}

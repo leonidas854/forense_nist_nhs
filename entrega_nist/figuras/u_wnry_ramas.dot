@@ -1,0 +1,26 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.14, nodesep=.18, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=17,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.72, penwidth=1.1];
+  label="u.wnry · etapa 2: qué auxiliar selecciona el llamador";
+  subgraph cluster_pool { label="POOL · interpretación del retorno"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_caller { label="CARRIL · secuencia del programa"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Retorno 00401bb0", fixedsize=true, width=.36];
+      g [shape=diamond, label="¿Es no cero?"];
+      proc [shape=box, label="00401a90
+CreateProcessA", style="rounded,filled"];
+      runas [shape=box, label="00401b50
+ShellExecuteExA / runas", style="rounded,filled"];
+      end [shape=doublecircle, label="", xlabel="Continuación no recuperada", fixedsize=true, width=.36];
+    }
+  s -> g;
+  g -> proc [label="Sí"];
+  g -> runas [label="No o error"];
+  proc -> end;
+  runas -> end;
+  }
+}

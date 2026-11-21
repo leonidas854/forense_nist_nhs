@@ -1,0 +1,26 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.14, nodesep=.18, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=17,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.72, penwidth=1.1];
+  label="24d004 · R/1831 · preparar el archivo destino";
+  subgraph cluster_pool { label="POOL · llamadas del extractor"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_lane { label="CARRIL · secuencia del código"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Recurso listo", fixedsize=true, width=.36];
+      move [shape=box, label="Preparar ruta /
+MoveFileExA", style="rounded,filled"];
+      create [shape=box, label="CreateFileA", style="rounded,filled"];
+      g [shape=diamond, label="¿Handle válido?"];
+      end [shape=doublecircle, label="", xlabel="Pasar a escritura", fixedsize=true, width=.36];
+      fail [shape=doublecircle, label="", xlabel="No se escribe", fixedsize=true, width=.36];
+    }
+  s -> move;
+  move -> create;
+  create -> g;
+  g -> end [label="Sí"];
+  g -> fail [label="No"];
+  }
+}

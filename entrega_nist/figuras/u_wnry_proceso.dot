@@ -1,0 +1,21 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.14, nodesep=.18, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=17,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.72, penwidth=1.1];
+  label="u.wnry · proceso · etapa 1: solicitar creación";
+  subgraph cluster_pool { label="POOL · auxiliar 00401a90"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_create { label="CARRIL · secuencia del programa"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Entrada", fixedsize=true, width=.36];
+      api [shape=box, label="CreateProcessA", style="rounded,filled"];
+      g [shape=diamond, label="¿API indica éxito?"];
+      fail [shape=doublecircle, label="", xlabel="No: retorno 0", fixedsize=true, width=.36];
+    }
+  s -> api;
+  api -> g;
+  g -> fail [label="No"];
+  }
+}

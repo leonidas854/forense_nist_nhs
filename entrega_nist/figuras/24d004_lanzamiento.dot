@@ -1,0 +1,23 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.14, nodesep=.18, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=17,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.72, penwidth=1.1];
+  label="24d004 · R/1831 · escribir y solicitar proceso";
+  subgraph cluster_pool { label="POOL · continuación del extractor"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_lane { label="CARRIL · secuencia del código"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="Handle válido", fixedsize=true, width=.36];
+      write [shape=box, label="Solicitar WriteFile
+resultado no controla retorno", style="rounded,filled"];
+      run [shape=box, label="Solicitar CreateProcessA", style="rounded,filled"];
+      end [shape=doublecircle, label="", xlabel="Fin del bloque
+retorno 0", fixedsize=true, width=.36];
+    }
+  s -> write;
+  write -> run;
+  run -> end;
+  }
+}

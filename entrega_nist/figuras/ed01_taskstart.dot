@@ -1,0 +1,24 @@
+digraph BPMN {
+  graph [rankdir=LR, bgcolor="white", pad=.14, nodesep=.18, ranksep=.22,
+         splines=polyline, fontname="DejaVu Sans", labelloc=t, fontsize=17,
+         compound=true, newrank=true];
+  node [fontname="DejaVu Sans", fontsize=14, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08", penwidth=1.2];
+  edge [fontname="DejaVu Sans", fontsize=12, color="black", fontcolor="black",
+        arrowsize=.72, penwidth=1.1];
+  label="ed01 · etapa 4: buscar y llamar TaskStart";
+  subgraph cluster_pool { label="POOL · frontera de la carga siguiente"; color=black; penwidth=1.3; margin=11;
+    subgraph cluster_target { label="CARRIL · secuencia del programa"; color=gray45; style="rounded"; margin=9;
+      s [shape=circle, label="", xlabel="t.wnry procesado", fixedsize=true, width=.36];
+      find [shape=box, label="Buscar TaskStart", style="rounded,filled"];
+      g [shape=diamond, label="¿Destino no nulo?"];
+      call [shape=box, label="CALL EAX", style="rounded,filled"];
+      end [shape=doublecircle, label="", xlabel="Retorno 0", fixedsize=true, width=.36];
+    }
+  s -> find;
+  find -> g;
+  g -> call [label="Sí"];
+  g -> end [label="No"];
+  call -> end;
+  }
+}

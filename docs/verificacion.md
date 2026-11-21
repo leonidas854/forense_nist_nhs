@@ -1,5 +1,25 @@
 # Estado comprobado · 21 de noviembre de 2026
 
+## Revisión visual de BPMN y explicación ampliada · 21 de noviembre de 2026
+
+- Se rehicieron los flujos de 24d004, ed01, u.wnry y ec1383 como diagramas BPMN
+  con piscinas y carriles, compuertas etiquetadas y salidas explícitas. Los caminos
+  largos se dividieron en etapas para separar selección del recurso, validación,
+  escritura, proceso y resultado de retorno.
+- Las figuras ocupan páginas apaisadas en el PDF y el Word editable. Se amplió la
+  explicación de recursos R/1831, XIA/2058 y W/101, así como de handles, `argc`,
+  punteros, atributos, esperas y retornos. Se distingue lo comprobado por el código
+  de las verificaciones externas del analista (CRC, límites, tamaño y SHA-256).
+- La relación con OSI se explica por operación: WinINet/HTTP y los indicios de SMB
+  se separan de recursos PE, archivos, permisos y procesos locales. Las figuras
+  representan lógica estática, no una ejecución observada.
+- La edición práctica quedó en 105 páginas PDF. Se revisaron páginas renderizadas
+  de las figuras y la conversión del Word: mantiene las páginas apaisadas y texto
+  legible. No se modificó la VM ni se ejecutó WannaCry.
+- Verificación editorial: 111 archivos, 16 transcripciones, 20 resultados NIST y
+  enlaces locales; 20 archivos de equipo; 49 archivos y 20 filas de matriz. Estas
+  comprobaciones no prueban actividad del malware ni certificación NIST.
+
 ## Intento controlado de muestra bloqueado · 21 de noviembre
 
 - Se obtuvo del enlace de la fuente Malware-Traffic-Analysis.net la muestra
