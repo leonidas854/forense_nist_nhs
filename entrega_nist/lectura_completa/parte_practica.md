@@ -115,6 +115,12 @@ Un retorno de cero no tiene un significado universal. `memcmp == 0` expresa igua
 
 Estas distinciones explican buena parte del análisis: seguir solo el nombre de una función o su último return lleva a conclusiones incorrectas. Los cuatro capítulos muestran casos concretos.
 
+### 4.7 Cómo leer los diagramas BPMN de los capítulos
+
+Los diagramas son BPMN didáctico de la lógica reconstruida, no una traza de ejecución. El círculo fino marca el inicio del fragmento disponible; el círculo doble, un final o retorno; los rectángulos redondeados son tareas/llamadas; los rombos son compuertas exclusivas (XOR), por lo que se sigue una sola salida según la condición escrita. Las notas con borde continuo describen datos o recursos incorporados; las notas con borde discontinuo son aclaraciones del analista y no pasos del malware. Las flechas continuas son secuencia de control; las asociaciones discontinuas conectan una nota con el punto que explica.
+
+Las compuertas incluyen el valor comprobado, no solo «sí/no»: por ejemplo, `handle == NULL`, `SizeofResource != 0` o `GetFileAttributesA != INVALID_FILE_ATTRIBUTES`. «Pasa» significa que el flujo puede continuar de acuerdo con las instrucciones; no que el efecto externo se completó. Los diagramas de recursos separan validaciones que el binario sí realiza de verificaciones del analista, como cotejar límites y hash. Una zona marcada como incompleta identifica una frontera de conocimiento, no una decisión omitida por conveniencia.
+
 ### 4.6 La pregunta central: qué hace, cómo lo hace y qué ocurre después
 
 Para explicar WannaCry se necesitan tres vistas complementarias: **la comunicación entre equipos**, **la organización de sus componentes** y **las operaciones dentro de Windows**. OSI organiza la primera; los recursos PE y las llamadas entre funciones explican las otras dos. No existe una correspondencia de una función del malware con cada una de las siete capas. Tampoco las siete capas describen siete etapas cronológicas de la infección.
@@ -393,7 +399,7 @@ La función copia una cadena y llama a InternetOpenA e InternetOpenUrlA. Guarda 
 
 El Listing permite verificar la dirección de la rama. No debe invertirse la condición al explicarla: el camino NULL continúa hacia preparación. La API documenta el handle como resultado de apertura; esta función no consulta explícitamente un estado HTTP 200. Tampoco basta decir «con Internet se detiene»: el resultado depende de la operación concreta. [API1]
 
-![Figura 4. Decisión en 00408140; ambos caminos retornan cero.](../figuras/24d004.png)
+![Figura 4. BPMN de la decisión en 00408140 y la ruta por argumentos; ambos caminos terminan con sus retornos documentados.](../figuras/24d004.png)
 
 ### Distribución por argumentos: 00408090 y 00407f20
 
@@ -420,6 +426,8 @@ La función resuelve dinámicamente varias APIs de kernel32 mediante GetProcAddr
 
 El recurso empieza en offset 204.964 del archivo y mide 3.514.368 bytes. La extracción preservada coincide con ed01… según los cotejos documentados. Esta es una relación de contenido fuerte; no demuestra el momento de lanzamiento. Las llamadas indirectas y sprintf del decompilado tienen argumentos imperfectos, por lo que su lectura exige Listing. No se interpreta una variable automática como puntero confirmado solo por su posición en el C recuperado.
 
+![Figura 4a. BPMN detallado de selección, validación y solicitudes posteriores al recurso R/1831. La nota distingue controles del binario de cotejos del analista.](../figuras/24d004_recurso.png)
+
 ### Referencia a 445: 00407480
 
 La constante 0x1bd equivale a 445 y aparece junto a llamadas de WS2_32 por ordinal. Se reconoce un contexto de comunicación de red. El nombre descriptivo del analista facilita navegación, pero no reemplaza la identificación de prototipos, parámetros y llamadas. Esta función seleccionada no constituye una demostración integral de EternalBlue ni una conexión observada.
@@ -434,6 +442,17 @@ La constante 0x1bd equivale a 445 y aparece junto a llamadas de WS2_32 por ordin
 | ¿Explota otro host? | Rutina con constante 445 e importaciones | Cadena completa y artefactos del host/red |
 
 Para revisar, localizar el hash, abrir cada dirección, marcar precondiciones, contrastar TEST/JNZ y registrar la relación del recurso. No contactar el dominio ni ejecutar el componente. NIST: RS.AN-03 para el razonamiento, RS.AN-07 para identidad, DE.CM-09 para futuras fuentes de ejecución y GV.OV-01 para relacionar la lección histórica de supervisión.
+
+### Lectura por capas OSI: qué aplica y qué queda fuera
+
+| Evidencia del código | Capa / relación | Qué puede concluirse | Qué no prueba este fragmento |
+|---|---|---|---|
+| `InternetOpenA` / `InternetOpenUrlA` en 00408140 | Capa 7, aplicación (WinINet/HTTP) | El programa solicita abrir una URL y ramifica por handle nulo/no nulo | Respuesta HTTP 200, contenido recibido, DNS observado o conexión efectiva |
+| TCP/IP, direccionamiento y enlace que usaría Windows si WinINet comunica | Capas 4–1, dependientes de la pila del sistema | Son las capas necesarias para transportar una petición HTTP en una red habilitada | No se reconstruyen desde esta función ni se observaron en el intento bloqueado |
+| `0x1bd` (445) junto a WS2_32 en 00407480 | Posible actividad de transporte/SMB; el puerto por sí solo no define OSI | Hay un indicador que merece seguirse por referencias, llamadas, parámetros y destinos | No basta para asignar toda la función a SMB, demostrar explotación, éxito o propagación |
+| SCM, recursos PE, archivos y CreateProcess | Operaciones locales de Windows, fuera de OSI | El componente solicita servicio, acceso a un recurso y operaciones de archivo/proceso | Instalación efectiva, escritura real o creación/éxito del proceso |
+
+**Idea para explicar en clase:** OSI sirve para ordenar la comunicación cuando existe tráfico. No todo el programa «pasa por capas»: control de servicios, lectura de recursos y creación de procesos ocurren dentro del sistema operativo. El código estático muestra una petición de capa de aplicación y un indicio separado asociado a 445; el PCAP externo es evidencia distinta y aporta observaciones de red que no deben atribuirse automáticamente a la ejecución local.
 
 **Conclusión del componente:** se comprueba una decisión y un mecanismo de preparación y extracción. La historia del NHS explica por qué esos mecanismos importan, pero su ocurrencia en un hospital específico no se deriva del código local.
 
@@ -467,9 +486,11 @@ El camino posterior establece un directorio de trabajo, llama a auxiliares y a l
 
 Después aparecen condiciones sobre auxiliares de preparación, lectura de t.wnry, procesamiento posterior y obtención de un destino asociado a TaskStart. Solo si esas condiciones permiten continuar se realiza la llamada indirecta. Los nombres de auxiliares automáticos no constituyen una explicación de sus cuerpos.
 
-![Figura 5. Preparación y condiciones principales hacia la llamada indirecta; las condiciones agrupadas se explican en el texto.](../figuras/ed01.png)
+![Figura 5. BPMN de preparación y condiciones principales hacia la llamada indirecta; las compuertas agrupadas se explican en el texto.](../figuras/ed01.png)
 
 El primer rombo resume la rama especial inicial completa: cantidad de argumentos, comparación y resultados auxiliares. El rombo posterior resume comprobaciones sucesivas; no significa una sola API. El decompilado íntegro del anexo permite revisar cada condición individual.
+
+![Figura 5a. BPMN del paquete XIA/2058: localización, validaciones, recorrido, tratamiento de c.wnry y límites de retorno.](../figuras/ed01_recurso.png)
 
 ### Auxiliar de proceso: 00401064
 
@@ -497,6 +518,18 @@ La decompilación permite reconocer la búsqueda y llamada condicionada hacia un
 El hallazgo más fuerte es la relación entre recurso, paquete y miembros, junto con las condiciones que limitan la llamada indirecta. La confianza es alta en los bytes y referencias preservados; el resultado de ejecución permanece no observado. Una ausencia de salida en un entorno externo podría tener varias explicaciones y no se resuelve con este decompilado.
 
 Para estudiar, dibujar el árbol padre-hijo, anotar el tratamiento de c.wnry, separar las llamadas asíncronas y marcar la frontera TaskStart. La ampliación debe revisar los auxiliares de transformación y convenios de llamada antes de caracterizar el cifrador. NIST SP 800-86 organiza el examen; RS.AN-06 y RS.AN-07 requieren conservar actuación, identidad, datos y procedencia.
+
+### Lectura por capas OSI: paquete local y ausencia de protocolo en la rutina
+
+| Operación observada | Capa OSI | Explicación y límite |
+|---|---|---|
+| `FindResourceA`, `LoadResource`, `LockResource`, `SizeofResource` | No aplica | Accede al directorio de recursos PE ya contenido en el archivo. No es una descarga ni comunicación de red. |
+| Abrir el paquete XIA/2058 y recorrer sus 36 miembros | No aplica | El ZIP se identifica mediante examen estático de bytes/estructura y CRC. El nombre XIA no es una capa ni prueba el formato. |
+| `GetFileAttributesA`, extracción, `SetFileAttributes`/operaciones de permisos | No aplica | Son consultas y solicitudes locales de archivos/ACL de Windows. Que el código las solicite no confirma efecto. |
+| `CreateProcessA`, espera y cierre de handles | No aplica | Gestión local de procesos; no es tráfico de red ni evidencia de una sesión. |
+| Transporte de paquetes SMB que pudo participar en la propagación general de WannaCry | Capas 7 y 4–1, si la actividad de red correspondiente está presente | El contexto histórico y la captura externa se estudian en secciones separadas. Las funciones aquí examinadas no contienen evidencia suficiente para atribuir esa comunicación a ed01. |
+
+**Clave didáctica:** no forzar una etiqueta OSI para cada llamada. En este módulo, las capas OSI no describen el acceso a recursos embebidos, ZIP ni permisos. Para hablar de red se necesitan funciones/protocolos identificables o artefactos de tráfico correlacionados; la relación estática de ed01 con un paquete no aporta por sí sola esos datos.
 
 **Conclusión del componente:** ed01… organiza y prepara un paquete con un camino condicionado hacia otra carga. El análisis no demuestra el éxito de todas las extracciones, los efectos de los comandos ni la ejecución completa del cifrador.
 
@@ -530,7 +563,7 @@ La función construye el SID correspondiente al grupo de administradores y consu
 
 El flujo del llamador selecciona una ruta según ese retorno. Un valor no cero conduce hacia la auxiliar de creación de proceso; el camino cero hacia la auxiliar de ShellExecuteExA. No debe afirmarse que todo cero significa exclusivamente «usuario no administrador»: también puede representar una falla de consulta.
 
-![Figura 6. Selección de auxiliares en el fragmento de u.wnry; las condiciones anteriores no se representan.](../figuras/u_wnry.png)
+![Figura 6. BPMN del fragmento disponible: dato, consulta del SID/token y selección de auxiliares. El inicio real del bloque no está recuperado.](../figuras/u_wnry.png)
 
 ### Solicitud con runas: 00401b50
 
@@ -557,6 +590,17 @@ El mecanismo hace relevante estudiar la capacidad de recuperación. La relación
 | Efecto real | Pendiente: necesitaría estado de recuperación antes/después |
 
 NIST: PR.DS-11 justifica copias mantenidas y probadas; RC.RP-03 pide verificar su aptitud antes de usarlas y RC.RP-05 verificar el funcionamiento después. Un snapshot de laboratorio no debe confundirse con la estrategia institucional de respaldo.
+
+### Lectura por capas OSI: acciones locales relacionadas con recuperación
+
+| Fragmento | Capa / ámbito | Interpretación correcta |
+|---|---|---|
+| Cadena en 00420fd8 | Dato local | La cadena no es una trama, paquete ni sesión. Las referencias muestran dónde se usa. |
+| `AllocateAndInitializeSid` y `CheckTokenMembership` | Seguridad local de Windows | Construye un identificador de grupo y consulta pertenencia habilitada en el token. No consulta un servidor remoto ni demuestra privilegio efectivo fuera de ese proceso. |
+| `ShellExecuteExA` con verbo `runas`, `CreateProcessA`, espera/terminación | Gestión local de procesos | Solicita una acción del shell o la creación/espera de proceso. La solicitud no confirma elevación, ejecución completa ni efecto sobre respaldos. |
+| Capas 7–1 | No hay flujo OSI demostrado en el tramo seleccionado | No se observan API de red ni destino/protocolo en esta evidencia concreta. La actividad de red de WannaCry debe justificarse con otros componentes o PCAP. |
+
+La función de cifrado de archivos tampoco se asigna a una «capa OSI»: puede operar sobre datos locales en la capa de aplicación del sistema, pero eso no es una comunicación de red. En esta ficha, la pregunta forense es qué datos y procesos locales solicita, bajo qué condiciones y con qué resultado observado.
 
 **Conclusión del componente:** se observa una conexión estática entre datos y solicitudes de proceso relevantes para recuperación. La decompilación incompleta del llamador y la falta de ejecución impiden afirmar el efecto final. Para ampliar el estudio hay que recuperar límites y flujo del bloque sin modificar el binario original.
 
@@ -605,9 +649,11 @@ La rutina realiza comprobaciones iniciales de FindResourceA, LoadResource, LockR
 
 En el C recuperado, pDVar2 es DWORD*. `*pDVar2` lee el campo y `pDVar2 + 1` avanza cuatro bytes, como confirma LEA con +4. La rutina copia; no hay una operación de descifrado en el tramo examinado.
 
-![Figura 7. Extracción de W/101: el retorno 1 no garantiza una escritura correcta.](../figuras/ec1383.png)
+![Figura 7. BPMN de W/101: controles que sí hace el binario y solicitudes de archivo; retorno 1 no garantiza escritura correcta.](../figuras/ec1383.png)
 
 El hallazgo decisivo está en el manejo de errores. Tras superar los controles iniciales, si CreateFileA falla, se omite WriteFile y aun así se retorna 1. Cuando WriteFile se alcanza, su resultado tampoco gobierna el retorno. Por ello, etiquetar el retorno 1 como «extracción exitosa» sería incorrecto.
+
+![Figura 7a. BPMN de PlayGame: extracción seguida de solicitud de proceso sin comprobar el retorno intermedio.](../figuras/ec1383_playgame.png)
 
 ### Solicitud de proceso: 1800010f8
 
@@ -624,6 +670,17 @@ El usuario informó que ANY.RUN mostró un error 500 en su página. No hay infor
 ### Criterios de revisión
 
 La revisión debe verificar formato real, orden de llamadas, aritmética de +4, longitud, identidad del PE y retornos. Para ampliar harían falta inicialización del handle de módulo, referencias a PlayGame y contexto de invocación, manteniendo separada la procedencia externa. RS.AN-03 organiza la explicación causal; RS.AN-07 exige identidad y procedencia; RS.AN-06 exige registrar qué revisión se hizo realmente.
+
+### Lectura por capas OSI: recurso W/101 y lanzamiento local
+
+| Evidencia | Capa / ámbito | Qué significa y qué no significa |
+|---|---|---|
+| `FindResourceA` tipo W, ID 101; `LoadResource`, `LockResource` | No aplica | Selecciona y accede a datos ya embebidos en la DLL. W/101 no es una URL ni un puerto. |
+| Lectura del DWORD inicial y `WriteFile` a una ruta local | No aplica | Interpreta una longitud y solicita guardar bytes en el sistema de archivos. No hay encapsulado de red demostrado. |
+| `CreateProcessA` en 1800010f8 | No aplica | Solicita iniciar un programa local. La API no acredita proceso resultante ni tráfico posterior. |
+| Capas 7–1 | No se demuestra actividad de red en las funciones seleccionadas | Para asignar HTTP, SMB u otro protocolo se necesitan llamadas, argumentos o captura atribuibles; no se infiere por la familia o por el nombre DLL. |
+
+**Cómo explicarlo:** las capas OSI ayudan a analizar la propagación por SMB cuando se demuestra tráfico; W/101 pertenece a la estructura del archivo PE y la extracción ocurre dentro de Windows. Son planos distintos del análisis. La DLL podría estar integrada en una cadena más amplia, pero la función observada no demuestra qué proceso la invocó ni qué comunicación siguió.
 
 **Conclusión del componente:** ec1383… aporta un mecanismo de depósito y solicitud de lanzamiento de otra carga. Es útil para explicar arquitectura y límites de interpretación, pero su pertenencia a una cadena concreta de infección del NHS permanece no demostrada.
 

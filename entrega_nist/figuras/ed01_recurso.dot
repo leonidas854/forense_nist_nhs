@@ -1,0 +1,58 @@
+digraph BPMN_XIA {
+  graph [rankdir=TB, bgcolor="white", pad=.22, nodesep=.28, ranksep=.34,
+         splines=polyline, fontname="DejaVu Sans", label="BPMN didáctico · ed01 · localizar y recorrer XIA/2058 (00401dab)",
+         labelloc=t, fontsize=16];
+  node [fontname="DejaVu Sans", fontsize=10, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="black", fontcolor="black",
+        arrowsize=.7];
+
+  subgraph cluster_pool {
+    label="POOL · rutina de acceso al recurso y recorrido del paquete";
+    color="black"; penwidth=1.2; style="rounded"; margin=16;
+    s [shape=circle, fixedsize=true, width=.4, label="", xlabel="Entrada\n00401dab"];
+    find [shape=box, style="rounded,filled", label="FindResourceA\ntipo XIA · ID 0x80a (2058)"];
+    g1 [shape=diamond, label="¿Referencia != NULL?"];
+    load [shape=box, style="rounded,filled", label="LoadResource"];
+    g2 [shape=diamond, label="¿Datos cargados?"];
+    lock [shape=box, style="rounded,filled", label="LockResource"];
+    g3 [shape=diamond, label="¿Puntero != NULL?"];
+    size [shape=box, style="rounded,filled", label="SizeofResource\nobtener tamaño"];
+    open [shape=box, style="rounded,filled", label="004075ad\nabrir/interpretar paquete\nla identificación ZIP procede del examen"];
+    g4 [shape=diamond, label="¿Auxiliar devuelve\nhandle != 0?"];
+    count [shape=box, style="rounded,filled", label="004075c4(...,-1,...)\nobtener cantidad"];
+    more [shape=diamond, label="¿Quedan entradas?\ni < cantidad"];
+    item [shape=box, style="rounded,filled", label="004075c4(handle,i,...)\nobtener nombre de entrada"];
+    is_c [shape=diamond, label="¿Nombre == c.wnry?"];
+    attr [shape=box, style="rounded,filled", label="GetFileAttributesA\nconsultar c.wnry"];
+    exists [shape=diamond, label="¿Atributos != INVALID_FILE_ATTRIBUTES?"];
+    extract [shape=box, style="rounded,filled", label="0040763d\nsolicitar extracción de entrada"];
+    skip [shape=box, style="rounded,filled", label="Omitir la llamada de extracción\nsolo c.wnry ya existente"];
+    inc [shape=box, style="rounded,filled", label="Incrementar índice"];
+    close [shape=box, style="rounded,filled", label="00407656\ncerrar paquete"];
+    fail [shape=doublecircle, fixedsize=true, width=.42, label="", xlabel="Fin\nretorno 0"];
+    success [shape=doublecircle, fixedsize=true, width=.42, label="", xlabel="Fin\nretorno 1"];
+
+    s -> find -> g1;
+    g1 -> load [label="Sí"]; g1 -> fail [label="No"];
+    load -> g2; g2 -> lock [label="Sí"]; g2 -> fail [label="No"];
+    lock -> g3; g3 -> size [label="Sí"]; g3 -> fail [label="No"];
+    size -> open -> g4;
+    g4 -> count [label="Sí"]; g4 -> fail [label="No"];
+    count -> more;
+    more -> close [label="No\nincluye 0 entradas"];
+    more -> item [label="Sí"];
+    item -> is_c;
+    is_c -> extract [label="No"];
+    is_c -> attr [label="Sí"];
+    attr -> exists;
+    exists -> skip [label="Sí\nya existe"];
+    exists -> extract [label="No\nno disponible según API"];
+    extract -> inc; skip -> inc; inc -> more;
+    close -> success;
+  }
+  data [shape=note, style="filled", label="RECURSO INCORPORADO\nXIA / 2058 · ZIP verificado en análisis estático\n36 miembros; 3.446.325 bytes\nContraseña/argumento se pasa a 004075ad"];
+  data -> find [style=dashed, arrowhead=none, constraint=false];
+  analyst [shape=note, style="dashed,filled", label="VERIFICACIÓN FUERA DEL CÓDIGO\nEl analista valida estructura, CRC y hashes de extracción.\nEl retorno 1 no garantiza escritura correcta de cada miembro."];
+  analyst -> data [style=dotted, arrowhead=none, constraint=false];
+}

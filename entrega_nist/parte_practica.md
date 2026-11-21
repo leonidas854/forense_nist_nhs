@@ -115,6 +115,12 @@ Un retorno de cero no tiene un significado universal. `memcmp == 0` expresa igua
 
 Estas distinciones explican buena parte del análisis: seguir solo el nombre de una función o su último return lleva a conclusiones incorrectas. Los cuatro capítulos muestran casos concretos.
 
+### 4.7 Cómo leer los diagramas BPMN de los capítulos
+
+Los diagramas son BPMN didáctico de la lógica reconstruida, no una traza de ejecución. El círculo fino marca el inicio del fragmento disponible; el círculo doble, un final o retorno; los rectángulos redondeados son tareas/llamadas; los rombos son compuertas exclusivas (XOR), por lo que se sigue una sola salida según la condición escrita. Las notas con borde continuo describen datos o recursos incorporados; las notas con borde discontinuo son aclaraciones del analista y no pasos del malware. Las flechas continuas son secuencia de control; las asociaciones discontinuas conectan una nota con el punto que explica.
+
+Las compuertas incluyen el valor comprobado, no solo «sí/no»: por ejemplo, `handle == NULL`, `SizeofResource != 0` o `GetFileAttributesA != INVALID_FILE_ATTRIBUTES`. «Pasa» significa que el flujo puede continuar de acuerdo con las instrucciones; no que el efecto externo se completó. Los diagramas de recursos separan validaciones que el binario sí realiza de verificaciones del analista, como cotejar límites y hash. Una zona marcada como incompleta identifica una frontera de conocimiento, no una decisión omitida por conveniencia.
+
 {{INCLUIR:enfoque_osi.md}}
 
 ## 5. Entorno de laboratorio y herramientas

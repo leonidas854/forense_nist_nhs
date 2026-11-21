@@ -1,0 +1,51 @@
+digraph BPMN_R1831 {
+  graph [rankdir=TB, bgcolor="white", pad=.22, nodesep=.26, ranksep=.34,
+         splines=polyline, fontname="DejaVu Sans", label="BPMN didáctico · 24d004 · selección de R/1831 (00407ce0)",
+         labelloc=t, fontsize=16];
+  node [fontname="DejaVu Sans", fontsize=10, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="black", fontcolor="black",
+        arrowsize=.7];
+
+  subgraph cluster_pool {
+    label="POOL · rutina de extracción dentro del proceso";
+    color="black"; penwidth=1.2; style="rounded"; margin=16;
+    s [shape=circle, fixedsize=true, width=.4, label="", xlabel="Entrada\n00407ce0"];
+    module [shape=box, style="rounded,filled", label="GetModuleHandleW\n(kernel32.dll)"];
+    m [shape=diamond, label="¿Módulo válido?\nGateway exclusivo"];
+    apis [shape=box, style="rounded,filled", label="GetProcAddress x4\nCreateProcessA / CreateFileA\nWriteFile / CloseHandle"];
+    a [shape=diamond, label="¿Todas las direcciones\nde API son distintas de NULL?"];
+    find [shape=box, style="rounded,filled", label="FindResourceA\ntipo R · ID 0x727 (1831)"];
+    f [shape=diamond, label="¿Referencia del recurso\nválida?"];
+    load [shape=box, style="rounded,filled", label="LoadResource"];
+    l [shape=diamond, label="¿Datos cargados?"];
+    lock [shape=box, style="rounded,filled", label="LockResource"];
+    k [shape=diamond, label="¿Puntero válido?"];
+    size [shape=box, style="rounded,filled", label="SizeofResource"];
+    z [shape=diamond, label="¿Tamaño distinto de cero?"];
+    paths [shape=box, style="rounded,filled", label="Preparar rutas\ny solicitar MoveFileExA\n(no comprobar retorno aquí)"];
+    create [shape=box, style="rounded,filled", label="CreateFileA\nsolicitud de archivo destino"];
+    h [shape=diamond, label="¿Handle de archivo válido?"];
+    write [shape=box, style="rounded,filled", label="WriteFile\nresultado no gobierna el retorno"];
+    run [shape=box, style="rounded,filled", label="CreateProcessA\nsolicitud posterior a la escritura"];
+    ret [shape=doublecircle, fixedsize=true, width=.42, label="", xlabel="Fin\nretorno 0"];
+    ret1 [shape=doublecircle, fixedsize=true, width=.42, label="", xlabel="Fin\nretorno 0"];
+    out1 [shape=doublecircle, fixedsize=true, width=.42, label="", xlabel="Fin del bloque\nretorno 0"];
+
+    s -> module -> m;
+    m -> apis [label="Sí"]; m -> ret [label="No"];
+    apis -> a; a -> find [label="Sí"]; a -> ret [label="No"];
+    find -> f; f -> load [label="Sí"]; f -> ret [label="No"];
+    load -> l; l -> lock [label="Sí"]; l -> ret [label="No"];
+    lock -> k; k -> size [label="Sí"]; k -> ret [label="No"];
+    size -> z; z -> paths [label="Sí"]; z -> ret [label="No"];
+    paths -> create -> h;
+    h -> ret1 [label="No\nse omite escritura"];
+    h -> write [label="Sí"];
+    write -> run -> out1;
+  }
+  res [shape=note, style="filled", label="DATO INCORPORADO\nR / 1831\nTipo R; ID 0x727\nTamaño extraído: 3.514.368 bytes\nCoincide con ed01… por hash"];
+  res -> find [style=dashed, arrowhead=none, constraint=false];
+  analyst [shape=note, style="dashed,filled", label="COMPROBACIÓN DEL ANALISTA (fuera del flujo del malware)\nComparar tamaño/hash del recurso y del archivo extraído.\nNo atribuir este cotejo a la rutina ni confundir hash con byte a byte."];
+  analyst -> res [style=dotted, arrowhead=none, constraint=false];
+}

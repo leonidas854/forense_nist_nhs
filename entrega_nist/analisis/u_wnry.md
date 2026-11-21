@@ -25,7 +25,7 @@ La función construye el SID correspondiente al grupo de administradores y consu
 
 El flujo del llamador selecciona una ruta según ese retorno. Un valor no cero conduce hacia la auxiliar de creación de proceso; el camino cero hacia la auxiliar de ShellExecuteExA. No debe afirmarse que todo cero significa exclusivamente «usuario no administrador»: también puede representar una falla de consulta.
 
-![Figura 6. Selección de auxiliares en el fragmento de u.wnry; las condiciones anteriores no se representan.](../figuras/u_wnry.png)
+![Figura 6. BPMN del fragmento disponible: dato, consulta del SID/token y selección de auxiliares. El inicio real del bloque no está recuperado.](../figuras/u_wnry.png)
 
 ### Solicitud con runas: 00401b50
 
@@ -52,5 +52,16 @@ El mecanismo hace relevante estudiar la capacidad de recuperación. La relación
 | Efecto real | Pendiente: necesitaría estado de recuperación antes/después |
 
 NIST: PR.DS-11 justifica copias mantenidas y probadas; RC.RP-03 pide verificar su aptitud antes de usarlas y RC.RP-05 verificar el funcionamiento después. Un snapshot de laboratorio no debe confundirse con la estrategia institucional de respaldo.
+
+### Lectura por capas OSI: acciones locales relacionadas con recuperación
+
+| Fragmento | Capa / ámbito | Interpretación correcta |
+|---|---|---|
+| Cadena en 00420fd8 | Dato local | La cadena no es una trama, paquete ni sesión. Las referencias muestran dónde se usa. |
+| `AllocateAndInitializeSid` y `CheckTokenMembership` | Seguridad local de Windows | Construye un identificador de grupo y consulta pertenencia habilitada en el token. No consulta un servidor remoto ni demuestra privilegio efectivo fuera de ese proceso. |
+| `ShellExecuteExA` con verbo `runas`, `CreateProcessA`, espera/terminación | Gestión local de procesos | Solicita una acción del shell o la creación/espera de proceso. La solicitud no confirma elevación, ejecución completa ni efecto sobre respaldos. |
+| Capas 7–1 | No hay flujo OSI demostrado en el tramo seleccionado | No se observan API de red ni destino/protocolo en esta evidencia concreta. La actividad de red de WannaCry debe justificarse con otros componentes o PCAP. |
+
+La función de cifrado de archivos tampoco se asigna a una «capa OSI»: puede operar sobre datos locales en la capa de aplicación del sistema, pero eso no es una comunicación de red. En esta ficha, la pregunta forense es qué datos y procesos locales solicita, bajo qué condiciones y con qué resultado observado.
 
 **Conclusión del componente:** se observa una conexión estática entre datos y solicitudes de proceso relevantes para recuperación. La decompilación incompleta del llamador y la falta de ejecución impiden afirmar el efecto final. Para ampliar el estudio hay que recuperar límites y flujo del bloque sin modificar el binario original.

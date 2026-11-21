@@ -1,0 +1,23 @@
+digraph BPMN_PlayGame {
+  graph [rankdir=TB, bgcolor="white", pad=.22, nodesep=.28, ranksep=.36,
+         splines=polyline, fontname="DejaVu Sans", label="BPMN didáctico · ec1383 · PlayGame conecta extracción y solicitud de proceso",
+         labelloc=t, fontsize=16];
+  node [fontname="DejaVu Sans", fontsize=10, color="black", fontcolor="black",
+        style="filled", fillcolor="white", margin=".12,.08"];
+  edge [fontname="DejaVu Sans", fontsize=9, color="black", fontcolor="black",
+        arrowsize=.7];
+  subgraph cluster_pool {
+    label="POOL · exportación PlayGame (1800011a4), si alguien la invoca";
+    color="black"; penwidth=1.2; style="rounded"; margin=16;
+    s [shape=circle, fixedsize=true, width=.4, label="", xlabel="Evento de\nentrada externo"];
+    route [shape=box, style="rounded,filled", label="sprintf\nformar C:\\WINDOWS\\mssecsvc.exe"];
+    extract [shape=box, style="rounded,filled", label="1800011c9\nllamar extracción W/101"];
+    launch [shape=box, style="rounded,filled", label="1800011ce\nllamar CreateProcess helper"];
+    end [shape=doublecircle, fixedsize=true, width=.42, label="", xlabel="Retorno 0\nPlayGame"];
+    s -> route -> extract -> launch -> end;
+  }
+  note [shape=note, style="filled", label="No hay gateway entre las llamadas: PlayGame no comprueba el retorno\nde extracción antes de solicitar el proceso. La exportación no prueba invocación."];
+  note -> launch [style=dashed, arrowhead=none, constraint=false];
+  osi [shape=note, style="dashed,filled", label="OSI\nLa ruta y el archivo son operaciones locales.\nCreateProcessA no implica por sí solo tráfico de red."];
+  osi -> route [style=dotted, arrowhead=none, constraint=false];
+}
