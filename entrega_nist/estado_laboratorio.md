@@ -63,3 +63,30 @@ desfase aproximado de cinco horas entre relojes. Se validó el uso de PowerShell
 y herramientas integradas, no los paquetes descargados. La copia se apagó al
 finalizar y se comprobó el aislamiento; las pruebas del laboratorio son ahora
 19, al añadir el control de transferencias por portapapeles. No hubo detonación.
+
+### Actualización: revisión de tráfico con Wireshark, 21 de noviembre
+
+La copia `forense-nhs-win10-copia` se comprobó apagada: ocho NIC desactivadas,
+sin carpetas compartidas, clipboard, transferencia de archivos por clipboard,
+drag/drop, USB ni VRDE. No se habilitó ninguna red. La configuración ya satisface
+el aislamiento requerido para manipular la captura offline; no era necesario
+modificar la VM ni exponerla a un segmento de red.
+
+Se utilizó TShark 4.7.4, componente de línea de comandos de Wireshark instalado
+en el anfitrión, para analizar un PCAP externo de un laboratorio de pruebas. La
+fuente declara el mismo SHA-256 del ejemplar 24d004… examinado estáticamente.
+La captura y su registro de procedencia permanecen bajo `local/` y fuera de Git.
+Esto completa una revisión de tráfico reproducible; no es captura hecha por
+nuestro equipo, no es tráfico del NHS, no se instaló Wireshark dentro del invitado
+y no se ejecutó WannaCry en la VM.
+
+Para permitir que el equipo estudie el mismo archivo sin red, se creó
+`local/wannacry-pcap-lectura.iso` con el PCAP y una guía de filtros, sin incluir
+el ejecutable del malware. El ISO es de tipo `readonly`, su SHA-256 es
+`4357060927ffaa75ebbfe267fcaa126558cba80305b1459b65df9e2652074771` y está
+adjunto a SATA 3 de `forense-nhs-win10-copia`. El contenido extraído del ISO
+coteja con el SHA-256 del PCAP. Wireshark todavía no está instalado ni se declara
+abierto dentro del invitado; el instalador oficial 4.6.9 está en el DVD de
+herramientas en SATA 2. La revisión ya se realizó con TShark 4.7.4 en el
+anfitrión; la unidad proporciona una copia offline, de solo lectura, para que el
+equipo pueda seguir las mismas conversaciones en la interfaz de Wireshark.

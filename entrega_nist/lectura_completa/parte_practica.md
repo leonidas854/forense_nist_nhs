@@ -1,12 +1,26 @@
-# Parte práctica: examen estático de cuatro componentes de WannaCry con Ghidra
+# Parte práctica: análisis estático de WannaCry con Ghidra y revisión offline de tráfico
 
 ## 1. Propósito y resultados disponibles
 
 Esta parte permite estudiar cómo se pasa de un archivo a una conclusión forense defendible. Integra cuatro capítulos por componente, diagramas, fragmentos de desensamblado y las 16 transcripciones de pseudocódigo preservadas. La autoría corresponde a los ocho autores de la portada; no se atribuyen actuaciones individuales que no estén registradas.
 
-El resultado técnico disponible es **análisis estático seleccionado**. Se comprobaron identidades y relaciones de contenido y se revisaron ramas de funciones. No se ejecutó WannaCry ni se observó su impacto en un sistema. Las actividades que aún no se han realizado se presentan como procedimientos futuros, con criterios de aceptación, y no como resultados.
+El resultado técnico disponible combina **análisis estático seleccionado** con revisión offline de una captura de red externa producida por un laboratorio que declara haber utilizado el mismo hash de muestra. Se comprobaron identidades y relaciones de contenido, ramas de funciones y tráfico SMB registrado por TShark. No se ejecutó WannaCry en la VM de este equipo ni se observó impacto local; la captura externa no es del NHS. Las actividades no realizadas se identifican sin presentarlas como resultados.
 
 La secuencia de estudio es: método → identidad de los objetos → recursos y capas → lectura de cada componente → correlación de hallazgos → NIST → práctica benigna y revisión. El informe general contiene la reconstrucción histórica; esta parte explica cómo sostener las afirmaciones técnicas. Ambos documentos distinguen el NHS de Inglaterra de los archivos del laboratorio.
+
+### Qué es WannaCry: familia, ransomware y gusano
+
+**WannaCry** (también llamado WannaCrypt, WanaCrypt0r o WCry) es un nombre de familia/linaje para malware de Windows asociado al brote de mayo de 2017. Una familia agrupa muestras relacionadas; no es un solo archivo. El SHA-256 identifica el ejemplar exacto que se examinó. MITRE ATT&CK cataloga esos nombres relacionados como S0366. [T1; T3]
+
+| Concepto | Explicación sencilla | Evidencia que lo respalda en este estudio |
+|---|---|---|
+| Ransomware | Intenta dejar los archivos inaccesibles, cifrarlos y exigir dinero para recuperarlos | Microsoft describe archivos cifrados, nota y demanda de rescate. Nuestro análisis estático no reconstruye el cifrador completo |
+| Gusano (worm) | Puede buscar y propagarse a otros equipos por red sin que alguien tenga que volver a abrir cada copia | Microsoft y CISA describen la propagación usando vulnerabilidades de SMBv1. El PCAP externo muestra comunicaciones SMB del mismo hash de muestra |
+| Familia | Conjunto de variantes o componentes relacionados; sus nombres no garantizan contenido idéntico | El ejemplar 24d004… se identifica por SHA-256 completo. El sitio que publicó el PCAP informa ese mismo hash para el binario lanzado en su laboratorio |
+
+La forma breve es **ransomware con capacidad de gusano** (a veces «ransomworm»). El ransomware explica el impacto sobre archivos y la extorsión; la capacidad de gusano explica el alcance automático en red. Sus componentes pueden separar comprobación del kill switch, propagación y cifrado. No todas las fases se demuestran con el mismo artefacto, y una conversación SMB no prueba por sí sola que la explotación tuvo éxito. [T1; T3; T4]
+
+La revisión de Wireshark descrita en 5.3 es un PCAP real de un laboratorio externo que usó el mismo hash; no es tráfico del NHS ni una detonación realizada por el equipo. Los archivos de la captura se mantienen fuera de Git.
 
 ## 2. Método forense aplicado a la práctica
 
@@ -105,7 +119,7 @@ Estas distinciones explican buena parte del análisis: seguir solo el nombre de 
 
 Para explicar WannaCry se necesitan tres vistas complementarias: **la comunicación entre equipos**, **la organización de sus componentes** y **las operaciones dentro de Windows**. OSI organiza la primera; los recursos PE y las llamadas entre funciones explican las otras dos. No existe una correspondencia de una función del malware con cada una de las siete capas. Tampoco las siete capas describen siete etapas cronológicas de la infección.
 
-En esta revisión, «observado en el código» significa encontrado en las transcripciones y el Listing conservados del 15/11/2026. No significa ejecutado. «Histórico» procede de fuentes del incidente; «esperable» describe un artefacto que habría que adquirir y comprobar. No se obtuvieron paquetes de una ejecución de WannaCry ni registros de un hospital.
+En esta revisión, «observado en el código» significa encontrado en las transcripciones y el Listing conservados del 15/11/2026. No significa ejecutado. «Histórico» procede de fuentes del incidente; «esperable» describe un artefacto que habría que adquirir y comprobar. No se capturaron paquetes en una ejecución local ni se obtuvieron registros de un hospital. La sección 5.3 de la parte práctica analiza un PCAP externo de laboratorio con el mismo SHA-256 de muestra; ese archivo no es tráfico del NHS.
 
 La exposición utilizará esta secuencia para cada mecanismo: **entrada → condición → API y recurso → efecto solicitado → siguiente llamada → evidencia necesaria**. Cuando falte el cuerpo de una auxiliar, se señalará esa frontera. El objetivo es explicar una relación causal comprobable, incluyendo sus posibles fallos. Para el trabajo forense, cada afirmación debe quedar vinculada a adquisición/preservación, examen, análisis e informe, conforme a SP 800-86. El CSF 2.0 se usa después para discutir resultados de gestión del NHS; no clasifica funciones del malware ni sustituye el análisis de evidencia.
 
@@ -115,11 +129,11 @@ El modelo de referencia separa aplicación, presentación, sesión, transporte, 
 
 | Capa y responsabilidad conceptual | Función/protocolo relacionado | Recursos y datos que intervienen | Evidencia y límite de la afirmación |
 |---|---|---|---|
-| 7. Aplicación: servicios y mensajes entre aplicaciones | HTTP para la consulta del kill switch; SMB para la propagación histórica | URL, datos de solicitud/respuesta y servicios WinINet/SMB | 00408140 llama a InternetOpenUrlA. El uso de SMBv1 en la propagación se sustenta en fuentes históricas. No hay captura local de ninguna conversación |
+| 7. Aplicación: servicios y mensajes entre aplicaciones | HTTP para la consulta del kill switch; SMB para la propagación histórica | URL, datos de solicitud/respuesta y servicios WinINet/SMB | 00408140 llama a InternetOpenUrlA. El uso de SMBv1 se sustenta en fuentes técnicas y una captura externa de laboratorio; no hay captura local ni tráfico hospitalario |
 | 6. Presentación: representación de datos intercambiados | No se identificó una operación específica de presentación de red en las 16 funciones | En una comunicación podrían intervenir formatos y transformaciones; aquí ZIP, DWORD y datos cifrados son objetos locales | El paquete y el cifrado de archivos no prueban presentación OSI. No se identificó una negociación de formato ni TLS en el material seleccionado |
 | 5. Sesión: organización del diálogo entre aplicaciones | No se reconstruyó una sesión de protocolo completa | Estado de diálogo que mantuviera el protocolo, si corresponde | El nombre `session` en el código WinINet no es evidencia suficiente. No hay traza para mostrar apertura, continuidad y cierre de una sesión de WannaCry |
-| 4. Transporte: comunicación extremo a extremo | TCP transportaría HTTP y SMB directo; el puerto 445 identifica el extremo SMB | Socket, puerto, estado TCP, buffers y handles de red | 00407480 contiene 0x1bd (=445) y llamadas WS2_32 por ordinal. Faltan prototipos y flujo de datos para reconstruir la conexión completa; no hay captura |
-| 3. Red: direccionamiento y encaminamiento | IP llevaría paquetes entre redes según el alcance disponible | Direcciones IP, rutas, interfaces y paquetes | No hay captura para afirmar IP de origen/destino, rutas ni secuencia de exploración. La dirección destino de la rutina requiere reconstruir sus llamadores |
+| 4. Transporte: comunicación extremo a extremo | TCP transportaría HTTP y SMB directo; el puerto 445 identifica el extremo SMB | Socket, puerto, estado TCP, buffers y handles de red | 00407480 contiene 0x1bd (=445) y llamadas WS2_32 por ordinal. Faltan prototipos y flujo de datos para reconstruir la conexión completa; el PCAP externo se limita a su laboratorio |
+| 3. Red: direccionamiento y encaminamiento | IP llevaría paquetes entre redes según el alcance disponible | Direcciones IP, rutas, interfaces y paquetes | No hay captura del NHS para afirmar su origen/destino, rutas ni secuencia de exploración. El PCAP externo tiene IP de su propia LAN de prueba; la dirección destino de la rutina local requiere reconstruir llamadores |
 | 2. Enlace: transferencia por el enlace local | Ethernet, Wi-Fi u otro enlace sería gestionado por el sistema y el adaptador | Interfaz, tramas, direcciones MAC y, según entorno, VLAN | No se conocen MAC, VLAN ni tecnología de cada hospital a partir de estos binarios. No se observa manipulación del enlace |
 | 1. Física: transmisión de señales por el medio | Cable, radio u otro medio llevaría las señales de la comunicación | Adaptador y medio físico disponibles | No se observa modificación de hardware ni del medio. Esta capa es infraestructura del entorno, no una acción atribuida a estas funciones |
 
@@ -137,7 +151,7 @@ Una comunicación TCP hacia 445 no demostraría por sí sola SMB malicioso. Para
 
 **Capa 3: destino y alcance.** Para una comunicación IP real habría que identificar origen, destino, rutas y contexto temporal. El parámetro de 00407480, sin reconstruir todos sus llamadores, no demuestra qué direcciones se recorren ni su orden. El alcance entre subredes depende también de rutas y controles del entorno. No se deduce una topología del NHS leyendo una función local.
 
-**Capas 2 y 1: soporte, no acciones especiales demostradas.** Una comunicación externa necesita una interfaz y un medio disponibles. Eso no implica que WannaCry reprogramara una tarjeta, atacara una MAC o alterara cables. Tampoco hay evidencia aquí de suplantación de enlace. Las tramas o señales concretas requerirían información del entorno y adquisición apropiada. En la copia aislada del laboratorio se deshabilitaron los adaptadores; no hay observación de propagación para completar estas capas.
+**Capas 2 y 1: soporte, no acciones especiales demostradas.** Una comunicación externa necesita una interfaz y un medio disponibles. Eso no implica que WannaCry reprogramara una tarjeta, atacara una MAC o alterara cables. Tampoco hay evidencia aquí de suplantación de enlace. Las tramas o señales concretas requerirían información del entorno y adquisición apropiada. En la copia aislada del equipo se deshabilitaron los adaptadores; no hay observación local de propagación. La captura externa se examina por separado y describe su propia LAN de prueba.
 
 ![Figura 8. Vistas separadas: comunicación por la pila de red y trabajo local del proceso. Las flechas describen dependencias conceptuales, no una captura.](../figuras/osi_red_host.png)
 
@@ -163,7 +177,7 @@ El cifrado masivo y el impacto hospitalario pertenecen a la reconstrucción téc
 | Procesos e hilos | CreateProcessA y estructuras de salida | Identidad del padre/hijo, ruta, argumentos, token, inicio y finalización |
 | Servicios | OpenSCManager, CreateService y StartService | Configuración, permisos y estado del servicio; un nombre en una cadena no acredita instalación |
 | Token y SID | CheckTokenMembership en u.wnry | Contexto de seguridad efectivo y resultado de consulta/elevación; no confundir usuario con privilegios efectivos |
-| Red | WinINet y WS2_32 | Conexiones y mensajes correlacionados con proceso y tiempo; no hay captura local de WannaCry |
+| Red | WinINet y WS2_32 | No hay captura propia correlacionada con proceso; se revisó un PCAP externo sin telemetría del host |
 
 **Cantidades conocidas, no estimaciones de rendimiento.** R/1831 mide 3.514.368 bytes y coincide con ed01…. XIA/2058 contiene un ZIP de 3.446.325 bytes con 36 miembros. W/101 mide 5.242.880 bytes, pero su DWORD inicial delimita 3.756.032 bytes a partir de +4. t.wnry mide 65.816 bytes. Son medidas estáticas de contenido. No se suman para calcular RAM ni disco de una infección: hay datos anidados, asignaciones no reconstruidas y operaciones cuyo éxito no se observó.
 
@@ -264,6 +278,33 @@ y herramientas integradas, no los paquetes descargados. La copia se apagó al
 finalizar y se comprobó el aislamiento; las pruebas del laboratorio son ahora
 19, al añadir el control de transferencias por portapapeles. No hubo detonación.
 
+### Actualización: revisión de tráfico con Wireshark, 21 de noviembre
+
+La copia `forense-nhs-win10-copia` se comprobó apagada: ocho NIC desactivadas,
+sin carpetas compartidas, clipboard, transferencia de archivos por clipboard,
+drag/drop, USB ni VRDE. No se habilitó ninguna red. La configuración ya satisface
+el aislamiento requerido para manipular la captura offline; no era necesario
+modificar la VM ni exponerla a un segmento de red.
+
+Se utilizó TShark 4.7.4, componente de línea de comandos de Wireshark instalado
+en el anfitrión, para analizar un PCAP externo de un laboratorio de pruebas. La
+fuente declara el mismo SHA-256 del ejemplar 24d004… examinado estáticamente.
+La captura y su registro de procedencia permanecen bajo `local/` y fuera de Git.
+Esto completa una revisión de tráfico reproducible; no es captura hecha por
+nuestro equipo, no es tráfico del NHS, no se instaló Wireshark dentro del invitado
+y no se ejecutó WannaCry en la VM.
+
+Para permitir que el equipo estudie el mismo archivo sin red, se creó
+`local/wannacry-pcap-lectura.iso` con el PCAP y una guía de filtros, sin incluir
+el ejecutable del malware. El ISO es de tipo `readonly`, su SHA-256 es
+`4357060927ffaa75ebbfe267fcaa126558cba80305b1459b65df9e2652074771` y está
+adjunto a SATA 3 de `forense-nhs-win10-copia`. El contenido extraído del ISO
+coteja con el SHA-256 del PCAP. Wireshark todavía no está instalado ni se declara
+abierto dentro del invitado; el instalador oficial 4.6.9 está en el DVD de
+herramientas en SATA 2. La revisión ya se realizó con TShark 4.7.4 en el
+anfitrión; la unidad proporciona una copia offline, de solo lectura, para que el
+equipo pueda seguir las mismas conversaciones en la interfaz de Wireshark.
+
 
 ### 5.1 Herramientas y función en el estudio
 
@@ -273,7 +314,7 @@ finalizar y se comprobó el aislamiento; las pruebas del laboratorio son ahora
 | Ghidra 12.2 PUBLIC y JDK 25, paquetes Windows | Estación futura de lectura | Descargas fijadas; instalación en invitado requiere evidencia |
 | Sysinternals | Observación de actividad benigna | No equivale a captura realizada |
 | FLOSS | Examen de cadenas | No confundir texto extraído con ejecución |
-| Wireshark | Lectura de capturas autorizadas | No se habilitan NICs para esta práctica |
+| Wireshark/TShark 4.7.4, anfitrión | Revisión offline de una captura externa publicada | Uso de TShark comprobado; la copia Windows sigue apagada, sin NICs y sin instalación de Wireshark declarada dentro del invitado |
 | WinPmem y Volatility 3 | Adquisición y análisis de RAM, si se autorizan y prueban | Ninguna captura o análisis de RAM declarado aquí |
 
 Las versiones y SHA-256 de descargas están en `config/descargas.lock.json`; SP 800-86 tiene manifiesto complementario. No se sustituyen silenciosamente paquetes. Una descarga correcta no demuestra que una herramienta funcione dentro de Windows. La compatibilidad y la prueba benigna deben documentarse por separado.
@@ -290,6 +331,23 @@ Las versiones y SHA-256 de descargas están en `config/descargas.lock.json`; SP 
 8. Guardar exportaciones y registro real de la sesión, con versión de herramienta y hashes; publicar únicamente síntesis académica revisada.
 
 El proyecto local está en `local/ghidra/proyectos/WannaCry_NHS.gpr`. Las exportaciones conservadas corresponden a `local/exportaciones-ghidra/20261115T175358527847Z/`. El lanzador y la consulta MCP están documentados en `docs/ghidra-mcp.md`. Que exista ese procedimiento no significa que el puente esté activo; en la comprobación de esta edición no escuchaba en 127.0.0.1:8765.
+
+### 5.3 Revisión offline de una captura real de laboratorio con TShark
+
+Para observar tráfico sin conectar la VM a ninguna red, se analizó un PCAP publicado por Malware-Traffic-Analysis.net. El editor indica que la captura fue enviada por David Szili desde un entorno de prueba; la página identifica `192.168.116.149` como equipo donde se lanzó WannaCry y declara el SHA-256 del binario. Ese hash coincide exactamente con el objeto local 24d004…. La coincidencia vincula el ejemplar descrito con la captura del laboratorio externo; no vincula ese entorno con el NHS. [T5]
+
+La evidencia se preservó en `local/analisis-wireshark-20261121/`: PCAP SHA-256 `feb8befd8d6891511bd00471d153a2bf8d57d022e1d81e00755941b872fdc355`; ZIP de origen SHA-256 `03b2fb0ef820ffc258fa114822058ec129e0badd903f1e3835580f665ed1ecff`. El ZIP se comprobó con 7-Zip. Capinfos registra 46.654 paquetes Ethernet y una duración de 695,472382 segundos. TShark 4.7.4 es la versión de Wireshark utilizada en el anfitrión; el PCAP y el ejecutable de malware nunca se ejecutaron.
+
+**Observaciones reproducibles en la captura:**
+
+1. El filtro `ip.addr==192.168.116.149 && tcp.port==445` muestra conversaciones del host identificado por la fuente hacia otros equipos por TCP/445.
+2. El filtro `ip.src==192.168.116.149 && tcp.dstport==445 && smb.cmd==0x32` devuelve solicitudes SMB1 TRANS2 a varios destinos, incluidos `.138`, `.143` y `.172`. Esto demuestra intercambios en el PCAP; el comando aislado no demuestra que el exploit terminara con infección.
+3. El PCAP completo incluye 16.389 tramas TCP decodificadas como NBSS/SMB. Ese total contiene tráfico de varios equipos, no se atribuye todo a WannaCry.
+4. No hay coincidencias en esta captura para las consultas DNS al dominio kill switch ni para tráfico TCP/80 del host `.149`. No se concluye que el proceso omitiera esa consulta: el PCAP puede empezar después o no contener ese tramo.
+
+La página del autor afirma que la muestra se propagó a otros hosts de su laboratorio. La captura respalda la actividad de red descrita, pero no acredita por sí sola qué archivos cifró cada víctima, quién inició la infección ni el resultado clínico de un equipo. Tampoco se exportaron archivos desde SMB. Para reproducir la revisión en Wireshark, abrir el PCAP local en modo lectura y aplicar los filtros anteriores; la VM debe continuar desconectada. [N1, §§3.1–3.4; T5]
+
+**Relación NIST.** Se registraron procedencia publicada, identidad/hash del archivo, herramienta, observación e interpretación por separado, siguiendo el flujo de recolección, examen, análisis e informe de SP 800-86. La captura sirve como ejemplo para discutir monitoreo y análisis de red dentro del CSF 2.0; no demuestra que el NHS tuviera o no tuviera una capacidad concreta. El informe de la NAO y la revisión Smart siguen siendo las fuentes históricas del NHS. [N1; N2; H1; T5]
 
 ## 6. Análisis de 24d004…: decisión, servicio y carga
 
@@ -838,6 +896,16 @@ La documentación queda preparada para nuevas sesiones con el mismo criterio de 
 [NIST SP 800-86] Kent, K., Chevalier, S., Grance, T., y Dang, H. (2006). *Guide to integrating forensic techniques into incident response*. [DOI](https://doi.org/10.6028/NIST.SP.800-86). Capítulo 3 para el método; capítulos 4–6 para fuentes y examen.
 
 [NIST CSF 2.0] National Institute of Standards and Technology. (2024). *The NIST Cybersecurity Framework (CSF) 2.0*. [DOI](https://doi.org/10.6028/NIST.CSWP.29). Códigos del apéndice A. Contexto histórico y restantes referencias en el informe general.
+
+[T1] Microsoft Defender Security Research Team. (2017, 12 de mayo). *WannaCrypt ransomware worm targets out-of-date systems*. [Análisis técnico](https://www.microsoft.com/en-us/security/blog/2017/05/12/wannacrypt-ransomware-worm-targets-out-of-date-systems/). Componentes, kill switch y propagación; no es resultado de ejecución local.
+
+[T3] National Cybersecurity and Communications Integration Center (NCCIC), U.S. Department of Homeland Security. (2017). *WannaCry ransomware* [fact sheet]. [CISA, PDF](https://www.cisa.gov/sites/default/files/FactSheets/NCCIC%20ICS_FactSheet_WannaCry_Ransomware_S508C.pdf). Describe el ransomware y su componente de gusano que explota SMBv1.
+
+[T4] MITRE ATT&CK. (s. f.). *WannaCry, S0366*. [Registro de software relacionado y alias](https://attack.mitre.org/software/S0366/). Consulta: 21/11/2026.
+
+[T5] Szili, D. (2017, 18 de mayo). *PCAP of WannaCry spreading using EternalBlue* [captura enviada desde entorno de prueba]. En B. Duncan, Malware-Traffic-Analysis.net. [Entrada y metadatos](https://www.malware-traffic-analysis.net/2017/05/18/index2.html). No representa tráfico del NHS.
+
+[H1] National Audit Office. (2018, 25 de abril). *Investigation: WannaCry cyber attack and the NHS* (HC 414; revisión del informe de 2017). [PDF](https://www.nao.org.uk/wp-content/uploads/2017/10/Investigation-WannaCry-cyber-attack-and-the-NHS.pdf). Fuente histórica del NHS; no incluye la PCAP externa.
 
 [API1] Microsoft. (s. f.). *InternetOpenUrlA*. [Documentación oficial](https://learn.microsoft.com/en-us/windows/win32/api/wininet/nf-wininet-internetopenurla). Consulta: 20/11/2026.
 

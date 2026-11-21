@@ -7,9 +7,11 @@ de tareas ni atribución de análisis individuales no acreditados.
 ## Documentos para estudiar y entregar
 
 - [Informe general en PDF](INFORME_GENERAL_NIST_NHS.pdf): problema, método,
-  reconstrucción histórica, resultados, valoración NIST y conclusiones.
+  qué es WannaCry como familia, ransomware y gusano; reconstrucción histórica,
+  resultados, valoración NIST y conclusiones.
 - [Parte práctica en PDF](PARTE_PRACTICA_NIST_GHIDRA.pdf): laboratorio, lectura
   por capas OSI, cuatro análisis, recursos, catálogo de 16 funciones,
+  revisión offline con Wireshark de una captura externa coincidente por hash,
   diagramas, transcripciones, ejercicios y defensa oral.
 - [Informe general editable](INFORME_GENERAL_NIST_NHS.docx).
 - [Parte práctica editable](PARTE_PRACTICA_NIST_GHIDRA.docx).
@@ -27,6 +29,11 @@ Ruta de estudio de esta revisión:
    condiciones, objetos utilizados, continuación y evidencia faltante.
 4. [Guion y preguntas para la exposición](guion_exposicion_osi.md): sección 13,
    ensayo de 20 minutos y respuestas justificadas.
+
+La captura examinada es de un laboratorio externo, no del NHS ni de esta VM. Su
+PCAP se conserva fuera de Git; la fuente, SHA-256, filtros y resultados están
+documentados localmente. El equipo no detonó WannaCry; la revisión de tráfico usa
+un PCAP de laboratorio de terceros con el mismo hash de muestra.
 
 La revisión amplía la explicación del material conservado; no añade una sesión
 Ghidra ni una ejecución de WannaCry. El original aportado continúa intacto.

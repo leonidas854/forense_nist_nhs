@@ -21,6 +21,36 @@
 - Estos controles son editoriales; no acreditan ejecución de WannaCry, actividad
   de red, procedencia hospitalaria ni certificación/cumplimiento NIST.
 
+## Revisión de PCAP y explicación explícita de WannaCry · 21 de noviembre de 2026
+
+- Se añadió al informe general y a la parte práctica una explicación de WannaCry
+  como familia/linaje, ransomware y malware con capacidad de gusano. Se distingue
+  cada término, la identidad por SHA-256 y el límite de generalizar a variantes.
+- Para examinar tráfico sin habilitar red en la VM, se obtuvo un PCAP público de
+  un laboratorio externo. La página atribuye la muestra ejecutada al SHA-256
+  `24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c`, igual al
+  componente local examinado. El PCAP SHA-256 es
+  `feb8befd8d6891511bd00471d153a2bf8d57d022e1d81e00755941b872fdc355`.
+- Con TShark 4.7.4 (Wireshark) se revisaron 46.654 paquetes Ethernet, 695,472382
+  segundos. Se observaron conversaciones TCP/445 y tramas SMB1 TRANS2 desde el
+  host de laboratorio que la fuente identifica como portador de la muestra. No
+  se encontraron en ese archivo consultas al kill switch ni TCP/80 del host; esto
+  no demuestra que nunca ocurrieran. Los filtros, hashes y límites están en el
+  expediente local `local/analisis-wireshark-20261121/ANALISIS.md`.
+- La VM `forense-nhs-win10-copia` se confirmó apagada y con los ocho NIC
+  desactivados, sin comparticiones, clipboard, drag/drop, USB ni VRDE. No se
+  habilitó red, no se instaló Wireshark en el invitado y no se ejecutó la muestra.
+  El PCAP y el ZIP permanecen fuera de Git.
+- Para estudio dentro de esa VM, se creó y adjuntó en SATA 3 un ISO óptico
+  `local/wannacry-pcap-lectura.iso`, tipo `readonly`, con solo el PCAP, guía y
+  hashes. SHA-256 del ISO: `4357060927ffaa75ebbfe267fcaa126558cba80305b1459b65df9e2652074771`.
+  La extracción del PCAP desde el ISO coteja con el hash del expediente. No se
+  afirma que se haya abierto dentro de Windows.
+- La captura es de una red de prueba de terceros, no del NHS ni de este equipo.
+  Se utiliza para aprender la lectura de tráfico y complementar las fuentes
+  históricas, no como evidencia hospitalaria. SP 800-86 organiza su registro y
+  análisis; CSF 2.0 no convierte esa observación externa en control NHS probado.
+
 ## Práctica benigna ejecutada en Windows
 
 - En la copia aislada se ejecutó `scripts/windows/prueba_benigna.ps1`, recibido

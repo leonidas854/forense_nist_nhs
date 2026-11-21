@@ -1,5 +1,5 @@
 {
-  "edicion": "2026-11-20",
+  "edicion": "2026-11-21",
   "zona_horaria": "America/La_Paz",
   "alcance": "Síntesis académica y transcripciones; no expediente hospitalario",
   "originales_preservados": [
@@ -97,7 +97,24 @@
     "pruebas_laboratorio": 19,
     "windows_copia": "Windows 10 Pro 1903; compilación 18362.356; escritorio y winver observados; sin detonación",
     "registro_originales_vm": "Local y excluido de Git",
-    "practica_benigna": "Integridad, restauracion de texto ficticio y proceso comprobados; sin malware; registros originales locales"
+    "practica_benigna": "Integridad, restauracion de texto ficticio y proceso comprobados; sin malware; registros originales locales",
+    "captura_externa_wannacry": {
+      "fuente": "Malware-Traffic-Analysis.net, PCAP remitido por David Szili desde entorno de prueba",
+      "muestra_sha256": "24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c",
+      "pcap_sha256": "feb8befd8d6891511bd00471d153a2bf8d57d022e1d81e00755941b872fdc355",
+      "pcap_bytes": 37791327,
+      "zip_sha256": "03b2fb0ef820ffc258fa114822058ec129e0badd903f1e3835580f665ed1ecff",
+      "zip_bytes": 23857652,
+      "herramienta": "TShark 4.7.4 (Wireshark), anfitrión",
+      "observacion": "46.654 paquetes; comunicaciones SMB/TCP 445 desde el host que la fuente identifica con el ejemplar; PCAP externo, no NHS",
+      "vm": "forense-nhs-win10-copia apagada; 8 NIC desactivadas; sin comparticiones ni interfaces host-invitado",
+      "detonacion_local": false,
+      "ruta_local": "local/analisis-wireshark-20261121/",
+      "iso_lectura_sha256": "4357060927ffaa75ebbfe267fcaa126558cba80305b1459b65df9e2652074771",
+      "iso_lectura_tipo": "readonly",
+      "iso_lectura_adjunto": "forense-nhs-win10-copia; SATA 3; invitado apagado al comprobar",
+      "iso_lectura_contenido": "solo PCAP externo, LEEME-WIRESHARK.txt y SHA256SUMS; sin ejecutable WannaCry"
+    }
   },
   "fuentes_web_consultadas": [
     {
@@ -114,6 +131,21 @@
       "titulo": "Respuesta parlamentaria 181321",
       "url": "https://questions-statements.parliament.uk/written-questions/detail/2018-10-18/181321",
       "consulta_local": "2026-11-20"
+    },
+    {
+      "titulo": "WannaCry ransomware fact sheet",
+      "url": "https://www.cisa.gov/sites/default/files/FactSheets/NCCIC%20ICS_FactSheet_WannaCry_Ransomware_S508C.pdf",
+      "consulta_local": "2026-11-21"
+    },
+    {
+      "titulo": "WannaCry, S0366",
+      "url": "https://attack.mitre.org/software/S0366/",
+      "consulta_local": "2026-11-21"
+    },
+    {
+      "titulo": "PCAP of WannaCry spreading using EternalBlue",
+      "url": "https://www.malware-traffic-analysis.net/2017/05/18/index2.html",
+      "consulta_local": "2026-11-21"
     }
   ]
 }

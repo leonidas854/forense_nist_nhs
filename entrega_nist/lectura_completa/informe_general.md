@@ -1,8 +1,8 @@
-# Análisis forense documental y estático de WannaCry para explicar el caso NHS
+# Análisis forense documental, estático y de tráfico externo de WannaCry para explicar el caso NHS
 
 ## Resumen
 
-El brote de WannaCry del 12 de mayo de 2017 afectó al NHS de Inglaterra mediante infecciones y perturbaciones de servicios, incluidas interrupciones preventivas. Este estudio integra fuentes institucionales con el examen estático de cuatro componentes locales identificados por SHA-256. Su objetivo es explicar la relación entre el funcionamiento del malware, la disponibilidad asistencial y las verificaciones que exige una investigación trazable.
+El brote de WannaCry del 12 de mayo de 2017 afectó al NHS de Inglaterra mediante infecciones y perturbaciones de servicios, incluidas interrupciones preventivas. Este estudio integra fuentes institucionales, el examen estático de cuatro componentes identificados por SHA-256 y la revisión offline de un PCAP externo de laboratorio vinculado por hash a uno de esos componentes. Su objetivo es explicar la relación entre el funcionamiento del malware, la disponibilidad asistencial y las verificaciones que exige una investigación trazable.
 
 La edición revisada del informe de la National Audit Office (NAO) registra al menos 80 de 236 trusts afectados: 34 con dispositivos bloqueados y 46 con perturbaciones. La documentación identifica 6.912 cancelaciones notificadas y una estimación de 19.494 consultas y operaciones canceladas; no son cantidades que deban sumarse. El análisis local confirma una relación de contención entre 24d004…, ed01… y el paquete que incluye u.wnry. ec1383… contiene otra carga, con hash diferente, y su incorporación a una misma cadena histórica permanece sin demostrar. [H1, resumen y figura 1; L1–L4]
 
@@ -85,7 +85,7 @@ La figura representa una adaptación docente de SP 800-86. Cuando una afirmació
 | Clase | Significado | Ejemplo de uso |
 |---|---|---|
 | H: histórica | Fuente institucional describe hechos de 2017 | Recuento revisado de trusts |
-| T: técnica publicada | Investigación original de terceros describe una muestra o API | Comportamiento publicado de la familia |
+| T: técnica externa | Fuente técnica o PCAP de laboratorio de terceros | Comportamiento publicado o tráfico de una muestra identificada; no evidencia propia ni del NHS |
 | L: local | Bytes, código o comprobación realmente examinados | Recurso R/1831 y rama del handle |
 | I: inferencia | Interpretación compatible que requiere corroboración | Una restricción de salida pudo influir en una muestra |
 | P: pendiente | Falta la evidencia necesaria | Creación real de proceso o restauración local |
@@ -105,9 +105,26 @@ La confianza se expresa respecto de una proposición concreta. Una identidad de 
 | L0 | Manifiestos y verificadores del repositorio | Integridad actual frente a referencias conservadas |
 | L1–L4 | Cuatro componentes y exportaciones de 15/11/2026 | Relaciones de contenido y lógica seleccionada |
 | L5 | Estado real de VirtualBox del 20/11/2026 | Preparación y aislamiento de la estación |
+| T5 / L6 | PCAP de prueba externa de WannaCry revisado con TShark 4.7.4; identidad, hashes y filtros en `local/analisis-wireshark-20261121/ANALISIS.md` | Tráfico SMB observado en otro laboratorio; no tráfico del NHS ni de nuestra VM |
 | A0 | INFORME_WANNA_CRY.pdf, 87 páginas | Antecedente académico aportado; no evidencia hospitalaria |
 
 Los hashes completos están en `trazabilidad.json` y en la parte práctica. El antecedente se conserva con SHA-256 d2e04deb0e6974a597a808fa3747f01389c1b11c881b503dbc34382df2ab2459. Su página impresa 1 corresponde a la página 6 del archivo. La nueva edición no altera ese PDF ni hereda automáticamente cada una de sus afirmaciones.
+
+### 3.3 Qué es WannaCry: familia de malware, ransomware y gusano
+
+**WannaCry** (también escrito **WannaCrypt**, **WanaCrypt0r** o **WCry**) es el nombre usado para una familia/linaje de malware de Windows asociado al brote mundial de mayo de 2017. MITRE ATT&CK agrupa esos nombres como software relacionado bajo el identificador S0366; Microsoft también documentó esos alias. «Familia» no significa que todos los archivos tengan los mismos bytes o funciones: el SHA-256 identifica un ejemplar concreto, mientras el nombre agrupa muestras relacionadas por código, comportamiento e historia. [T1; T4]
+
+La descripción más clara es **ransomware con capacidad de gusano**:
+
+| Término | Qué significa aquí | Cómo se reconoce en el caso |
+|---|---|---|
+| Ransomware | Malware que cifra archivos o impide acceder a ellos para exigir un rescate | Componente de cifrado, extensiones/notas de rescate y demanda de pago descritos por fuentes técnicas. El análisis local no reconstruye por completo el cifrador |
+| Gusano (worm) | Capacidad de propagarse automáticamente entre equipos por una red, sin requerir que una persona vuelva a abrir manualmente cada copia | WannaCry buscaba sistemas remotos y aprovechaba vulnerabilidades de SMBv1 relacionadas con MS17-010. La fuente histórica no permite identificar el paciente cero del NHS |
+| Familia/linaje | Conjunto de muestras relacionadas, no un único hash ni una garantía de comportamiento idéntico | El ejemplar local 24d004… tiene SHA-256 completo en la parte práctica; la captura externa citada en [T5] atribuye ese mismo hash al binario de su laboratorio |
+
+Por eso también se usa **ransomworm** como abreviatura descriptiva: combina el impacto de ransomware con propagación de tipo gusano. No quiere decir que cifrado y propagación sean una sola función. Microsoft describe componentes diferenciados de propagación y ransomware: un componente puede revisar la conexión del kill switch y preparar el servicio propagador; la carga de ransomware cifra datos, muestra el mensaje y puede obstaculizar recuperación. El flujo exacto varía por muestra y condiciones. [T1; T2; T3]
+
+La distinción evita dos errores en la exposición. «Ransomware» explica qué le hace a los archivos de la víctima; «gusano» explica cómo puede alcanzar otros equipos. Una conexión TCP/445 o un paquete SMB no demuestra por sí solo que una vulnerabilidad fue explotada ni que un equipo quedó cifrado. La sección 5.3 de la parte práctica revisa una captura de laboratorio coincidente por hash, no una captura hospitalaria.
 
 ## 4. Reconstrucción del caso NHS, paso a paso
 
@@ -285,13 +302,13 @@ RTO designa el plazo objetivo de recuperación; RPO, el punto temporal de datos 
 
 ### 8.1 Limitaciones que afectan las conclusiones
 
-No se dispone de discos, memoria, registros de eventos ni tráfico originales de los hospitales. Las muestras locales tienen identidades verificadas, pero su adquisición previa no está completamente acreditada. El análisis de 16 funciones no cubre todos los caminos, y el bloque principal de interés de u.wnry no dispone de decompilación completa. t.wnry conserva una frontera analítica sin resolver. El puente MCP no estaba activo durante esta edición; las conclusiones técnicas se apoyan en resultados preservados y cotejados.
+No se dispone de discos, memoria, registros de eventos ni tráfico originales de los hospitales. Se revisó con TShark 4.7.4 una captura externa de laboratorio; esta no reemplaza tráfico NHS ni una captura propia. Las muestras locales tienen identidades verificadas, pero su adquisición previa no está completamente acreditada. El análisis de 16 funciones no cubre todos los caminos, y el bloque principal de interés de u.wnry no dispone de decompilación completa. t.wnry conserva una frontera analítica sin resolver. El puente MCP no estaba activo durante esta edición; las conclusiones técnicas se apoyan en resultados preservados y cotejados.
 
 La VM vacía preparada inicialmente se conserva. Durante esta edición el usuario autorizó una copia aislada de su Windows 10 existente: se comprobó el escritorio y winver, que mostró Windows 10 Pro 1903, compilación 18362.356. Es un sistema previamente instalado, no una instalación nueva del equipo. Las herramientas descargadas no se declaran validadas en ese invitado. Se ejecutó una práctica benigna de integridad, restauración de un texto ficticio y observación de Bloc de notas. No se realizó captura de RAM, restauración clínica, explotación ni detonación. La parte práctica registra los resultados y el desfase observado entre los relojes del invitado y del anfitrión.
 
 ### 8.2 Respuesta a los objetivos
 
-La reconstrucción documental permite explicar una exposición conocida, un brote de propagación automática, afectación directa e indirecta, coordinación de emergencia y recuperación progresiva. Las cifras se conservan con edición y denominador. La explicación supera la idea de que todo dependió de Windows XP o de un único hospital inicial identificado.
+La reconstrucción documental permite explicar una exposición conocida, un brote de propagación automática, afectación directa e indirecta, coordinación de emergencia y recuperación progresiva. Las cifras se conservan con edición y denominador. La explicación supera la idea de que todo dependió de Windows XP o de un único hospital inicial identificado. La captura de laboratorio coincidente por hash muestra tráfico SMB asociado a la propagación de ese ejemplar, sin atribuirlo al NHS.
 
 El análisis técnico confirma relaciones de contenido y decisiones del código. 24d004… permite estudiar la condición del kill switch, la solicitud de servicio y R/1831; ed01… permite estudiar el paquete y las condiciones hacia la carga; u.wnry conecta datos con auxiliares de privilegios y procesos; ec1383… explica extracción y lanzamiento solicitado mediante W/101. Los retornos de estas rutinas no demuestran por sí solos resultados externos.
 
@@ -327,6 +344,12 @@ Esta edición entrega el informe general y una parte práctica completa para el 
 
 [T2] Berry, A., Homan, J., y Eitzman, R. (2017, 23 de mayo). *WannaCry malware profile*. FireEye; conservado por Mandiant/Google Cloud. [Investigación original](https://cloud.google.com/blog/topics/threat-intelligence/wannacry-malware-profile). Contexto de cifrado y componentes; sin reproducción de su código operativo.
 
-[L0–L5] Proyecto académico. (2026, 15 y 20 de noviembre). *Manifiestos, exportaciones estáticas y verificaciones locales*. Referencias exactas y hashes en `trazabilidad.json`; muestras y registros originales excluidos de Git. Documentación de consulta: `docs/analisis-ghidra-codigo.md`, `docs/guia-capas-decompilado-desensamblado.md` y `docs/verificacion.md`.
+[T3] National Cybersecurity and Communications Integration Center (NCCIC), U.S. Department of Homeland Security. (2017). *WannaCry ransomware* [fact sheet]. [CISA, PDF](https://www.cisa.gov/sites/default/files/FactSheets/NCCIC%20ICS_FactSheet_WannaCry_Ransomware_S508C.pdf). Describe ransomware con componente de gusano y explotación de SMBv1.
+
+[T4] MITRE ATT&CK. (s. f.). *WannaCry, S0366*. [Registro de software y nombres asociados](https://attack.mitre.org/software/S0366/). Consulta: 21/11/2026.
+
+[T5] Szili, D. (2017, 18 de mayo). *PCAP of WannaCry spreading using EternalBlue* [captura enviada desde entorno de prueba]. En B. Duncan, Malware-Traffic-Analysis.net. [Entrada y metadatos del PCAP](https://www.malware-traffic-analysis.net/2017/05/18/index2.html). El sitio identifica el ejemplar por SHA-256 `24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c`; PCAP completo y hashes en el expediente local. No representa tráfico del NHS.
+
+[L0–L6] Proyecto académico. (2026, 15 y 21 de noviembre). *Manifiestos, exportaciones estáticas, revisión de PCAP externo y verificaciones locales*. Referencias exactas y hashes en `trazabilidad.json` y en el expediente de Wireshark local; muestras, PCAP y registros originales excluidos de Git. Documentación de consulta: `docs/analisis-ghidra-codigo.md`, `docs/guia-capas-decompilado-desensamblado.md`, `docs/verificacion.md` y `local/analisis-wireshark-20261121/ANALISIS.md`.
 
 [A0] Autores consignados en la portada. (2026). *Análisis forense digital del ataque de ransomware WannaCry contra el Servicio Nacional de Salud del Reino Unido (NHS)*. Informe académico aportado de 87 páginas, conservado sin modificación. Revisión editorial en `revision_antecedente.md`.
