@@ -16,7 +16,7 @@ class IsolationTest(unittest.TestCase):
 
     def safe(self):
         return '\n'.join([f'nic{i}="none"' for i in range(1, 9)] + [
-            'clipboard="disabled"', 'draganddrop="disabled"',
+            'clipboard="disabled"', 'clipboard_file_transfers="off"', 'draganddrop="disabled"',
             'vrde="off"', 'usb="off"', 'ehci="off"', 'xhci="off"'])
 
     def test_accepts_disconnected_vm(self):
@@ -39,6 +39,10 @@ class IsolationTest(unittest.TestCase):
 
     def test_rejects_shared_folder(self):
         self.assertTrue(self.audit(self.safe()+'\nSharedFolderNameMachineMapping1="vagrant"'))
+
+    def test_rejects_clipboard_file_transfer(self):
+        self.assertTrue(self.audit(self.safe().replace(
+            'clipboard_file_transfers="off"', 'clipboard_file_transfers="on"')))
 
     def test_rejects_global_shared_folder(self):
         self.assertTrue(self.audit(self.safe()+'\nSharedFolderNameGlobalMapping1="Downloads"'))

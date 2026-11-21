@@ -54,3 +54,12 @@ el Vagrantfile y aprobó el aislamiento real tanto de la VM vacía como de la co
 Esta comprobación evalúa configuración del hipervisor; no certifica ausencia de
 escapes o contaminación previa. No se habilitaron comunicaciones para instalar
 herramientas ni se distribuyeron discos o datos personales.
+
+### Actualización: práctica benigna realizada
+
+Se ejecutaron comprobaciones de hash, restauración de un texto ficticio y
+apertura/cierre de Bloc de notas. La sección 11.4 registra resultados y el
+desfase aproximado de cinco horas entre relojes. Se validó el uso de PowerShell
+y herramientas integradas, no los paquetes descargados. La copia se apagó al
+finalizar y se comprobó el aislamiento; las pruebas del laboratorio son ahora
+19, al añadir el control de transferencias por portapapeles. No hubo detonación.

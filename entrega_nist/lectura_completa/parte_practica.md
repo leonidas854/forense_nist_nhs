@@ -162,6 +162,15 @@ Esta comprobación evalúa configuración del hipervisor; no certifica ausencia 
 escapes o contaminación previa. No se habilitaron comunicaciones para instalar
 herramientas ni se distribuyeron discos o datos personales.
 
+### Actualización: práctica benigna realizada
+
+Se ejecutaron comprobaciones de hash, restauración de un texto ficticio y
+apertura/cierre de Bloc de notas. La sección 11.4 registra resultados y el
+desfase aproximado de cinco horas entre relojes. Se validó el uso de PowerShell
+y herramientas integradas, no los paquetes descargados. La copia se apagó al
+finalizar y se comprobó el aislamiento; las pruebas del laboratorio son ahora
+19, al añadir el control de transferencias por portapapeles. No hubo detonación.
+
 
 ### 5.1 Herramientas y función en el estudio
 
@@ -474,7 +483,7 @@ No se equipara un evento de autenticación de red con RDP sin más datos. Un tim
 
 Una nueva ficha debe identificar a quien hizo realmente la comprobación. Este ejemplo expone un razonamiento documentado; no acredita una revisión individual nueva por cada autor.
 
-## 11. Prácticas benignas para ampliar el estudio
+## 11. Prácticas benignas: procedimiento y resultados
 
 ### 11.1 Ejercicio de decisiones, sin ejecución del malware
 
@@ -484,7 +493,7 @@ Respuestas de control: un handle no nulo evita la llamada 00408090; en W/101, de
 
 ### 11.2 Ejercicio de integridad y restauración de documentos ficticios
 
-En una sesión futura de Windows verificada, crear una carpeta nueva de práctica con un texto que diga «dato ficticio de clase». Registrar su SHA-256 con Get-FileHash, conservar una copia separada y modificar manualmente solo el documento de trabajo. Comparar hashes, restaurar desde la copia y comprobar tanto la igualdad como la lectura del contenido. No utilizar documentos personales, muestras ni órdenes del malware.
+En una sesión de Windows verificada, crear una carpeta nueva de práctica con un texto que diga «dato ficticio de clase». Registrar su SHA-256 con Get-FileHash, conservar una copia separada y modificar manualmente solo el documento de trabajo. Comparar hashes, restaurar desde la copia y comprobar tanto la igualdad como la lectura del contenido. No utilizar documentos personales, muestras ni órdenes del malware.
 
 El registro debe incluir fecha, acción, objeto, hash anterior/posterior, copia utilizada y resultado real. Restaurar un texto verifica esa operación limitada. No demuestra recuperación frente a WannaCry, limpieza de un respaldo ni restablecimiento de un servicio hospitalario. Relación NIST: PR.DS-11, RC.RP-03 y RC.RP-05.
 
@@ -492,7 +501,90 @@ El registro debe incluir fecha, acción, objeto, hash anterior/posterior, copia 
 
 En la estación verificada, observar una aplicación inocua como el editor de texto con una herramienta disponible y validada. Anotar proceso, apertura y cierre reales. Si la auditoría o la herramienta no conserva un dato, registrar esa ausencia y su causa conocida; no inventar un evento. El objetivo es aprender la diferencia entre presencia de archivo, creación de proceso y operación terminada.
 
-No se afirma que estos ejercicios ya se realizaron. Tampoco se generan conexiones de red o muestras artificialmente dañinas para rellenar una tabla. El ejercicio de mesa puede realizarse sin Windows; las observaciones del invitado requieren una sesión real y documentada.
+Los ejercicios de integridad, restauración y proceso se ejecutaron con datos ficticios en la sesión documentada a continuación. No se generaron conexiones de red ni se ejecutó malware. El ejercicio de mesa sigue siendo una propuesta distinta de esa ejecución.
+
+### 11.4 Ejecución benigna comprobada en Windows
+
+El 20 de noviembre de 2026, hora del anfitrión en Bolivia, se ejecutó una práctica
+en `forense-nhs-win10-copia`. Se utilizó el Windows existente clonado, con un
+snapshot previo y los ocho adaptadores de VirtualBox desactivados. Se mantuvieron
+inhabilitados comparticiones, portapapeles, transferencia por portapapeles,
+arrastrar/soltar, USB y VRDE. Los puertos serie y paralelo también se observaron
+desactivados. El original del usuario no se utilizó para ejecutar la prueba.
+
+La entrada fue un DVD virtual de solo lectura con `prueba_benigna.ps1`. El script
+está publicado en `scripts/windows/` y su SHA-256 se cotejó con el mostrado dentro
+del invitado: **97c2861a384dcc49194fde88ff0b5c5ce11c5e649c329c32cac7cd4e1cf4eaa1**.
+No contiene WannaCry ni ejecuta sus comandos. La opción de política de ejecución
+se limitó al proceso de PowerShell de la práctica; no se cambió la política
+persistente de Windows.
+
+### Procedimiento ejecutado y resultado
+
+| Paso real | Comprobación | Resultado observado |
+|---|---|---|
+| Consultar adaptadores en el invitado | Win32_NetworkAdapter, propiedad NetEnabled | Cero adaptadores habilitados |
+| Crear referencia y copia | Texto ficticio en una carpeta nueva; SHA-256 | Copia igual a referencia |
+| Modificar solo el archivo de trabajo | Recalcular SHA-256 | Cambio detectado |
+| Restaurar desde la copia | Comparar hash y contenido leído | Coincidencia con la referencia |
+| Abrir Bloc de notas sobre ese texto | Get-Process sobre el PID devuelto e interfaz lista | Proceso notepad observado |
+| Solicitar cierre normal | Esperar salida y consultar resultado | Proceso terminado, código de salida cero |
+
+La herramienta efectivamente usada fue Windows PowerShell 5.1.18362.145, con
+Get-FileHash, consultas locales del sistema y Bloc de notas. La consola mostró
+el estado COMPLETADO. El uso de estas herramientas no acredita la validación
+de los paquetes descargados de Ghidra, Sysinternals, WinPmem o Volatility dentro
+de Windows; esa validación permanece pendiente.
+
+| Objeto ficticio | SHA-256 observado |
+|---|---|
+| Referencia | 273891F95D948B6F3BF4A103AF64672960E971332E17946182CDA8FBD7F4CC15 |
+| Archivo modificado | 5FE5FBE5029A405C9302BECAFA00346971F0CD374603E866665BE63BC880D6F6 |
+| Archivo restaurado | 273891F95D948B6F3BF4A103AF64672960E971332E17946182CDA8FBD7F4CC15 |
+
+Los hashes de referencia y modificación se calcularon también en el anfitrión
+sobre los mismos textos y codificación, y coincidieron. Este cotejo comprueba
+la consistencia del ejercicio; no convierte el texto ficticio en evidencia del
+NHS. La copia de prueba estaba en el mismo disco virtual: no se presenta como
+un respaldo independiente protegido frente a ransomware.
+
+### Registro, horas y preservación
+
+El script guardó `resultado.json` y `resultado.sha256` dentro de la carpeta nueva
+`%LOCALAPPDATA%\NHS_Forense_Practica\`, con identificador propio. Se volvió a leer
+el JSON y se mostró su hash en la consola del invitado. No se exportó ese archivo
+al anfitrión mediante redes o carpetas compartidas.
+
+En el anfitrión se conservaron las capturas de pantalla, el script, comprobaciones
+de aislamiento y una transcripción manual identificada expresamente como tal en
+`local/practica-windows/20261121T0350Z/`. Las capturas y registros originales
+permanecen fuera de Git. La edición anterior de los informes también se preservó
+localmente antes de incorporar los resultados.
+
+Se detectó que el UTC informado por el invitado estaba **aproximadamente cinco
+horas atrasado respecto del anfitrión**. Se consultó el reloj entre dos marcas
+temporales del anfitrión y se observó la zona Romance Standard Time en Windows.
+No se corrigieron los tiempos originales ni se atribuyó precisión absoluta al
+reloj del anfitrión. Una cronología conjunta debe conservar esa diferencia e
+incertidumbre; no se deben ordenar directamente ambos registros como si sus
+relojes estuvieran sincronizados.
+
+### Alcance metodológico
+
+Los datos son ficticios (S), mientras que su procesamiento y los resultados de
+esta sesión son observaciones locales reales (L). SP 800-86 organiza la
+identificación, examen, interpretación y reporte. RS.AN-06 y RS.AN-07 ayudan a
+explicar registro, integridad y procedencia. PR.DS-11 y RC.RP-03 se relacionan
+parcialmente con la copia y restauración; RC.RP-05 requiere además validación
+funcional del servicio, que aquí no se realizó.
+
+La prueba demuestra detección de un cambio, restauración de un archivo ficticio
+y observación de un proceso benigno. **No es una detonación de WannaCry, un ensayo
+de cifrado ni una recuperación hospitalaria.** Se cerró Windows y se comprobó
+de nuevo el aislamiento. La ausencia de interfaces habilitadas es una
+comprobación concreta de configuración, no una garantía absoluta sobre el
+hipervisor o la limpieza previa del sistema clonado.
+
 
 ## 12. Cómo ampliar el análisis de las demás funciones
 

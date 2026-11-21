@@ -81,6 +81,11 @@
       "archivo": "config/fuentes-forense.lock.json",
       "bytes": 432,
       "sha256": "a2de1f69ea384d54565325942326f89b1afec33a76273014be4985da59fd4e99"
+    },
+    {
+      "archivo": "scripts/windows/prueba_benigna.ps1",
+      "bytes": 5197,
+      "sha256": "97c2861a384dcc49194fde88ff0b5c5ce11c5e649c329c32cac7cd4e1cf4eaa1"
     }
   ],
   "exportaciones_ghidra": "2026-11-15T17:53:58Z; no sesión MCP nueva en esta edición",
@@ -89,9 +94,10 @@
     "filas_matriz": 20,
     "archivos_edicion_previa": 20,
     "transcripciones": 16,
-    "pruebas_laboratorio": 18,
+    "pruebas_laboratorio": 19,
     "windows_copia": "Windows 10 Pro 1903; compilación 18362.356; escritorio y winver observados; sin detonación",
-    "registro_originales_vm": "Local y excluido de Git"
+    "registro_originales_vm": "Local y excluido de Git",
+    "practica_benigna": "Integridad, restauracion de texto ficticio y proceso comprobados; sin malware; registros originales locales"
   },
   "fuentes_web_consultadas": [
     {

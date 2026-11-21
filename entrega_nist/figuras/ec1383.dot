@@ -2,8 +2,7 @@ digraph G {
 graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];
 node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",fontcolor="black",style="filled",fillcolor="white",margin=".14,.10"];
 edge [fontname="DejaVu Sans",fontsize=10,color="black",fontcolor="black"];
-
-    a [label="180001014
+a [label="180001014
 Find / Load / Lock / SizeofResource"];
     b [shape=diamond, label="¿Controles iniciales
 superados?"];
@@ -17,5 +16,4 @@ No comprobar resultado; cerrar"];
     g [label="Retorno 0"];
     a -> b; b -> g [label="No"]; b -> c [label="Sí"];
     c -> d; d -> f [label="No"]; d -> e [label="Sí"]; e -> f;
-
 }

@@ -2,8 +2,7 @@ digraph G {
 graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];
 node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",fontcolor="black",style="filled",fillcolor="white",margin=".14,.10"];
 edge [fontname="DejaVu Sans",fontsize=10,color="black",fontcolor="black"];
-
-    a [label="24d004…
+a [label="24d004…
 PE32 x86"];
     b [label="ed01…
 PE32 x86"];
@@ -23,5 +22,4 @@ Distinto de 24d004…"];
     d -> w [label="Contiene recurso"];
     w -> p [label="Tramo desde +4"];
     {rank=same; a; d;}
-
 }

@@ -43,12 +43,19 @@ No se empaqueta ni se publica la copia del Windows existente.
 
 ## Verificación efectuada
 
-Se ejecutaron las 18 pruebas unitarias, `./lab validate`,
+En la preparación inicial se ejecutaron 18 pruebas unitarias, `./lab validate`,
 `python3 scripts/check_isolation.py` y la misma comprobación indicando el nombre
 de la copia. Todos dieron resultado correcto. El control real evalúa aislamiento
 de configuración; no certifica ausencia de escapes del hipervisor.
 
-La copia puede usarse para lectura y los ejercicios benignos descritos en la
-[parte práctica](../entrega_nist/PARTE_PRACTICA_NIST_GHIDRA.pdf). La instalación y
-validación de herramientas en el invitado siguen pendientes. La imagen de
-herramientas existente no contiene automáticamente los documentos nuevos.
+Se completó la [práctica benigna](../entrega_nist/practica_windows_realizada.md)
+de integridad, restauración de texto ficticio y proceso. Se usaron PowerShell y
+Bloc de notas; la validación de los paquetes descargados sigue pendiente.
+El script reproducible es `scripts/windows/prueba_benigna.ps1`. Se recibió por
+DVD de solo lectura, temporalmente en SATA 1; se restituyó el DVD de lectura al
+cerrar la sesión. Los resultados originales quedan dentro del invitado y los
+registros de observación fuera de Git. No se ejecutó WannaCry.
+
+Tras la práctica se repitieron `./lab validate` y los controles de aislamiento;
+pasaron 19 pruebas, incluida la nueva comprobación de transferencias por
+portapapeles. La copia quedó apagada.

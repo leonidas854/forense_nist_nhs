@@ -2,8 +2,7 @@ digraph G {
 graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];
 node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",fontcolor="black",style="filled",fillcolor="white",margin=".14,.10"];
 edge [fontname="DejaVu Sans",fontsize=10,color="black",fontcolor="black"];
-
-    a [label="Pregunta y alcance"];
+a [label="Pregunta y alcance"];
     b [label="Recolección y preservación
 Origen, identidad y registro"];
     c [label="Examen
@@ -22,5 +21,4 @@ y revisión colectiva"];
     e -> f [label="Sí, para esa afirmación"];
     e -> g [label="No"];
     f -> h; g -> h;
-
 }

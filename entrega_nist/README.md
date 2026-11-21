@@ -28,8 +28,8 @@ no hay ejecución de WannaCry, adquisición forense hospitalaria
 ni interpretación exhaustiva de las 1.755 funciones reconocidas.
 
 Se incorporó una copia aislada del Windows 10 existente del usuario y se comprobó
-su escritorio y versión. Las herramientas y ejercicios dentro del invitado aún
-requieren comprobación; véase [estado del laboratorio](estado_laboratorio.md).
+su escritorio y versión. Se completó una práctica benigna de integridad, restauración y proceso; las
+herramientas descargadas todavía requieren validación dentro del invitado; véase [estado del laboratorio](estado_laboratorio.md).
 
 El PDF y DOCX aportados en la raíz se preservan sin cambios. Su revisión y los
 criterios de incorporación están en [revisión del antecedente](revision_antecedente.md).
@@ -59,3 +59,7 @@ PDF/UA ni una auditoría de lectores de pantalla.
 requiere regenerar documentos y manifiesto; no se alteran los locks de descargas
 ni las fuentes originales. [Trazabilidad](trazabilidad.json) distingue hashes de
 entrada, fuentes, transcripciones y resultados editoriales.
+
+La [práctica ejecutada en Windows](practica_windows_realizada.md) documenta
+resultados observados con datos ficticios, sin ejecutar WannaCry. El script
+reproducible está en [scripts/windows/prueba_benigna.ps1](../scripts/windows/prueba_benigna.ps1).

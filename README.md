@@ -9,8 +9,9 @@ de los cuadernos anteriores para la presentación final.
 
 **Windows disponible:** se incorporó una [copia aislada del Windows 10 existente](docs/windows10-copia-aislada.md),
 con escritorio y versión comprobados. La VM vacía anterior de Vagrant se conserva;
-`./lab status` consulta esa VM, no la copia. La instalación y validación de
-herramientas en el invitado siguen pendientes.
+`./lab status` consulta esa VM, no la copia. Se completó una
+[práctica benigna de integridad, restauración y proceso](entrega_nist/practica_windows_realizada.md).
+La validación de paquetes descargados dentro del invitado sigue pendiente.
 
 **Vista general y flujos:** [15 diagramas con análisis de los componentes, el caso
 NHS y los límites de evidencia](equipo/DIAGRAMAS-Y-ANALISIS.md).

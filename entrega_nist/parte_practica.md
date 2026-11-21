@@ -180,7 +180,7 @@ No se equipara un evento de autenticación de red con RDP sin más datos. Un tim
 
 Una nueva ficha debe identificar a quien hizo realmente la comprobación. Este ejemplo expone un razonamiento documentado; no acredita una revisión individual nueva por cada autor.
 
-## 11. Prácticas benignas para ampliar el estudio
+## 11. Prácticas benignas: procedimiento y resultados
 
 ### 11.1 Ejercicio de decisiones, sin ejecución del malware
 
@@ -190,7 +190,7 @@ Respuestas de control: un handle no nulo evita la llamada 00408090; en W/101, de
 
 ### 11.2 Ejercicio de integridad y restauración de documentos ficticios
 
-En una sesión futura de Windows verificada, crear una carpeta nueva de práctica con un texto que diga «dato ficticio de clase». Registrar su SHA-256 con Get-FileHash, conservar una copia separada y modificar manualmente solo el documento de trabajo. Comparar hashes, restaurar desde la copia y comprobar tanto la igualdad como la lectura del contenido. No utilizar documentos personales, muestras ni órdenes del malware.
+En una sesión de Windows verificada, crear una carpeta nueva de práctica con un texto que diga «dato ficticio de clase». Registrar su SHA-256 con Get-FileHash, conservar una copia separada y modificar manualmente solo el documento de trabajo. Comparar hashes, restaurar desde la copia y comprobar tanto la igualdad como la lectura del contenido. No utilizar documentos personales, muestras ni órdenes del malware.
 
 El registro debe incluir fecha, acción, objeto, hash anterior/posterior, copia utilizada y resultado real. Restaurar un texto verifica esa operación limitada. No demuestra recuperación frente a WannaCry, limpieza de un respaldo ni restablecimiento de un servicio hospitalario. Relación NIST: PR.DS-11, RC.RP-03 y RC.RP-05.
 
@@ -198,7 +198,9 @@ El registro debe incluir fecha, acción, objeto, hash anterior/posterior, copia 
 
 En la estación verificada, observar una aplicación inocua como el editor de texto con una herramienta disponible y validada. Anotar proceso, apertura y cierre reales. Si la auditoría o la herramienta no conserva un dato, registrar esa ausencia y su causa conocida; no inventar un evento. El objetivo es aprender la diferencia entre presencia de archivo, creación de proceso y operación terminada.
 
-No se afirma que estos ejercicios ya se realizaron. Tampoco se generan conexiones de red o muestras artificialmente dañinas para rellenar una tabla. El ejercicio de mesa puede realizarse sin Windows; las observaciones del invitado requieren una sesión real y documentada.
+Los ejercicios de integridad, restauración y proceso se ejecutaron con datos ficticios en la sesión documentada a continuación. No se generaron conexiones de red ni se ejecutó malware. El ejercicio de mesa sigue siendo una propuesta distinta de esa ejecución.
+
+{{INCLUIR:practica_windows_realizada.md}}
 
 ## 12. Cómo ampliar el análisis de las demás funciones
 

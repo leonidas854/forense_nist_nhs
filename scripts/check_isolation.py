@@ -14,7 +14,8 @@ def audit(text):
         if sep:
             values[key.strip().strip('"')] = value.strip().strip('"')
     expected = {f'nic{i}': 'none' for i in range(1, 9)}
-    expected.update(clipboard='disabled', draganddrop='disabled', vrde='off',
+    expected.update(clipboard='disabled', clipboard_file_transfers='off',
+                    draganddrop='disabled', vrde='off',
                     usb='off', ehci='off', xhci='off')
     problems = [f'{key}: {values.get(key, "ausente")} (esperado: {want})'
                 for key, want in expected.items() if values.get(key) != want]

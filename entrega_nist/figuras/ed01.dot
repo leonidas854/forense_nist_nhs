@@ -2,8 +2,7 @@ digraph G {
 graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];
 node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",fontcolor="black",style="filled",fillcolor="white",margin=".14,.10"];
 edge [fontname="DejaVu Sans",fontsize=10,color="black",fontcolor="black"];
-
-    a [label="00401fe7
+a [label="00401fe7
 Ruta y argumentos"];
     b [shape=diamond, label="¿Se cumple toda la
 rama de salida inicial?"];
@@ -22,5 +21,4 @@ Retorno 0"];
     a -> b; b -> f [label="Sí"]; b -> c [label="No"];
     c -> d; d -> e [label="Sí"]; d -> f [label="No"];
     e -> q; q -> call [label="Sí"]; q -> f [label="No"]; call -> f;
-
 }

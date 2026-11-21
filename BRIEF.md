@@ -56,7 +56,9 @@ del PDF aportado y solicita quitar el reparto por etiquetas individuales de la
 nueva entrega. Autorizó una copia aislada de su VM «Windows 10»: se creó
 `forense-nhs-win10-copia`, se comprobó escritorio y winver (Pro 1903, 18362.356)
 y se apagó. La original y la VM vacía anterior de Vagrant se conservan.
-Las herramientas en el invitado y prácticas benignas siguen pendientes.
+Se completó después una práctica benigna de integridad, restauración de texto
+ficticio y proceso, con PowerShell y Bloc de notas. La validación de paquetes
+descargados dentro del invitado sigue pendiente. No se ejecutó WannaCry.
 Véase `docs/windows10-copia-aislada.md`. Los párrafos siguientes son antecedentes.
 
 **Actualización de alcance, 15/11/2026:** cuatro personas desarrollarán el análisis

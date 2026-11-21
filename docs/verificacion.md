@@ -1,5 +1,29 @@
 # Estado comprobado · 20 de noviembre de 2026
 
+## Práctica benigna ejecutada en Windows
+
+- En la copia aislada se ejecutó `scripts/windows/prueba_benigna.ps1`, recibido
+  por DVD de solo lectura y cotejado por SHA-256 dentro del invitado. Sin malware.
+- Windows informó cero adaptadores habilitados. Se detectó un cambio de hash,
+  se restauró y leyó un texto ficticio y se observó la apertura y cierre normal
+  de Bloc de notas con código de salida cero. PowerShell 5.1.18362.145.
+- Los hashes de los textos también coincidieron con el cálculo independiente
+  del anfitrión. La copia está en el mismo disco: no acredita respaldo protegido.
+- Se observó un desfase de aproximadamente cinco horas entre UTC del invitado
+  y anfitrión. Se conservaron las marcas originales y la consulta acotada por
+  horas del anfitrión; no se sincronizaron ni corrigieron retrospectivamente.
+- JSON y hash originales dentro del invitado; capturas, comprobaciones y una
+  transcripción manual diferenciada en `local/practica-windows/20261121T0350Z/`.
+  No se exportaron registros mediante redes o comparticiones ni se agregaron a Git.
+- Nuevo control de transferencia por portapapeles y prueba de regresión:
+  **19 pruebas**. El aislamiento se comprueba antes, durante y después.
+- La copia se apagó normalmente. Se actualizó la parte práctica con resultados;
+  los paquetes descargados, adquisición de RAM y recuperación clínica permanecen
+  sin validar. Las referencias a ejercicios pendientes de abajo son antecedentes.
+- Parte práctica actualizada: 44 páginas, resultados en la sección 11.4.
+  DVD de lectura actualizado y sus 42 archivos cotejados por hash; conectado
+  nuevamente a SATA 1. El informe general conserva 21 páginas.
+
 ## Entrega nueva y Windows existente
 
 - Nueva entrega en [entrega_nist](../entrega_nist/README.md): informe general y

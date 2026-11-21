@@ -2,8 +2,7 @@ digraph G {
 graph [rankdir=TB,bgcolor="white",pad=.15,nodesep=.3,ranksep=.32];
 node [shape=box,fontname="DejaVu Sans",fontsize=12,color="black",fontcolor="black",style="filled",fillcolor="white",margin=".14,.10"];
 edge [fontname="DejaVu Sans",fontsize=10,color="black",fontcolor="black"];
-
-    a [label="00408140
+a [label="00408140
 InternetOpenUrlA"];
     b [shape=diamond, label="¿Handle
 NULL?"];
@@ -13,5 +12,4 @@ Distribuir por argumentos"];
     e [label="Retorno 0"];
     a -> b; b -> c [label="Sí"]; b -> d [label="No"];
     c -> e; d -> e;
-
 }
